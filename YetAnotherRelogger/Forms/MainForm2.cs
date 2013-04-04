@@ -411,6 +411,7 @@ namespace YetAnotherRelogger.Forms
         private void pictureBox2_Click(object sender, EventArgs e)
         {
             Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9NF2Q47KYGNJL");
-        } 
+        }
+
     }
 }

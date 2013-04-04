@@ -159,10 +159,12 @@ namespace YetAnotherRelogger
                                 }
                             }
 
-                        } // else if (bot.isRunning)
+                        } 
                         else
+                        {
+                            //Logger.Instance.Write("Bot Standby={0} Running={1} D3Running={2} DBRunning={3}", bot.IsStandby, bot.IsRunning, bot.Diablo.IsRunning, bot.Demonbuddy.IsRunning);
                             bot.StartTime = DateTime.Now;
-                        
+                        }
                         // calculate sleeptime
                         var sleep = (int) (Program.Sleeptime - DateTime.Now.Subtract(time).TotalMilliseconds);
                         if (sleep > 0) Thread.Sleep(sleep);

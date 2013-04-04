@@ -59,8 +59,7 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm2));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.button6 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -69,6 +68,8 @@
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.SettingsPanel = new System.Windows.Forms.Panel();
             this.treeView1 = new System.Windows.Forms.TreeView();
@@ -104,9 +105,13 @@
             this.labelStats = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
+            this.splitContainer1.Panel1.SuspendLayout();
+            this.splitContainer1.Panel2.SuspendLayout();
+            this.splitContainer1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.groupBox2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage4.SuspendLayout();
             this.tabControl2.SuspendLayout();
@@ -140,8 +145,7 @@
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.groupBox2);
-            this.tabPage1.Controls.Add(this.groupBox1);
+            this.tabPage1.Controls.Add(this.splitContainer1);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -150,31 +154,27 @@
             this.tabPage1.Text = "Relogger";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
+            // splitContainer1
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.richTextBox1);
-            this.groupBox2.Location = new System.Drawing.Point(6, 243);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(669, 174);
-            this.groupBox2.TabIndex = 1;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Log";
-            // 
-            // richTextBox1
-            // 
-            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.splitContainer1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.richTextBox1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.richTextBox1.Location = new System.Drawing.Point(6, 19);
-            this.richTextBox1.Name = "richTextBox1";
-            this.richTextBox1.ReadOnly = true;
-            this.richTextBox1.Size = new System.Drawing.Size(653, 149);
-            this.richTextBox1.TabIndex = 0;
-            this.richTextBox1.Text = "";
-            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
+            this.splitContainer1.Location = new System.Drawing.Point(3, 3);
+            this.splitContainer1.Name = "splitContainer1";
+            this.splitContainer1.Orientation = System.Windows.Forms.Orientation.Horizontal;
+            // 
+            // splitContainer1.Panel1
+            // 
+            this.splitContainer1.Panel1.Controls.Add(this.groupBox1);
+            this.splitContainer1.Panel1MinSize = 100;
+            // 
+            // splitContainer1.Panel2
+            // 
+            this.splitContainer1.Panel2.Controls.Add(this.groupBox2);
+            this.splitContainer1.Panel2MinSize = 75;
+            this.splitContainer1.Size = new System.Drawing.Size(679, 417);
+            this.splitContainer1.SplitterDistance = 244;
+            this.splitContainer1.TabIndex = 3;
             // 
             // groupBox1
             // 
@@ -188,9 +188,9 @@
             this.groupBox1.Controls.Add(this.button2);
             this.groupBox1.Controls.Add(this.button1);
             this.groupBox1.Controls.Add(this.dataGridView1);
-            this.groupBox1.Location = new System.Drawing.Point(6, 6);
+            this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(669, 231);
+            this.groupBox1.Size = new System.Drawing.Size(679, 242);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Bots";
@@ -198,7 +198,7 @@
             // button6
             // 
             this.button6.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button6.Location = new System.Drawing.Point(222, 200);
+            this.button6.Location = new System.Drawing.Point(227, 211);
             this.button6.Name = "button6";
             this.button6.Size = new System.Drawing.Size(74, 23);
             this.button6.TabIndex = 6;
@@ -210,7 +210,7 @@
             // 
             this.checkBox1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(6, 204);
+            this.checkBox1.Location = new System.Drawing.Point(11, 214);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(53, 17);
             this.checkBox1.TabIndex = 5;
@@ -220,7 +220,7 @@
             // button4
             // 
             this.button4.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button4.Location = new System.Drawing.Point(503, 198);
+            this.button4.Location = new System.Drawing.Point(508, 211);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
             this.button4.TabIndex = 4;
@@ -231,7 +231,7 @@
             // button3
             // 
             this.button3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button3.Location = new System.Drawing.Point(584, 198);
+            this.button3.Location = new System.Drawing.Point(589, 211);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 3;
@@ -242,7 +242,7 @@
             // button2
             // 
             this.button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button2.Location = new System.Drawing.Point(141, 200);
+            this.button2.Location = new System.Drawing.Point(146, 211);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(75, 23);
             this.button2.TabIndex = 2;
@@ -253,7 +253,7 @@
             // button1
             // 
             this.button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button1.Location = new System.Drawing.Point(60, 200);
+            this.button1.Location = new System.Drawing.Point(65, 211);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 1;
@@ -268,11 +268,38 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(6, 19);
+            this.dataGridView1.Location = new System.Drawing.Point(6, 15);
             this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(657, 175);
+            this.dataGridView1.Size = new System.Drawing.Size(667, 190);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            // 
+            // groupBox2
+            // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.richTextBox1);
+            this.groupBox2.Location = new System.Drawing.Point(0, 0);
+            this.groupBox2.Name = "groupBox2";
+            this.groupBox2.Size = new System.Drawing.Size(679, 169);
+            this.groupBox2.TabIndex = 1;
+            this.groupBox2.TabStop = false;
+            this.groupBox2.Text = "Log";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox1.Cursor = System.Windows.Forms.Cursors.Default;
+            this.richTextBox1.Location = new System.Drawing.Point(6, 15);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ReadOnly = true;
+            this.richTextBox1.Size = new System.Drawing.Size(667, 148);
+            this.richTextBox1.TabIndex = 0;
+            this.richTextBox1.Text = "";
+            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // tabPage2
             // 
@@ -523,7 +550,7 @@
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
             this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage3.Size = new System.Drawing.Size(685, 407);
+            this.tabPage3.Size = new System.Drawing.Size(685, 423);
             this.tabPage3.TabIndex = 2;
             this.tabPage3.Text = "About";
             this.tabPage3.UseVisualStyleBackColor = true;
@@ -657,10 +684,14 @@
             this.Load += new System.EventHandler(this.MainForm2_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
-            this.groupBox2.ResumeLayout(false);
+            this.splitContainer1.Panel1.ResumeLayout(false);
+            this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
+            this.splitContainer1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.groupBox2.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
@@ -686,14 +717,6 @@
 
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.GroupBox groupBox2;
-        public System.Windows.Forms.RichTextBox richTextBox1;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
-        public System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
@@ -708,9 +731,7 @@
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.ToolStripMenuItem forceStartToolStripMenuItem;
-        private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Panel SettingsPanel;
         private System.Windows.Forms.PictureBox pictureBox2;
         public System.Windows.Forms.Label labelStats;
@@ -729,5 +750,16 @@
         private System.Windows.Forms.Label label3;
         public System.Windows.Forms.Label TotalGold;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.SplitContainer splitContainer1;
+        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button button4;
+        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.Button button1;
+        public System.Windows.Forms.DataGridView dataGridView1;
+        public System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.GroupBox groupBox2;
     }
 }

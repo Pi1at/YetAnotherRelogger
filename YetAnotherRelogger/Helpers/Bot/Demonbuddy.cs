@@ -391,6 +391,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     // [11:03:21.173 N] Logging in...
                     try
                     {
+                        int lineNumber = -1;
                         using (var fs = new FileStream(logfile, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
                         {
                             var reader = new StreamReader(fs);
@@ -398,6 +399,12 @@ namespace YetAnotherRelogger.Helpers.Bot
                             bool Logging = false;
                             while (!reader.EndOfStream)
                             {
+                                // only read 1000 lines from log file, so we don't spend all day looking through the log.
+                                lineNumber++;
+
+                                if (lineNumber > 1000)
+                                    break;
+
                                 var line = reader.ReadLine();
                                 if (line == null) continue;
 
