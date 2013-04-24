@@ -172,6 +172,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
                     var profile = new Profile() {Location = profilepath};
                     var path = ProfileKickstart.GenerateKickstart(profile);
+                    Logger.Instance.Write("Using Profile {0}", path);
                     arguments += string.Format(" -profile=\"{0}\"", path);
                 }
                 else if (Parent.ProfileSchedule.Profiles.Count > 0 && !noprofile)

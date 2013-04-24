@@ -47,7 +47,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         public void UpdateCoinage(int NewCoinage)
         {
-            if(NewCoinage < 0)
+            if (NewCoinage < 0)
             {
                 Debug.WriteLine("We could not read Coinage assuming problem");
                 return;
@@ -59,7 +59,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             }
 
             Debug.WriteLine("We received Coinage info! Old: {0}; New {1}, we are {2}",
-                LastCoinage, NewCoinage, (LastCoinage != NewCoinage)?"good":"lazy");
+                LastCoinage, NewCoinage, (LastCoinage != NewCoinage) ? "good" : "lazy");
 
             if (NewCoinage < LastCoinage)
             {
@@ -103,8 +103,13 @@ namespace YetAnotherRelogger.Helpers.Bot
                     }
                     break;
                 case IdleState.CheckIdle:
-                    _lastIdleAction = DateTime.Now; // Update Last Idle action time
-                    return IdleAction;
+                    {
+                        _lastIdleAction = DateTime.Now; // Update Last Idle action time
+                        string idleAction = IdleAction;
+                        if (idleAction != "Roger!")
+                            Logger.Instance.Write("Idle action: {0}", idleAction);
+                        return idleAction;
+                    }
                 case IdleState.Busy:
                     if (Stats.IsRunning && !Stats.IsPaused && Stats.IsInGame)
                     {
@@ -147,37 +152,40 @@ namespace YetAnotherRelogger.Helpers.Bot
             {
                 if (Program.Pause) return "Roger!";
 
-                Debug.WriteLine("STATS: LastRun:{0} LastGame:{1} LastPulse:{2} Run:{3} Pause:{4} InGame:{5}", General.DateSubtract(Stats.LastRun), General.DateSubtract(Stats.LastGame), General.DateSubtract(Stats.LastPulse), Stats.IsRunning, Stats.IsPaused, Stats.IsInGame);
-                if (!Stats.IsRunning && General.DateSubtract(Stats.LastRun) > 30)
+                string debugStats = String.Format("STATS: LastRun:{0:0.00} LastGame:{1:0.00} LastPulse:{2:0.00} IsRunning:{3} IsPaused:{4} IsInGame:{5}",
+                    General.DateSubtract(Stats.LastRun), General.DateSubtract(Stats.LastGame), General.DateSubtract(Stats.LastPulse), Stats.IsRunning, Stats.IsPaused, Stats.IsInGame);
+                Debug.WriteLine(debugStats);
+                //Logger.Instance.Write(debugStats);
+                if (!Stats.IsRunning && General.DateSubtract(Stats.LastRun) > 90)
                 {
                     if (!FixAttemptCounter()) return "Roger!";
-                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is stopped to long for a unknown reason (30 seconds)", Parent.Demonbuddy.Proc.Id);
+                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is stopped to long for a unknown reason (90 seconds)", Parent.Demonbuddy.Proc.Id);
                     return "Restart";
                 }
-                if (Stats.IsPaused && General.DateSubtract(Stats.LastRun) > 30)
+                if (Stats.IsPaused && General.DateSubtract(Stats.LastRun) > 90)
                 {
                     if (!FixAttemptCounter()) return "Roger!";
-                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is paused to long (30 seconds)", Parent.Demonbuddy.Proc.Id);
+                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is paused to long (90 seconds)", Parent.Demonbuddy.Proc.Id);
                     State = IdleState.Terminate;
                     return "Roger!";
                 }
-                if (!Stats.IsPaused && General.DateSubtract(Stats.LastPulse) > 60)
+                if (!Stats.IsPaused && General.DateSubtract(Stats.LastPulse) > 120)
                 {
                     if (!FixAttemptCounter()) return "Roger!";
-                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is not pulsing while it should to (60 seconds)", Parent.Demonbuddy.Proc.Id);
+                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is not pulsing while it should to (120 seconds)", Parent.Demonbuddy.Proc.Id);
                     return "FixPulse";
                 }
-                if (!Stats.IsInGame && General.DateSubtract(Stats.LastGame) > 30)
+                if (!Stats.IsInGame && General.DateSubtract(Stats.LastGame) > 90)
                 {
                     if (!FixAttemptCounter()) return "Roger!";
-                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is not in a game to long for unkown reason (30 seconds)", Parent.Demonbuddy.Proc.Id);
+                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is not in a game to long for unkown reason (90 seconds)", Parent.Demonbuddy.Proc.Id);
                     return "Restart";
                 }
 
                 // Prints a warning about gold error
-                if (Settings.Default.GoldInfoLogging && General.DateSubtract(LastCoinageIncrease) > 30)
+                if (Settings.Default.GoldInfoLogging && General.DateSubtract(LastCoinageIncrease) > 60)
                 {
-                    if (General.DateSubtract(LastCoinageBugReported) > 30)
+                    if (General.DateSubtract(LastCoinageBugReported) > 60)
                     {
                         if (Settings.Default.UseGoldTimer)
                             Logger.Instance.Write(Parent, "Demonbuddy:{0}: has not gained any gold in {1} seconds, limit {2}",
@@ -194,11 +202,11 @@ namespace YetAnotherRelogger.Helpers.Bot
                 if (Settings.Default.UseGoldTimer &&
                     General.DateSubtract(LastCoinageIncrease) > (double)Settings.Default.GoldTimer)
                 {
-                    if(General.DateSubtract(LastCoinageReset) < 45) // we still give it a chance
+                    if (General.DateSubtract(LastCoinageReset) < 45) // we still give it a chance
                         return "Roger!";
-					// When we give up, it sends false, we send Roger and kill DB
+                    // When we give up, it sends false, we send Roger and kill DB
                     if (!FixAttemptCounter()) return "Roger!";
-					Logger.Instance.Write(Parent, "Demonbuddy:{0}: has not gained any gold in {1} seconds, trying reset", Parent.Demonbuddy.Proc.Id,
+                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: has not gained any gold in {1} seconds, trying reset", Parent.Demonbuddy.Proc.Id,
                         (int)General.DateSubtract(LastCoinageIncrease));
                     LastCoinageReset = DateTime.Now;
                     return "Restart";
@@ -219,6 +227,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (FixAttempts > 3)
             {
                 //Parent.Stop();
+                Logger.Instance.Write("Too many fix attempts, restarting bot");
                 Parent.Restart();
                 return false;
             }
@@ -230,7 +239,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             Stats.Reset();
 
             ResetCoinage();
-            
+
             if (all)
             {
                 IsInitialized = false;

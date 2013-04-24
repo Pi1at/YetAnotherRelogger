@@ -120,7 +120,7 @@ namespace YetAnotherRelogger.Helpers.Tools
         }
 
         /// <summary>
-        /// 
+        /// Returns seconds/milliseconds from a given date
         /// </summary>
         /// <param name="ticks">Ticks to subtract from current datetime</param>
         /// <param name="seconds"></param>
