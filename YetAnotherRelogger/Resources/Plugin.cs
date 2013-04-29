@@ -1,5 +1,7 @@
-﻿// VERSION: 0.2.0.8
+﻿// VERSION: 0.2.0.9
 /* Changelog:
+ * VERSION 0.2.0.9
+ * Changed regex matching to compiled for performance
  * VERSION: 0.2.0.8
  * Added FrameLock to Pulse, in hopes this helps avoid crashes
  * VERSION: 0.2.0.7
@@ -67,7 +69,7 @@ namespace YARPLUGIN
     public class YARPLUGIN : IPlugin
     {
         // Plugin version
-        public Version Version { get { return new Version(0, 2, 0, 8); } }
+        public Version Version { get { return new Version(0, 2, 0, 9); } }
 
         private const bool _debug = true;
 
@@ -96,6 +98,9 @@ namespace YARPLUGIN
                 /* Failed to attach to D3*/
                 new Regex(@"Was not able to attach to any running Diablo III process, are you running the bot already\?"), 
             };
+
+        private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game...", RegexOptions.Compiled);
+        private static readonly Regex pluginsCompiled = new Regex(@"There are \d+ plugins.", RegexOptions.Compiled);
 
         public class BotStats
         {
@@ -394,7 +399,8 @@ namespace YARPLUGIN
         public bool FindStartDelay(string msg)
         {
             // Waiting #.# seconds before next game...
-            var m = new Regex(@"Waiting (.+) seconds before next game...").Match(msg);
+            //var m = new Regex(@"Waiting (.+) seconds before next game...").Match(msg);
+            var m = waitingBeforeGame.Match(msg);
             if (m.Success)
             {
                 Send("StartDelay " + DateTime.Now.AddSeconds(double.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture)).Ticks);
@@ -405,7 +411,8 @@ namespace YARPLUGIN
 
         public bool FindPluginsCompiled(string msg)
         {
-            var m = new Regex(@"There are \d+ plugins.").Match(msg);
+            //var m = new Regex(@"There are \d+ plugins.").Match(msg);
+            var m = pluginsCompiled.Match(msg);
             if (m.Success)
             {
                 _allPluginsCompiled = true;
