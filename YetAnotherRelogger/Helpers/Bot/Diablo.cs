@@ -105,10 +105,10 @@ namespace YetAnotherRelogger.Helpers.Bot
             else
                 Parent.Status = string.Format("Diablo is unresponsive ({0} secs)", DateTime.Now.Subtract(_lastRepsonse).TotalSeconds);
 
-            if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 60)
+            if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 120)
             {
                 
-                Logger.Instance.Write("Diablo:{0}: Is unresponsive for more than 60 seconds", Proc.Id);
+                Logger.Instance.Write("Diablo:{0}: Is unresponsive for more than 120 seconds", Proc.Id);
                 Logger.Instance.Write("Diablo:{0}: Killing process", Proc.Id);
                 try
                 {

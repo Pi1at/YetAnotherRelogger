@@ -237,7 +237,7 @@ namespace YetAnotherRelogger.Helpers
                             break;
                         case "StartDelay":
                             var delay = new DateTime(long.Parse(msg));
-                            b.AntiIdle.StartDelay = delay.AddSeconds(10);
+                            b.AntiIdle.StartDelay = delay.AddSeconds(60);
                             b.AntiIdle.State = IdleState.StartDelay;
                             Send("Roger!");
                             break;
