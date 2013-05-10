@@ -271,6 +271,12 @@ namespace YetAnotherRelogger.Helpers
                             Logger.Instance.Write(b,"Sending MonsterPowerLevel: {0}", b.ProfileSchedule.Current.MonsterPowerLevel);
                             Send("MonsterPower " + (int)b.ProfileSchedule.Current.MonsterPowerLevel);
                             break;
+                        case "D3Exit":
+                            if (b.AntiIdle.State == IdleState.Terminate)
+                            {
+                                Send("Shutdown");
+                            }
+                            break;
                         // Unknown command reply
                         default:
                             Send("Unknown command!");
@@ -297,6 +303,11 @@ namespace YetAnotherRelogger.Helpers
                     StatFailed++;
                     DebugHelper.Exception(ex);
                 }
+            }
+
+            public void SendShutdown()
+            {
+                Send("Shutdown");
             }
 
             public void Dispose()

@@ -322,6 +322,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (Parent.Diablo.Proc == null || Parent.Diablo.Proc.HasExited)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Waiting to close", Proc.Id);
+                Parent.AntiIdle.State = IdleState.Terminate;
                 Proc.WaitForExit(60000);
                 if (Proc == null || Proc.HasExited) 
                 {

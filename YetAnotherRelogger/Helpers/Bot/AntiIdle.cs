@@ -94,7 +94,8 @@ namespace YetAnotherRelogger.Helpers.Bot
                         if (FailedStartDelay > 5 || (FailedStartDelay > 3 && General.DateSubtract(TimeFailedStartDelay) > 600))
                         {
                             State = IdleState.Terminate;
-                            break;
+                            return "Shutdown";
+                            //break;
                         }
                         Logger.Instance.Write(Parent, "Demonbuddy:{0}: Delayed start failed! ({1} seconds overtime)", Parent.Demonbuddy.Proc.Id, General.DateSubtract(StartDelay));
                         TimeFailedStartDelay = DateTime.Now;
@@ -141,7 +142,8 @@ namespace YetAnotherRelogger.Helpers.Bot
                     return "LoadProfile " + Parent.ProfileSchedule.GetProfile;
                 case IdleState.Terminate:
                     Parent.Restart();
-                    break;
+                    return "Shutdown";
+                    //break;
             }
             return "Roger!";
         }

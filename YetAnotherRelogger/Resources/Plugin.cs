@@ -1,5 +1,7 @@
-﻿// VERSION: 0.2.0.9
+﻿// VERSION: 0.2.0.10
 /* Changelog:
+ * VERSION 0.2.0.10
+ * Added Plugin=>DB Shutdown on Terminate State
  * VERSION 0.2.0.9
  * Changed regex matching to compiled for performance
  * VERSION: 0.2.0.8
@@ -63,6 +65,7 @@ using Zeta.CommonBot.Profile;
 using Zeta.CommonBot.Settings;
 using Zeta.TreeSharp;
 using UIElement = Zeta.Internals.UIElement;
+using System.Windows.Threading;
 
 namespace YARPLUGIN
 {
@@ -101,6 +104,7 @@ namespace YARPLUGIN
 
         private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game...", RegexOptions.Compiled);
         private static readonly Regex pluginsCompiled = new Regex(@"There are \d+ plugins.", RegexOptions.Compiled);
+        private static readonly Regex d3Exit = new Regex(@"Diablo III Exited", RegexOptions.Compiled);
 
         public class BotStats
         {
@@ -201,7 +205,7 @@ namespace YARPLUGIN
 
         public void OnPulse()
         {
-            
+
             _pulseCheck = true;
             _bs.LastPulse = DateTime.Now.Ticks;
 
@@ -382,6 +386,12 @@ namespace YARPLUGIN
                                 // YAR compatibility with other plugins
                                 if (ReCompatibility.Any(re => re.IsMatch(msg)))
                                     Send("ThirdpartyStop");
+
+                                if (d3Exit.IsMatch(msg))
+                                {
+                                    Send("D3Exit");
+                                }
+
                                 break; // case end
                         }
                         if (breakloop) break; // Check if we need to break out of loop
@@ -615,6 +625,10 @@ namespace YARPLUGIN
                 case "FixPulse":
                     FixPulse();
                     break;
+                case "Shutdown":
+                    Log("Received Shutdown command");
+                    SafeCloseProcess();
+                    break;
                 case "Roger!":
                 case "Unknown command!":
                     break;
@@ -623,6 +637,25 @@ namespace YARPLUGIN
                     break;
             }
             _recieved = true;
+        }
+
+        // from Nesox
+        private void SafeCloseProcess()
+        {
+            try
+            {
+                if (Thread.CurrentThread != Application.Current.Dispatcher.Thread)
+                {
+                    Application.Current.Dispatcher.Invoke(new System.Action(SafeCloseProcess));
+                    return;
+                }
+
+                Application.Current.Shutdown();
+            }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+            }
         }
 
         #region ForceEnable Plugin(s)
