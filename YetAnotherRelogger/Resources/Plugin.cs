@@ -72,7 +72,7 @@ namespace YARPLUGIN
     public class YARPLUGIN : IPlugin
     {
         // Plugin version
-        public Version Version { get { return new Version(0, 2, 0, 9); } }
+        public Version Version { get { return new Version(0, 2, 0, 10); } }
 
         private const bool _debug = true;
 
@@ -80,31 +80,31 @@ namespace YARPLUGIN
         private static readonly Regex[] ReCompatibility =
             {
                 /* BuddyStats Remote control action */
-                new Regex(@"Stop command from BuddyStats"), // stop command
+                new Regex(@"Stop command from BuddyStats", RegexOptions.Compiled), // stop command
                 /* Emergency Stop: You need to stash an item but no valid space could be found. Stash is full? Stopping the bot to prevent infinite town-run loop. */
-                new Regex(@".+Emergency Stop: .+"), // Emergency stop
+                new Regex(@".+Emergency Stop: .+", RegexOptions.Compiled), // Emergency stop
                 /* Atom 2.0.15+ "Take a break" */
-                new Regex(@".*Atom.*Will Stop the bot for .+ minutes\.$"), // Take a break
+                new Regex(@".*Atom.*Will Stop the bot for .+ minutes\.$", RegexOptions.Compiled), // Take a break
                 /* RadsAtom "Take a break" */
-                new Regex(@"\[RadsAtom\].+ minutes to next break, the break will last for .+ minutes."), 
+                new Regex(@"\[RadsAtom\].+ minutes to next break, the break will last for .+ minutes.", RegexOptions.Compiled), 
                 /* Take A Break by Ghaleon */
-                new Regex(@"\[TakeABreak.*\] It's time to take a break.*"), 
+                new Regex(@"\[TakeABreak.*\] It's time to take a break.*", RegexOptions.Compiled), 
             };
 
         // CrashTender
         private static readonly Regex[] ReCrashTender =
             {
                 /* Invalid Session */
-                new Regex(@"Session is invalid!", RegexOptions.IgnoreCase),
+                new Regex(@"Session is invalid!", RegexOptions.IgnoreCase | RegexOptions.Compiled),
                 /* Session expired */
-                new Regex(@"Session is expired", RegexOptions.IgnoreCase),
+                new Regex(@"Session is expired", RegexOptions.IgnoreCase | RegexOptions.Compiled),
                 /* Failed to attach to D3*/
-                new Regex(@"Was not able to attach to any running Diablo III process, are you running the bot already\?"), 
+                new Regex(@"Was not able to attach to any running Diablo III process, are you running the bot already\?", RegexOptions.Compiled), 
             };
 
         private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game...", RegexOptions.Compiled);
         private static readonly Regex pluginsCompiled = new Regex(@"There are \d+ plugins.", RegexOptions.Compiled);
-        private static readonly Regex d3Exit = new Regex(@"Diablo III Exited", RegexOptions.Compiled);
+        private static readonly string d3Exit = "Diablo III Exited";
 
         public class BotStats
         {
@@ -358,10 +358,10 @@ namespace YARPLUGIN
                     var count = 0; // Scan counter
                     var breakloop = false;
                     // Scan log items
-                    foreach (var lm in buffer.Where(x => x != null))
+                    foreach (Logging.LogMessage lm in buffer.Where(x => x != null))
                     {
                         count++; // add to counter
-                        var msg = lm.Message;
+                        string msg = lm.Message;
                         // Log level specific scanning to prevent uneeded cpu usage
                         switch (lm.Level)
                         {
@@ -374,24 +374,38 @@ namespace YARPLUGIN
                                 }
                                 break; // case end
                             default:
-                                if (!ZetaDia.IsInGame && FindStartDelay(msg)) continue; // Find new start delay
+                                if (msg.Contains(d3Exit))
+                                {
+                                    Send("D3Exit");
+                                    Log("Attempting to safely close Demonbuddy");
+                                    SafeCloseProcess();
+                                    breakloop = true;
+                                    break;
+                                }
 
+                                try
+                                {
+                                    if (!ZetaDia.IsInGame && FindStartDelay(msg)) continue; // Find new start delay
+                                }
+                                catch (AccessViolationException)
+                                {
+                                    if (ZetaDia.Memory.Process.HasExited)
+                                    {
+                                        Send("D3Exit"); // Proces has exited
+                                        breakloop = true; // break out of loop
+                                        break;
+                                    }
+                                }
                                 // Crash Tender check
                                 if (ReCrashTender.Any(re => re.IsMatch(msg)))
                                 {
                                     Send("CrashTender " + ProfileManager.CurrentProfile.Path); // tell relogger to "crash tender" :)
                                     breakloop = true; // break out of loop
-                                    break; // case end here!
+                                    break; 
                                 }
                                 // YAR compatibility with other plugins
                                 if (ReCompatibility.Any(re => re.IsMatch(msg)))
                                     Send("ThirdpartyStop");
-
-                                if (d3Exit.IsMatch(msg))
-                                {
-                                    Send("D3Exit");
-                                }
-
                                 break; // case end
                         }
                         if (breakloop) break; // Check if we need to break out of loop
@@ -442,6 +456,14 @@ namespace YARPLUGIN
         {
             while (true)
             {
+                if (ZetaDia.Memory.Process.HasExited)
+                {
+                    Send("D3Exit");
+                    Log("Attempting to safely close Demonbuddy");
+                    SafeCloseProcess();
+                    return;
+                }
+
                 _bs.PluginPulse = DateTime.Now.Ticks;
                 _bs.IsRunning = BotMain.IsRunning;
 
@@ -642,6 +664,7 @@ namespace YARPLUGIN
         // from Nesox
         private void SafeCloseProcess()
         {
+            Log("[YAR] Attempting to Safely Close Process");
             try
             {
                 if (Thread.CurrentThread != Application.Current.Dispatcher.Thread)

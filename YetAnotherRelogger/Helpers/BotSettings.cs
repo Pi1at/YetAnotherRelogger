@@ -68,6 +68,12 @@ namespace YetAnotherRelogger.Helpers
                 Bots = xml.Deserialize(reader) as BindingList<BotClass>;
             }
         }
+        public void Clone(int index)
+        {
+            BotClass original = (BotClass)Bots[index].Clone();
+            int nextIndex = index + 1;
+            Bots.Insert(nextIndex, original);
+        }
     }
     #endregion
 }

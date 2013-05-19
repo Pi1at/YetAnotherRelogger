@@ -110,8 +110,8 @@ namespace YetAnotherRelogger
                             Logger.Instance.Write("We are scheduled to stop");
                             bot.Week.NextSchedule(true);
                             bot.IsRunning = false;
-                            bot.Diablo.Stop();
                             bot.Demonbuddy.Stop();
+                            bot.Diablo.Stop();
                             bot.Status = "Scheduled stop!";
                         }
                         else if (!bot.IsRunning && bot.IsStarted && bot.Week.ShouldRun(bot.IsRunning))
@@ -127,8 +127,8 @@ namespace YetAnotherRelogger
                         {
                             // Check if process is responding
                             bot.Diablo.CrashCheck();
-                            if (bot.AntiIdle.IsInitialized)
-                                bot.Demonbuddy.CrashCheck();
+                            //if (bot.AntiIdle.IsInitialized)
+                            //    bot.Demonbuddy.CrashCheck();
 
                             if (!bot.Diablo.IsRunning)
                             {
@@ -145,11 +145,11 @@ namespace YetAnotherRelogger
                                 Logger.Instance.Write("Demonbuddy:{0}: Process is not running", bot.Demonbuddy.Proc.Id);
                                 bot.Demonbuddy.Start();
                             }
-                            else if (bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) > 120)
-                            {
-                                Logger.Instance.Write("We did not recieve any stats during 120 seconds!");
-                                bot.Restart();
-                            }
+                            //else if (bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) > 120)
+                            //{
+                            //    Logger.Instance.Write("We did not recieve any stats during 120 seconds!");
+                            //    bot.Restart();
+                            //}
                             else if (bot.AntiIdle.IsInitialized)
                             {
                                 if (bot.ProfileSchedule.IsDone)

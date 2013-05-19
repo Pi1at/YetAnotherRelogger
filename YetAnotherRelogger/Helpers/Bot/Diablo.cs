@@ -448,7 +448,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             }
 
             Logger.Instance.Write(Parent, "Failed to find new Diablo III");
-            Parent.Stop();
+            //Parent.Stop();
         }
         private void D3Prefs()
         {

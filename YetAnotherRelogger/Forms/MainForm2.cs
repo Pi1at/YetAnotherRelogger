@@ -237,24 +237,24 @@ namespace YetAnotherRelogger.Forms
             dataGridView1.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnStartAll_click(object sender, EventArgs e)
         {
             ConnectionCheck.Reset();
             // Start All
             foreach (var row in dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool) row.Cells["isEnabled"].Value))
             {
-                BotSettings.Instance.Bots[row.Index].Start(force:checkBox1.Checked);
+                BotSettings.Instance.Bots[row.Index].Start(force:checkBoxForce.Checked);
             }
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btnNew_Click(object sender, EventArgs e)
         {
             // Open new bot wizard
             var wm = new Wizard.WizardMain {TopMost = true};
             wm.ShowDialog();
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void btnEdit_Click(object sender, EventArgs e)
         {
             // Edit bot
             if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
@@ -264,7 +264,7 @@ namespace YetAnotherRelogger.Forms
             wm.ShowDialog();
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void btnClose_Click(object sender, EventArgs e)
         {
             if (MessageBox.Show(this, "Are you sure you want to close Yet Another Relogger?", "Close Yet Another Relogger?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
@@ -281,7 +281,7 @@ namespace YetAnotherRelogger.Forms
             richTextBox1.ScrollToCaret();
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void btnStopAll_Click(object sender, EventArgs e)
         {
             Relogger.Instance.Stop();
             // Stop All
@@ -382,17 +382,17 @@ namespace YetAnotherRelogger.Forms
 
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void btnPause_Click(object sender, EventArgs e)
         {
             if (Program.Pause)
             {
                 Program.Pause = false;
-                button6.Text = "Pause";
+                btnPause.Text = "Pause";
             }
             else
             {
                 Program.Pause = true;
-                button6.Text = "Unpause";
+                btnPause.Text = "Unpause";
             }
         }
 
@@ -411,6 +411,29 @@ namespace YetAnotherRelogger.Forms
         private void pictureBox2_Click(object sender, EventArgs e)
         {
             Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9NF2Q47KYGNJL");
+        }
+
+        private void btnClone_Click(object sender, EventArgs e)
+        {
+            // Clone bot
+            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                return;
+
+            BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);            
+            BotSettings.Instance.Save();
+            Program.Mainform.UpdateGridView();
+
+        }
+
+        private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Clone bot
+            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                return;
+
+            BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
+            BotSettings.Instance.Save();
+            Program.Mainform.UpdateGridView();
         }
 
     }

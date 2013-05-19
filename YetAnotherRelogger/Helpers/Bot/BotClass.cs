@@ -8,7 +8,7 @@ using YetAnotherRelogger.Helpers.Tools;
 
 namespace YetAnotherRelogger.Helpers.Bot
 {
-    public class BotClass : INotifyPropertyChanged
+    public class BotClass : INotifyPropertyChanged, ICloneable
     {
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
@@ -23,7 +23,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                            var handler = PropertyChanged;
                            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
                        }
-                       catch(Exception ex)
+                       catch (Exception ex)
                        {
                            DebugHelper.Exception(ex);
                        }
@@ -51,32 +51,38 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
         public string Name { get; set; }
         public string Description { get; set; }
-        
+
         public bool IsEnabled { get; set; }
 
-        [XmlIgnore] private DemonbuddyClass _demonbuddy;
+        [XmlIgnore]
+        private DemonbuddyClass _demonbuddy;
         public DemonbuddyClass Demonbuddy
         {
-            get { return _demonbuddy; } 
-            set {
+            get { return _demonbuddy; }
+            set
+            {
                 var db = value;
                 db.Parent = this;
                 _demonbuddy = db;
-            } 
+            }
         }
-        [XmlIgnore] private DiabloClass _diablo;
+        [XmlIgnore]
+        private DiabloClass _diablo;
         public DiabloClass Diablo
         {
-            get { return _diablo; } 
-            set {
+            get { return _diablo; }
+            set
+            {
                 var d = value;
                 d.Parent = this;
                 _diablo = d;
-            } 
+            }
         }
 
-        [XmlIgnore] private AntiIdleClass _antiIdle;
-        [XmlIgnore] public AntiIdleClass AntiIdle
+        [XmlIgnore]
+        private AntiIdleClass _antiIdle;
+        [XmlIgnore]
+        public AntiIdleClass AntiIdle
         {
             get { return _antiIdle; }
             set
@@ -90,12 +96,16 @@ namespace YetAnotherRelogger.Helpers.Bot
         public WeekSchedule Week { get; set; }
         public ProfileScheduleClass ProfileSchedule { get; set; }
 
-        [XmlIgnore] public bool IsStarted { get; set; }
-        [XmlIgnore] public bool IsRunning { get; set; }
+        [XmlIgnore]
+        public bool IsStarted { get; set; }
+        [XmlIgnore]
+        public bool IsRunning { get; set; }
 
         // Standby to try again at a later moment
-        [XmlIgnore] private bool _isStandby;
-        [XmlIgnore] public bool IsStandby
+        [XmlIgnore]
+        private bool _isStandby;
+        [XmlIgnore]
+        public bool IsStandby
         {
             get
             {
@@ -114,16 +124,23 @@ namespace YetAnotherRelogger.Helpers.Bot
                 _isStandby = value;
             }
         }
-        [XmlIgnore] private DateTime _standbyTime;
+        [XmlIgnore]
+        private DateTime _standbyTime;
 
-        [XmlIgnore] private string _status;
-        [XmlIgnore] public string Status { get { return _status; } set { SetField(ref _status, value, "Status"); } }
+        [XmlIgnore]
+        private string _status;
+        [XmlIgnore]
+        public string Status { get { return _status; } set { SetField(ref _status, value, "Status"); } }
 
-        [XmlIgnore] public DateTime StartTime { get; set; }
-        [XmlIgnore] private string _runningtime;
-        [XmlIgnore] public string RunningTime { get { return _runningtime; } set { SetField(ref _runningtime, value, "RunningTime"); } }
+        [XmlIgnore]
+        public DateTime StartTime { get; set; }
+        [XmlIgnore]
+        private string _runningtime;
+        [XmlIgnore]
+        public string RunningTime { get { return _runningtime; } set { SetField(ref _runningtime, value, "RunningTime"); } }
 
-        [XmlIgnore] public ChartStats ChartStats { get; set; }
+        [XmlIgnore]
+        public ChartStats ChartStats { get; set; }
 
         #region Advanced Options Variables
         // Windows User
@@ -140,9 +157,11 @@ namespace YetAnotherRelogger.Helpers.Bot
         public string D3PrefsLocation { get; set; }
         #endregion
 
-        [XmlIgnore] private string _demonbuddyPid;
-        [XmlIgnore] public string DemonbuddyPid { get { return _demonbuddyPid; } set { SetField(ref _demonbuddyPid, value, "DemonbuddyPid"); } }
-        
+        [XmlIgnore]
+        private string _demonbuddyPid;
+        [XmlIgnore]
+        public string DemonbuddyPid { get { return _demonbuddyPid; } set { SetField(ref _demonbuddyPid, value, "DemonbuddyPid"); } }
+
         public void Start(bool force = false)
         {
             AntiIdle.Reset(freshstart: true);
@@ -161,8 +180,8 @@ namespace YetAnotherRelogger.Helpers.Bot
             IsStarted = false;
             IsRunning = false;
             IsStandby = false;
-            _diablo.Stop();
             _demonbuddy.Stop();
+            _diablo.Stop();
         }
 
         public void Standby()
@@ -178,8 +197,31 @@ namespace YetAnotherRelogger.Helpers.Bot
         {
             Logger.Instance.Write(this, "Restarting...");
             Status = "Restarting";
-            _diablo.Stop();
             _demonbuddy.Stop();
+            _diablo.Stop();
+        }
+
+        public object Clone()
+        {
+            BotClass clone = new BotClass()
+            {
+                AntiIdle = this.AntiIdle,
+                ChartStats = this.ChartStats,
+                CreateWindowsUser = this.CreateWindowsUser,
+                D3PrefsLocation = this.D3PrefsLocation,
+                Demonbuddy = this.Demonbuddy,
+                Description = this.Description,
+                Diablo = this.Diablo,
+                DiabloCloneLocation = this.DiabloCloneLocation,
+                Name = this.Name,
+                ProfileSchedule = this.ProfileSchedule,
+                UseDiabloClone = this.UseDiabloClone,
+                UseWindowsUser = this.UseWindowsUser,
+                Week = this.Week,
+                WindowsUserName = this.WindowsUserName,
+                WindowsUserPassword = this.WindowsUserPassword
+            };
+            return clone;
         }
     }
 }

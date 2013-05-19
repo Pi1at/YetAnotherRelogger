@@ -206,8 +206,8 @@ namespace YetAnotherRelogger.Helpers
                             if (bot.Diablo.IsRunning || bot.Demonbuddy.IsRunning)
                             {
                                 Logger.Instance.Write(bot, "Stopping bot (No Internet Connection!)");
-                                bot.Diablo.Stop();
                                 bot.Demonbuddy.Stop();
+                                bot.Diablo.Stop();
                             }
                             bot.Status = "Waiting on internet connection";
                         }

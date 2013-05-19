@@ -15,16 +15,16 @@ namespace YetAnotherRelogger.Helpers
                 Logger.Instance.Write("Checking plugin: {0}", path);
                 if (File.Exists(path))
                 {
-                    var check = Resources.Plugin.Split('\n')[0].TrimEnd();
+                    var check = Resources.Plugin.Split('\n')[0].TrimEnd(); // read the first line of Plugin.cs
                     using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         var reader = new StreamReader(fs);
-                        for (var i = 0; i < 3; i++)
+                        for (var i = 0; i < 3; i++) // check the first three lines of installed Plugin.cs
                         {
                             var line = reader.ReadLine();
-                            if (line != null && line.Equals(check))
+                            if (line != null && line.Equals(check)) // line matches resource\Plugin first line
                             {
-                                Logger.Instance.Write("Plugin is installed and latest version");
+                                Logger.Instance.Write("Plugin is installed and latest version: {0}", check);
                                 return true;
                             }
                         }

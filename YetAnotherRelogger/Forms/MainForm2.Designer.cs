@@ -29,44 +29,45 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("General");
-            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Auto position");
-            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Ping Check");
-            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Ip + Host Check");
-            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Internet Check", new System.Windows.Forms.TreeNode[] {
-            treeNode3,
-            treeNode4});
-            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Relogger", new System.Windows.Forms.TreeNode[] {
-            treeNode1,
-            treeNode2,
-            treeNode5});
-            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Profile Kickstart");
-            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Anti Idle");
-            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Hotkeys");
-            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Stats");
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.TreeNode treeNode11 = new System.Windows.Forms.TreeNode("General");
+            System.Windows.Forms.TreeNode treeNode12 = new System.Windows.Forms.TreeNode("Auto position");
+            System.Windows.Forms.TreeNode treeNode13 = new System.Windows.Forms.TreeNode("Ping Check");
+            System.Windows.Forms.TreeNode treeNode14 = new System.Windows.Forms.TreeNode("Ip + Host Check");
+            System.Windows.Forms.TreeNode treeNode15 = new System.Windows.Forms.TreeNode("Internet Check", new System.Windows.Forms.TreeNode[] {
+            treeNode13,
+            treeNode14});
+            System.Windows.Forms.TreeNode treeNode16 = new System.Windows.Forms.TreeNode("Relogger", new System.Windows.Forms.TreeNode[] {
+            treeNode11,
+            treeNode12,
+            treeNode15});
+            System.Windows.Forms.TreeNode treeNode17 = new System.Windows.Forms.TreeNode("Profile Kickstart");
+            System.Windows.Forms.TreeNode treeNode18 = new System.Windows.Forms.TreeNode("Anti Idle");
+            System.Windows.Forms.TreeNode treeNode19 = new System.Windows.Forms.TreeNode("Hotkeys");
+            System.Windows.Forms.TreeNode treeNode20 = new System.Windows.Forms.TreeNode("Stats");
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea7 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend7 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series7 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea8 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend8 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series8 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm2));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.button6 = new System.Windows.Forms.Button();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.btnClone = new System.Windows.Forms.Button();
+            this.btnPause = new System.Windows.Forms.Button();
+            this.checkBoxForce = new System.Windows.Forms.CheckBox();
+            this.btnEdit = new System.Windows.Forms.Button();
+            this.btnNew = new System.Windows.Forms.Button();
+            this.btnStopAll = new System.Windows.Forms.Button();
+            this.btnStartAll = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
@@ -91,7 +92,7 @@
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.button5 = new System.Windows.Forms.Button();
+            this.btnClose = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceStartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -103,6 +104,7 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.labelStats = new System.Windows.Forms.Label();
+            this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -181,12 +183,13 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.button6);
-            this.groupBox1.Controls.Add(this.checkBox1);
-            this.groupBox1.Controls.Add(this.button4);
-            this.groupBox1.Controls.Add(this.button3);
-            this.groupBox1.Controls.Add(this.button2);
-            this.groupBox1.Controls.Add(this.button1);
+            this.groupBox1.Controls.Add(this.btnClone);
+            this.groupBox1.Controls.Add(this.btnPause);
+            this.groupBox1.Controls.Add(this.checkBoxForce);
+            this.groupBox1.Controls.Add(this.btnEdit);
+            this.groupBox1.Controls.Add(this.btnNew);
+            this.groupBox1.Controls.Add(this.btnStopAll);
+            this.groupBox1.Controls.Add(this.btnStartAll);
             this.groupBox1.Controls.Add(this.dataGridView1);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
@@ -195,71 +198,82 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Bots";
             // 
-            // button6
+            // btnClone
             // 
-            this.button6.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button6.Location = new System.Drawing.Point(227, 211);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(74, 23);
-            this.button6.TabIndex = 6;
-            this.button6.Text = "Pause";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
+            this.btnClone.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnClone.Location = new System.Drawing.Point(427, 210);
+            this.btnClone.Name = "btnClone";
+            this.btnClone.Size = new System.Drawing.Size(75, 23);
+            this.btnClone.TabIndex = 7;
+            this.btnClone.Text = "Clone";
+            this.btnClone.UseVisualStyleBackColor = true;
+            this.btnClone.Click += new System.EventHandler(this.btnClone_Click);
             // 
-            // checkBox1
+            // btnPause
             // 
-            this.checkBox1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(11, 214);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(53, 17);
-            this.checkBox1.TabIndex = 5;
-            this.checkBox1.Text = "Force";
-            this.checkBox1.UseVisualStyleBackColor = true;
+            this.btnPause.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnPause.Location = new System.Drawing.Point(227, 211);
+            this.btnPause.Name = "btnPause";
+            this.btnPause.Size = new System.Drawing.Size(74, 23);
+            this.btnPause.TabIndex = 6;
+            this.btnPause.Text = "Pause";
+            this.btnPause.UseVisualStyleBackColor = true;
+            this.btnPause.Click += new System.EventHandler(this.btnPause_Click);
             // 
-            // button4
+            // checkBoxForce
             // 
-            this.button4.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button4.Location = new System.Drawing.Point(508, 211);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 4;
-            this.button4.Text = "Edit";
-            this.button4.UseVisualStyleBackColor = true;
-            this.button4.Click += new System.EventHandler(this.button4_Click);
+            this.checkBoxForce.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.checkBoxForce.AutoSize = true;
+            this.checkBoxForce.Location = new System.Drawing.Point(11, 214);
+            this.checkBoxForce.Name = "checkBoxForce";
+            this.checkBoxForce.Size = new System.Drawing.Size(53, 17);
+            this.checkBoxForce.TabIndex = 5;
+            this.checkBoxForce.Text = "Force";
+            this.checkBoxForce.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // btnEdit
             // 
-            this.button3.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button3.Location = new System.Drawing.Point(589, 211);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 3;
-            this.button3.Text = "New";
-            this.button3.UseVisualStyleBackColor = true;
-            this.button3.Click += new System.EventHandler(this.button3_Click);
+            this.btnEdit.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnEdit.Location = new System.Drawing.Point(508, 211);
+            this.btnEdit.Name = "btnEdit";
+            this.btnEdit.Size = new System.Drawing.Size(75, 23);
+            this.btnEdit.TabIndex = 4;
+            this.btnEdit.Text = "Edit";
+            this.btnEdit.UseVisualStyleBackColor = true;
+            this.btnEdit.Click += new System.EventHandler(this.btnEdit_Click);
             // 
-            // button2
+            // btnNew
             // 
-            this.button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button2.Location = new System.Drawing.Point(146, 211);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(75, 23);
-            this.button2.TabIndex = 2;
-            this.button2.Text = "Stop All";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
+            this.btnNew.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnNew.Location = new System.Drawing.Point(589, 211);
+            this.btnNew.Name = "btnNew";
+            this.btnNew.Size = new System.Drawing.Size(75, 23);
+            this.btnNew.TabIndex = 3;
+            this.btnNew.Text = "New";
+            this.btnNew.UseVisualStyleBackColor = true;
+            this.btnNew.Click += new System.EventHandler(this.btnNew_Click);
             // 
-            // button1
+            // btnStopAll
             // 
-            this.button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.button1.Location = new System.Drawing.Point(65, 211);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 1;
-            this.button1.Text = "Start All";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.btnStopAll.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnStopAll.Location = new System.Drawing.Point(146, 211);
+            this.btnStopAll.Name = "btnStopAll";
+            this.btnStopAll.Size = new System.Drawing.Size(75, 23);
+            this.btnStopAll.TabIndex = 2;
+            this.btnStopAll.Text = "Stop All";
+            this.btnStopAll.UseVisualStyleBackColor = true;
+            this.btnStopAll.Click += new System.EventHandler(this.btnStopAll_Click);
+            // 
+            // btnStartAll
+            // 
+            this.btnStartAll.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnStartAll.Location = new System.Drawing.Point(65, 211);
+            this.btnStartAll.Name = "btnStartAll";
+            this.btnStartAll.Size = new System.Drawing.Size(75, 23);
+            this.btnStartAll.TabIndex = 1;
+            this.btnStartAll.Text = "Start All";
+            this.btnStartAll.UseVisualStyleBackColor = true;
+            this.btnStartAll.Click += new System.EventHandler(this.btnStartAll_click);
             // 
             // dataGridView1
             // 
@@ -324,33 +338,33 @@
             // 
             this.treeView1.Location = new System.Drawing.Point(6, 6);
             this.treeView1.Name = "treeView1";
-            treeNode1.Name = "General";
-            treeNode1.Text = "General";
-            treeNode2.Name = "AutoPos";
-            treeNode2.Text = "Auto position";
-            treeNode3.Name = "PingCheck";
-            treeNode3.Text = "Ping Check";
-            treeNode4.Name = "IpHostCheck";
-            treeNode4.Text = "Ip + Host Check";
-            treeNode5.Name = "ConnectionCheck";
-            treeNode5.Text = "Internet Check";
-            treeNode6.Checked = true;
-            treeNode6.Name = "Node0";
-            treeNode6.Text = "Relogger";
-            treeNode7.Name = "ProfileKickstart";
-            treeNode7.Text = "Profile Kickstart";
-            treeNode8.Name = "AntiIdle";
-            treeNode8.Text = "Anti Idle";
-            treeNode9.Name = "HotKeys";
-            treeNode9.Text = "Hotkeys";
-            treeNode10.Name = "Stats";
-            treeNode10.Text = "Stats";
+            treeNode11.Name = "General";
+            treeNode11.Text = "General";
+            treeNode12.Name = "AutoPos";
+            treeNode12.Text = "Auto position";
+            treeNode13.Name = "PingCheck";
+            treeNode13.Text = "Ping Check";
+            treeNode14.Name = "IpHostCheck";
+            treeNode14.Text = "Ip + Host Check";
+            treeNode15.Name = "ConnectionCheck";
+            treeNode15.Text = "Internet Check";
+            treeNode16.Checked = true;
+            treeNode16.Name = "Node0";
+            treeNode16.Text = "Relogger";
+            treeNode17.Name = "ProfileKickstart";
+            treeNode17.Text = "Profile Kickstart";
+            treeNode18.Name = "AntiIdle";
+            treeNode18.Text = "Anti Idle";
+            treeNode19.Name = "HotKeys";
+            treeNode19.Text = "Hotkeys";
+            treeNode20.Name = "Stats";
+            treeNode20.Text = "Stats";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode6,
-            treeNode7,
-            treeNode8,
-            treeNode9,
-            treeNode10});
+            treeNode16,
+            treeNode17,
+            treeNode18,
+            treeNode19,
+            treeNode20});
             this.treeView1.Size = new System.Drawing.Size(173, 395);
             this.treeView1.TabIndex = 3;
             // 
@@ -395,17 +409,17 @@
             // 
             this.MemoryUsage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea1.Name = "ChartArea1";
-            this.MemoryUsage.ChartAreas.Add(chartArea1);
-            legend1.Name = "Legend1";
-            this.MemoryUsage.Legends.Add(legend1);
+            chartArea5.Name = "ChartArea1";
+            this.MemoryUsage.ChartAreas.Add(chartArea5);
+            legend5.Name = "Legend1";
+            this.MemoryUsage.Legends.Add(legend5);
             this.MemoryUsage.Location = new System.Drawing.Point(0, 179);
             this.MemoryUsage.MinimumSize = new System.Drawing.Size(650, 140);
             this.MemoryUsage.Name = "MemoryUsage";
-            series1.ChartArea = "ChartArea1";
-            series1.Legend = "Legend1";
-            series1.Name = "Series1";
-            this.MemoryUsage.Series.Add(series1);
+            series5.ChartArea = "ChartArea1";
+            series5.Legend = "Legend1";
+            series5.Name = "Series1";
+            this.MemoryUsage.Series.Add(series5);
             this.MemoryUsage.Size = new System.Drawing.Size(650, 140);
             this.MemoryUsage.TabIndex = 2;
             this.MemoryUsage.Text = "chart1";
@@ -414,17 +428,17 @@
             // 
             this.CpuUsage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea2.Name = "ChartArea1";
-            this.CpuUsage.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.CpuUsage.Legends.Add(legend2);
+            chartArea6.Name = "ChartArea1";
+            this.CpuUsage.ChartAreas.Add(chartArea6);
+            legend6.Name = "Legend1";
+            this.CpuUsage.Legends.Add(legend6);
             this.CpuUsage.Location = new System.Drawing.Point(3, 19);
             this.CpuUsage.MinimumSize = new System.Drawing.Size(650, 140);
             this.CpuUsage.Name = "CpuUsage";
-            series2.ChartArea = "ChartArea1";
-            series2.Legend = "Legend1";
-            series2.Name = "Series1";
-            this.CpuUsage.Series.Add(series2);
+            series6.ChartArea = "ChartArea1";
+            series6.Legend = "Legend1";
+            series6.Name = "Series1";
+            this.CpuUsage.Series.Add(series6);
             this.CpuUsage.Size = new System.Drawing.Size(650, 140);
             this.CpuUsage.TabIndex = 1;
             this.CpuUsage.Text = "chart1";
@@ -502,16 +516,16 @@
             // 
             // GoldStats
             // 
-            chartArea3.Name = "ChartArea1";
-            this.GoldStats.ChartAreas.Add(chartArea3);
-            legend3.Name = "Legend1";
-            this.GoldStats.Legends.Add(legend3);
+            chartArea7.Name = "ChartArea1";
+            this.GoldStats.ChartAreas.Add(chartArea7);
+            legend7.Name = "Legend1";
+            this.GoldStats.Legends.Add(legend7);
             this.GoldStats.Location = new System.Drawing.Point(6, 6);
             this.GoldStats.Name = "GoldStats";
-            series3.ChartArea = "ChartArea1";
-            series3.Legend = "Legend1";
-            series3.Name = "Series1";
-            this.GoldStats.Series.Add(series3);
+            series7.ChartArea = "ChartArea1";
+            series7.Legend = "Legend1";
+            series7.Name = "Series1";
+            this.GoldStats.Series.Add(series7);
             this.GoldStats.Size = new System.Drawing.Size(643, 105);
             this.GoldStats.TabIndex = 5;
             this.GoldStats.Text = "GoldStats";
@@ -529,16 +543,16 @@
             // 
             // CommConnections
             // 
-            chartArea4.Name = "ChartArea1";
-            this.CommConnections.ChartAreas.Add(chartArea4);
-            legend4.Name = "Legend1";
-            this.CommConnections.Legends.Add(legend4);
+            chartArea8.Name = "ChartArea1";
+            this.CommConnections.ChartAreas.Add(chartArea8);
+            legend8.Name = "Legend1";
+            this.CommConnections.Legends.Add(legend8);
             this.CommConnections.Location = new System.Drawing.Point(6, 6);
             this.CommConnections.Name = "CommConnections";
-            series4.ChartArea = "ChartArea1";
-            series4.Legend = "Legend1";
-            series4.Name = "Series1";
-            this.CommConnections.Series.Add(series4);
+            series8.ChartArea = "ChartArea1";
+            series8.Legend = "Legend1";
+            series8.Name = "Series1";
+            this.CommConnections.Series.Add(series8);
             this.CommConnections.Size = new System.Drawing.Size(643, 105);
             this.CommConnections.TabIndex = 4;
             this.CommConnections.Text = "chart1";
@@ -576,16 +590,16 @@
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
-            // button5
+            // btnClose
             // 
-            this.button5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button5.Location = new System.Drawing.Point(621, 467);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(75, 23);
-            this.button5.TabIndex = 1;
-            this.button5.Text = "Close";
-            this.button5.UseVisualStyleBackColor = true;
-            this.button5.Click += new System.EventHandler(this.button5_Click);
+            this.btnClose.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnClose.Location = new System.Drawing.Point(621, 467);
+            this.btnClose.Name = "btnClose";
+            this.btnClose.Size = new System.Drawing.Size(75, 23);
+            this.btnClose.TabIndex = 1;
+            this.btnClose.Text = "Close";
+            this.btnClose.UseVisualStyleBackColor = true;
+            this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
             // contextMenuStrip1
             // 
@@ -593,64 +607,65 @@
             this.startToolStripMenuItem,
             this.forceStartToolStripMenuItem,
             this.stopToolStripMenuItem,
+            this.cloneToolStripMenuItem,
             this.toolStripSeparator1,
             this.statsToolStripMenuItem,
             this.toolStripSeparator2,
             this.editToolStripMenuItem,
             this.deleteToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(131, 148);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(153, 192);
             // 
             // startToolStripMenuItem
             // 
             this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.startToolStripMenuItem.Text = "Start";
             this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
             // 
             // forceStartToolStripMenuItem
             // 
             this.forceStartToolStripMenuItem.Name = "forceStartToolStripMenuItem";
-            this.forceStartToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.forceStartToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.forceStartToolStripMenuItem.Text = "Force Start";
             this.forceStartToolStripMenuItem.Click += new System.EventHandler(this.forceStartToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
             this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.stopToolStripMenuItem.Text = "Stop";
             this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(127, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // statsToolStripMenuItem
             // 
             this.statsToolStripMenuItem.Enabled = false;
             this.statsToolStripMenuItem.Name = "statsToolStripMenuItem";
-            this.statsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.statsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.statsToolStripMenuItem.Text = "Stats";
             this.statsToolStripMenuItem.Click += new System.EventHandler(this.statsToolStripMenuItem_Click);
             // 
             // toolStripSeparator2
             // 
             this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(127, 6);
+            this.toolStripSeparator2.Size = new System.Drawing.Size(149, 6);
             // 
             // editToolStripMenuItem
             // 
             this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.editToolStripMenuItem.Text = "Edit";
             this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
             // 
             // deleteToolStripMenuItem
             // 
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
@@ -667,6 +682,13 @@
             this.labelStats.Size = new System.Drawing.Size(0, 13);
             this.labelStats.TabIndex = 2;
             // 
+            // cloneToolStripMenuItem
+            // 
+            this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
+            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.cloneToolStripMenuItem.Text = "Clone";
+            this.cloneToolStripMenuItem.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
+            // 
             // MainForm2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -674,7 +696,7 @@
             this.ClientSize = new System.Drawing.Size(714, 498);
             this.Controls.Add(this.labelStats);
             this.Controls.Add(this.tabControl1);
-            this.Controls.Add(this.button5);
+            this.Controls.Add(this.btnClose);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MinimumSize = new System.Drawing.Size(730, 536);
             this.Name = "MainForm2";
@@ -718,7 +740,7 @@
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Button button5;
+        private System.Windows.Forms.Button btnClose;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
         private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
@@ -752,14 +774,16 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button button6;
-        private System.Windows.Forms.CheckBox checkBox1;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button3;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button btnPause;
+        private System.Windows.Forms.CheckBox checkBoxForce;
+        private System.Windows.Forms.Button btnEdit;
+        private System.Windows.Forms.Button btnNew;
+        private System.Windows.Forms.Button btnStopAll;
+        private System.Windows.Forms.Button btnStartAll;
         public System.Windows.Forms.DataGridView dataGridView1;
         public System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Button btnClone;
+        private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
     }
 }
