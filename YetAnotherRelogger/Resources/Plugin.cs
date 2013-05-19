@@ -793,7 +793,7 @@ namespace YARPLUGIN
                 if (DateTime.Now.Subtract(timeout).TotalSeconds > 10)
                 {
                     Log("PulseFix: Failed to recieve a pulse within 10 seconds");
-                    Application.Current.Shutdown();
+                    SafeCloseProcess();
                     break;
                 }
                 Thread.Sleep(100);
