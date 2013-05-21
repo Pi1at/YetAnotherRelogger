@@ -14,7 +14,7 @@ namespace YetAnotherRelogger
 {
     static class Program
     {
-        public const string VERSION = "0.2.0.12";
+        public const string VERSION = "0.2.0.13";
         public const int Sleeptime = 10;
         /// <summary>
         /// The main entry point for the application.
