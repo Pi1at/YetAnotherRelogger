@@ -178,6 +178,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 else if (Parent.ProfileSchedule.Profiles.Count > 0 && !noprofile)
                 {
                     var path = Parent.ProfileSchedule.GetProfile;
+                    Logger.Instance.Write("Using Scheduled Profile {0}", path);
                     if (File.Exists(path))
                         arguments += string.Format(" -profile=\"{0}\"", path);
                 }

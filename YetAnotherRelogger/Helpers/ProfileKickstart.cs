@@ -26,23 +26,15 @@ It is used to ensure a profile starts without causing DB to choken it -->
         {
             try
             {
-                
+
                 var path = Path.Combine(Path.GetDirectoryName(profile.Location), string.Format("YAR{0}_Kickstart.xml", tmpkickstart ? "_TMP" : ""));
-                
+
                 if (File.Exists(path))
                 {
-                    if (Settings.Default.KickstartAlwaysGenerateNew || tmpkickstart)
-                    {
-                        Logger.Instance.Write("Delete old Kickstart profile: {0}", path);
-                        File.Delete(path);
-                    }
-                    else
-                    {
-                        Logger.Instance.Write("Using a already generated Kickstart profile: {0}", path);
-                        return path;
-                    }
+                    Logger.Instance.Write("Delete old Kickstart profile: {0}", path);
+                    File.Delete(path);
                 }
-                    
+
 
                 Logger.Instance.Write("Generate new Kickstart profile: {0}", path);
                 var kickstartprofile = YarKickstart;
@@ -52,12 +44,12 @@ It is used to ensure a profile starts without causing DB to choken it -->
                 kickstartprofile = kickstartprofile.Replace("{delay}", Settings.Default.KickstartDelay.ToString());
 
                 // Get current profile GameParams
-                var gameparams= string.Empty;
+                var gameparams = string.Empty;
                 using (var reader = new StreamReader(profile.Location))
                 {
                     string line;
                     // Read line for line and match with GameParamsRegex pattern to finde GameParams tag
-                    while ((line =reader.ReadLine()) != null)
+                    while ((line = reader.ReadLine()) != null)
                     {
                         var m = new Regex(GameParamsRegex).Match(line);
                         if (m.Success)

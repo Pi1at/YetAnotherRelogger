@@ -25,9 +25,9 @@ namespace YetAnotherRelogger.Forms
         private void MainForm2_Load(object sender, EventArgs e)
         {
             
-            this.Text = string.Format("Yet Another Relogger [{0}] BETA", Program.VERSION);
+            this.Text = string.Format("R-YAR [{0}] BETA", Program.VERSION);
 
-            Logger.Instance.WriteGlobal("Yet Another Relogger Version {0}", Program.VERSION);
+            Logger.Instance.WriteGlobal("rrrix's Yet Another Relogger fork Version {0}", Program.VERSION);
             // Check if we are run as admin
             if (!Program.IsRunAsAdmin)
                 Logger.Instance.WriteGlobal("WE DON'T HAVE ADMIN RIGHTS!!");
