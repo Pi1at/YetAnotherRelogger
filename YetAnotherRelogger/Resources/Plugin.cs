@@ -1,5 +1,7 @@
-﻿// VERSION: 0.2.0.10
+﻿// VERSION: 0.2.0.11
 /* Changelog:
+ * VERSION 0.2.0.11
+ * Fixed Plugin Pulse pulseTimer, last Pulse time, and gold inactivity check, removed Trinity pause check code (DB does this now..), fixed DB termination crash closing
  * VERSION 0.2.0.10
  * Added Plugin=>DB Shutdown on Terminate State
  * VERSION 0.2.0.9
@@ -136,6 +138,10 @@ namespace YARPLUGIN
         private BotStats _bs;
         private bool _pulseFix;
 
+        public static void Log(string str)
+        {
+            Log(str, 0);
+        }
         public static void Log(string str, params object[] args)
         {
             Logging.Write("[YetAnotherRelogger] " + str, args);
@@ -201,11 +207,10 @@ namespace YARPLUGIN
                 Logging.OnLogMessage -= lmd;
         }
 
-        private Stopwatch pulseTimer = new Stopwatch();
+        private static Stopwatch pulseTimer = new Stopwatch();
 
         public void OnPulse()
         {
-
             _pulseCheck = true;
             _bs.LastPulse = DateTime.Now.Ticks;
 
@@ -227,6 +232,10 @@ namespace YARPLUGIN
             if (!pulseTimer.IsRunning)
             {
                 pulseTimer.Start();
+            }
+
+            if (pulseTimer.ElapsedMilliseconds <= 1000)
+            {
                 return;
             }
 
@@ -237,14 +246,9 @@ namespace YARPLUGIN
             {
                 if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
                 {
+                    Log("YAR Plugin Pulse from invalid state");
                     return;
                 }
-
-                // Handle errors and other strange situations
-                //ErrorHandling();
-
-                // Trinity Pause support
-                //TrinityPauseHandling();
 
                 // in-game / character data 
                 _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
@@ -256,6 +260,7 @@ namespace YARPLUGIN
                 }
                 catch
                 {
+                    Log("Exception reading Coinage", 0);
                     _bs.Coinage = -1;
                 }
 
@@ -464,27 +469,15 @@ namespace YARPLUGIN
                     return;
                 }
 
-                _bs.PluginPulse = DateTime.Now.Ticks;
                 _bs.IsRunning = BotMain.IsRunning;
+
+                // Handle errors and other strange situations
+                ErrorHandling();
 
                 // Send stats
                 Send("XML:" + _bs.ToXmlString(), xml: true);
-                Thread.Sleep(3000);
+                Thread.Sleep(750);
             }
-        }
-        #endregion
-
-        #region Handle Trinity Pause
-        private bool _trinityIsPaused;
-        private void TrinityPauseHandling()
-        {
-            if (!_trinityIsPaused && TrinitySupport.IsPaused)
-            {
-                Send("TrinityPause");
-                _trinityIsPaused = true;
-            }
-            else if (!BotMain.IsPaused && !BotMain.IsPausedForStateExecution)
-                _trinityIsPaused = false;
         }
         #endregion
 
@@ -664,7 +657,7 @@ namespace YARPLUGIN
         // from Nesox
         private void SafeCloseProcess()
         {
-            Log("[YAR] Attempting to Safely Close Process");
+            Log("Attempting to Safely Close Process");
             try
             {
                 if (Thread.CurrentThread != Application.Current.Dispatcher.Thread)
@@ -908,60 +901,6 @@ namespace YARPLUGIN
 
 
 }
-#region Kickstart Custom Profile Behavior tag
-namespace YARPLUGIN
-{
-    using Zeta.XmlEngine;
-    using Action = Zeta.TreeSharp.Action;
-
-
-    [XmlElement("Kickstart")]
-    public class Kickstart : ProfileBehavior
-    {
-        public Kickstart()
-        {
-            //r_time = DateTime.Now; // used for delay
-        }
-
-        private DateTime _time;
-
-        [XmlAttribute("Delay")]
-        private string Delay { get; set; }
-
-        [XmlAttribute("Profile")]
-        private string Profile { get; set; }
-
-        public override void OnStart()
-        {
-            _time = DateTime.Now;
-            Logging.Write("YAR Kickstarter: Profile set to {0}", Profile);
-            Logging.Write("YAR Kickstarter: Delay set to {0}", Delay);
-        }
-
-        protected override Composite CreateBehavior()
-        {
-            Sequence s =
-            new Sequence(
-                new Action(ret => Logging.Write("[YAR Kickstart] Load profile: {0}", Profile)),
-                new Action(ret => ProfileManager.Load(Profile))
-            );
-            return s;
-        }
-
-        private bool _isdone;
-        public override bool IsDone
-        {
-            get { return _isdone; }
-        }
-        public override void ResetCachedDone()
-        {
-            _isdone = false;
-            //base.ResetCachedDone();
-        }
-    }
-
-}
-#endregion
 
 #region Trinity Support
 namespace YARPLUGIN

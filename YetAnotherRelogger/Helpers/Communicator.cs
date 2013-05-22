@@ -40,7 +40,8 @@ namespace YetAnotherRelogger.Helpers
             {
                 return _connections;
             }
-            set {
+            set
+            {
                 _connections = value < 0 ? 0 : value;
                 StatConnections += _connections;
             }
@@ -51,7 +52,7 @@ namespace YetAnotherRelogger.Helpers
         Thread _threadWorker;
         public void Start()
         {
-            _threadWorker = new Thread(Worker) {IsBackground = true};
+            _threadWorker = new Thread(Worker) { IsBackground = true };
             _threadWorker.Start();
         }
 
@@ -76,9 +77,9 @@ namespace YetAnotherRelogger.Helpers
 
         class HandleClient : IDisposable
         {
-            private  StreamReader _reader;
-            private  StreamWriter _writer;
-            private  NamedPipeServerStream _stream;
+            private StreamReader _reader;
+            private StreamWriter _writer;
+            private NamedPipeServerStream _stream;
 
             public HandleClient(NamedPipeServerStream stream)
             {
@@ -140,12 +141,12 @@ namespace YetAnotherRelogger.Helpers
             private void HandleXml(string data)
             {
                 BotStats stats;
-                var xml = new XmlSerializer(typeof (BotStats));
+                var xml = new XmlSerializer(typeof(BotStats));
                 using (var stringReader = new StringReader(data))
                 {
                     stats = xml.Deserialize(stringReader) as BotStats;
                 }
-                
+
                 if (stats != null)
                 {
                     try
@@ -199,7 +200,7 @@ namespace YetAnotherRelogger.Helpers
 
                     switch (cmd)
                     {
-                        case"Initialized":
+                        case "Initialized":
                             b.AntiIdle.Stats = new BotStats
                                           {
                                               LastGame = DateTime.Now.Ticks,
@@ -268,14 +269,11 @@ namespace YetAnotherRelogger.Helpers
                             Send("Roger!");
                             break;
                         case "NewMonsterPowerLevel":
-                            Logger.Instance.Write(b,"Sending MonsterPowerLevel: {0}", b.ProfileSchedule.Current.MonsterPowerLevel);
+                            Logger.Instance.Write(b, "Sending MonsterPowerLevel: {0}", b.ProfileSchedule.Current.MonsterPowerLevel);
                             Send("MonsterPower " + (int)b.ProfileSchedule.Current.MonsterPowerLevel);
                             break;
                         case "D3Exit":
-                            if (b.AntiIdle.State == IdleState.Terminate)
-                            {
-                                Send("Shutdown");
-                            }
+                            Send("Shutdown");
                             break;
                         // Unknown command reply
                         default:
@@ -315,20 +313,23 @@ namespace YetAnotherRelogger.Helpers
                 //Free managed resources
                 if (_stream != null)
                 {
-                    try { _stream.Close(); } catch {}
+                    try { _stream.Close(); }
+                    catch { }
                     _stream = null;
                 }
                 if (_reader != null)
                 {
-                    try { _reader.Close(); } catch {}
+                    try { _reader.Close(); }
+                    catch { }
                     _reader = null;
                 }
                 if (_writer != null)
                 {
-                    try { _writer.Close(); } catch {}
+                    try { _writer.Close(); }
+                    catch { }
                     _writer = null;
                 }
-                
+
             }
         }
     }
