@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using YetAnotherRelogger.Helpers;
+using YetAnotherRelogger.Helpers.Bot;
 using YetAnotherRelogger.Helpers.Hotkeys;
 using YetAnotherRelogger.Helpers.Tools;
 using YetAnotherRelogger.Properties;
@@ -24,7 +26,7 @@ namespace YetAnotherRelogger.Forms
 
         private void MainForm2_Load(object sender, EventArgs e)
         {
-            
+
             this.Text = string.Format("R-YAR [{0}] BETA", Program.VERSION);
 
             Logger.Instance.WriteGlobal("rrrix's Yet Another Relogger fork Version {0}", Program.VERSION);
@@ -89,7 +91,7 @@ namespace YetAnotherRelogger.Forms
                 HideMe();
                 ToggleIcon();
                 ShowNotification("Yet Another Relogger", "Is still running");
-                
+
             }
         }
 
@@ -239,29 +241,38 @@ namespace YetAnotherRelogger.Forms
 
         private void btnStartAll_click(object sender, EventArgs e)
         {
-            ConnectionCheck.Reset();
-            // Start All
-            foreach (var row in dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool) row.Cells["isEnabled"].Value))
+            lock (BotSettings.Instance)
             {
-                BotSettings.Instance.Bots[row.Index].Start(force:checkBoxForce.Checked);
+                ConnectionCheck.Reset();
+                // Start All
+                foreach (var row in dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool)row.Cells["isEnabled"].Value))
+                {
+                    BotSettings.Instance.Bots[row.Index].Start(force: checkBoxForce.Checked);
+                }
             }
         }
 
         private void btnNew_Click(object sender, EventArgs e)
         {
-            // Open new bot wizard
-            var wm = new Wizard.WizardMain {TopMost = true};
-            wm.ShowDialog();
+            lock (BotSettings.Instance)
+            {
+                // Open new bot wizard
+                var wm = new Wizard.WizardMain { TopMost = true };
+                wm.ShowDialog();
+            }
         }
 
         private void btnEdit_Click(object sender, EventArgs e)
         {
-            // Edit bot
-            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
-                return;
-            var wm = new Wizard.WizardMain(dataGridView1.CurrentRow.Index) {TopMost = true};
+            lock (BotSettings.Instance)
+            {
+                // Edit bot
+                if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                    return;
+                var wm = new Wizard.WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
 
-            wm.ShowDialog();
+                wm.ShowDialog();
+            }
         }
 
         private void btnClose_Click(object sender, EventArgs e)
@@ -283,13 +294,41 @@ namespace YetAnotherRelogger.Forms
 
         private void btnStopAll_Click(object sender, EventArgs e)
         {
-            Relogger.Instance.Stop();
-            // Stop All
-            foreach (var bot in BotSettings.Instance.Bots)
+            lock (BotSettings.Instance)
             {
-                bot.Stop();
+                Relogger.Instance.Stop();
+                // Stop All
+                foreach (var bot in BotSettings.Instance.Bots)
+                {
+                    bot.Stop();
+                }
+                Relogger.Instance.Start();
             }
-            Relogger.Instance.Start();
+        }
+
+        private void restartAllDb_Click(object sender, EventArgs e)
+        {
+            lock (BotSettings.Instance)
+            {
+                List<BotClass> runningBots = new List<BotClass>();
+                foreach (var bot in BotSettings.Instance.Bots.Where(b => b.IsRunning))
+                {
+                    runningBots.Add(bot);
+                }
+                if (runningBots.Any())
+                {
+                    Relogger.Instance.Stop();
+                    foreach (var bot in runningBots)
+                    {
+                        bot.Demonbuddy.Stop();
+                    }
+                    foreach (var bot in runningBots)
+                    {
+                        bot.Demonbuddy.Start();
+                    }
+                    Relogger.Instance.Start();
+                }
+            }
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
@@ -306,25 +345,37 @@ namespace YetAnotherRelogger.Forms
         private void statsToolStripMenuItem_Click(object sender, EventArgs e)
         {// Bot Stats
         }
-        
+
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
-        {// Delete Bot
-            if (MessageBox.Show("Are you sure you want to delete this bot?", "Delete bot", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+        {
+            lock (BotSettings.Instance)
             {
-                BotSettings.Instance.Bots.RemoveAt(dataGridView1.CurrentRow.Index);
-                BotSettings.Instance.Save();
-                UpdateGridView();
+                // Delete Bot
+                if (MessageBox.Show("Are you sure you want to delete this bot?", "Delete bot", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    BotSettings.Instance.Bots.RemoveAt(dataGridView1.CurrentRow.Index);
+                    BotSettings.Instance.Save();
+                    UpdateGridView();
+                }
             }
         }
 
         private void editToolStripMenuItem_Click(object sender, EventArgs e)
-        {// Edit bot
-            var wm = new Wizard.WizardMain(dataGridView1.CurrentRow.Index) {TopMost = true};
-            wm.ShowDialog();
+        {
+            lock (BotSettings.Instance)
+            {
+                // Edit bot
+                var wm = new Wizard.WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
+                wm.ShowDialog();
+            }
         }
         private void forceStartToolStripMenuItem_Click(object sender, EventArgs e)
-        { // Force Start single bot
-            BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Start(true);
+        {
+            lock (BotSettings.Instance)
+            {
+                // Force Start single bot
+                BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Start(true);
+            }
         }
         #region Settings Tree
 
@@ -369,7 +420,7 @@ namespace YetAnotherRelogger.Forms
                 //var c = tabControl1.TabPages[1].Controls;
                 var c = SettingsPanel.Controls;
                 if (c.Contains(UcSetting)) c.Remove(UcSetting);
-                
+
                 UcSetting = tmp;
                 //_ucSetting.Left = 180;
                 c.Add(UcSetting);
@@ -440,6 +491,7 @@ namespace YetAnotherRelogger.Forms
                 Program.Mainform.UpdateGridView();
             }
         }
+
 
     }
 }
