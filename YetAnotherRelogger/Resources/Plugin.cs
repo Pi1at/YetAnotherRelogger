@@ -107,6 +107,7 @@ namespace YARPLUGIN
         private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game...", RegexOptions.Compiled);
         private static readonly Regex pluginsCompiled = new Regex(@"There are \d+ plugins.", RegexOptions.Compiled);
         private static readonly string d3Exit = "Diablo III Exited";
+        private static readonly string getCellWeightsException = "Zeta.Navigation.MainGridProvider.GetCellWeights";
 
         public class BotStats
         {
@@ -379,14 +380,14 @@ namespace YARPLUGIN
                                 }
                                 break; // case end
                             default:
-                                if (msg.Contains(d3Exit))
-                                {
-                                    Send("D3Exit");
-                                    Log("Attempting to safely close Demonbuddy");
-                                    SafeCloseProcess();
-                                    breakloop = true;
-                                    break;
-                                }
+                                //if (msg.Contains(d3Exit))
+                                //{
+                                //    Send("D3Exit");
+                                //    Log("Attempting to safely close Demonbuddy");
+                                //    SafeCloseProcess();
+                                //    breakloop = true;
+                                //    break;
+                                //}
 
                                 try
                                 {

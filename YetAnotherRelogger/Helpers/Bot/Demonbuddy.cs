@@ -117,17 +117,18 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (Proc.HasExited)
                 return;
 
-            if (CrashChecker.IsResponding(MainWindowHandle))
+            if (Proc.Responding)
                 _lastRepsonse = DateTime.Now;
 
-            if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 30)
+            if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 30 seconds", Proc.Id);
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Killing process", Proc.Id);
                 try
                 {
                     if (Proc != null && !Proc.HasExited)
-                        Proc.Kill();
+                        Proc.CloseMainWindow();
+                        //Proc.Kill();
                 }
                 catch (Exception ex)
                 {
@@ -315,14 +316,20 @@ namespace YetAnotherRelogger.Helpers.Bot
             // Force close
             if (force)
             {
-                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Forced to close!", Proc.Id);
-                Proc.Kill();
+                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Process is not responding, killing!", Proc.Id);
+                Proc.CloseMainWindow();
                 return;
             }
 
+            if (Proc != null && !Proc.HasExited)
+            {
+                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Closing window", Proc.Id);
+                Proc.CloseMainWindow();
+            }
             if (Parent.Diablo.Proc == null || Parent.Diablo.Proc.HasExited)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Waiting to close", Proc.Id);
+                Proc.CloseMainWindow();
                 Parent.AntiIdle.State = IdleState.Terminate;
                 Proc.WaitForExit(60000);
                 if (Proc == null || Proc.HasExited) 
@@ -334,10 +341,10 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             if (Proc.HasExited)
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Closed.", Proc.Id);
-            else
+            else if (!Proc.Responding)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to close! kill process", Proc.Id);
-                //Proc.Kill();
+                Proc.Kill();
             }
         }
 

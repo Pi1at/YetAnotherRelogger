@@ -72,65 +72,68 @@ namespace YetAnotherRelogger
                 int demonbuddyCount = 0;
                 double goldPerHour = 0;
                 double totalGold = 0;
-                foreach (var bot in BotSettings.Instance.Bots)
+                lock (BotSettings.Instance)
                 {
-                    var chartStats = bot.ChartStats;
-                    // Update bot uptime
-                    bot.RunningTime = bot.IsRunning ? DateTime.Now.Subtract(bot.StartTime).ToString(@"hh\hmm\mss\s") : "";
-
-                    // Update bot specific Chart stats
-                    CreateChartStats(bot, Program.Mainform.GoldStats, ChartValueType.Double);
-
-                    if (bot.IsRunning)
+                    foreach (var bot in BotSettings.Instance.Bots.ToList())
                     {
-                        #region Calculate System Usage
-                        if (bot.Diablo.IsRunning)
-                        {
-                            // Calculate total Cpu/Ram usage for Diablo
-                            try
-                            {
-                                var usage = usages.GetUsageById(bot.Diablo.Proc.Id);
-                                diabloCpuUsage += usage.Cpu;
-                                diabloRamUsage += usage.Memory;
-                                diabloCount++;
-                            }
-                            catch
-                            {
-                            }
-                        }
+                        var chartStats = bot.ChartStats;
+                        // Update bot uptime
+                        bot.RunningTime = bot.IsRunning ? DateTime.Now.Subtract(bot.StartTime).ToString(@"hh\hmm\mss\s") : "";
 
-                        if (bot.Demonbuddy.IsRunning)
+                        // Update bot specific Chart stats
+                        CreateChartStats(bot, Program.Mainform.GoldStats, ChartValueType.Double);
+
+                        if (bot.IsRunning)
                         {
-                            // Calculate total Cpu/Ram usage for Demonbuddy
-                            try
+                            #region Calculate System Usage
+                            if (bot.Diablo.IsRunning)
                             {
-                                var usage = usages.GetUsageById(bot.Demonbuddy.Proc.Id);
-                                demonbuddyCpuUsage += usage.Cpu;
-                                demonbuddyRamUsage += usage.Memory;
-                                demonbuddyCount++;
-                            }
-                            catch
-                            {
+                                // Calculate total Cpu/Ram usage for Diablo
+                                try
+                                {
+                                    var usage = usages.GetUsageById(bot.Diablo.Proc.Id);
+                                    diabloCpuUsage += usage.Cpu;
+                                    diabloRamUsage += usage.Memory;
+                                    diabloCount++;
+                                }
+                                catch
+                                {
+                                }
                             }
 
-                        }
-                        #endregion
-                        #region Gold Stats
-                        chartStats.GoldStats.Update(bot); // Update Current bot
-                        
-                        // Calculate total gold for all bots
-                        goldPerHour += chartStats.GoldStats.GoldPerHour;
-                        totalGold += chartStats.GoldStats.LastCoinage;
+                            if (bot.Demonbuddy.IsRunning)
+                            {
+                                // Calculate total Cpu/Ram usage for Demonbuddy
+                                try
+                                {
+                                    var usage = usages.GetUsageById(bot.Demonbuddy.Proc.Id);
+                                    demonbuddyCpuUsage += usage.Cpu;
+                                    demonbuddyRamUsage += usage.Memory;
+                                    demonbuddyCount++;
+                                }
+                                catch
+                                {
+                                }
 
-                        var serie = Program.Mainform.GoldStats.Series.FirstOrDefault(x => x.Name == bot.Name);
-                        if (serie != null)
-                        {
-                            updateMainformGraph(Program.Mainform.GoldStats, serie.Name, Math.Round(chartStats.GoldStats.GoldPerHour), limit: (int)Properties.Settings.Default.StatsGphHistory, autoscale: true);
+                            }
+                            #endregion
+                            #region Gold Stats
+                            chartStats.GoldStats.Update(bot); // Update Current bot
+
+                            // Calculate total gold for all bots
+                            goldPerHour += chartStats.GoldStats.GoldPerHour;
+                            totalGold += chartStats.GoldStats.LastCoinage;
+
+                            var serie = Program.Mainform.GoldStats.Series.FirstOrDefault(x => x.Name == bot.Name);
+                            if (serie != null)
+                            {
+                                updateMainformGraph(Program.Mainform.GoldStats, serie.Name, Math.Round(chartStats.GoldStats.GoldPerHour), limit: (int)Properties.Settings.Default.StatsGphHistory, autoscale: true);
+                            }
+                            #endregion
                         }
-                        #endregion
-                    }
-                    else
-                    {
+                        else
+                        {
+                        }
                     }
                 }
                 try

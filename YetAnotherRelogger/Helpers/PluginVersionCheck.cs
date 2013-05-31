@@ -10,6 +10,8 @@ namespace YetAnotherRelogger.Helpers
     {
         public static bool Check(string path)
         {
+            return false;
+
             try
             {
                 Logger.Instance.Write("Checking plugin: {0}", path);

@@ -97,7 +97,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (Proc.HasExited)
                 return;
 
-            if (CrashChecker.IsResponding(MainWindowHandle))
+            if (Proc.Responding)
             {
                 _lastRepsonse = DateTime.Now;
                 Parent.Status = "Monitoring";

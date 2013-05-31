@@ -415,25 +415,30 @@ namespace YetAnotherRelogger.Forms
 
         private void btnClone_Click(object sender, EventArgs e)
         {
-            // Clone bot
-            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
-                return;
+            lock (BotSettings.Instance)
+            {
+                // Clone bot
+                if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                    return;
 
-            BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);            
-            BotSettings.Instance.Save();
-            Program.Mainform.UpdateGridView();
-
+                BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
+                BotSettings.Instance.Save();
+                Program.Mainform.UpdateGridView();
+            }
         }
 
         private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            // Clone bot
-            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
-                return;
+            lock (BotSettings.Instance)
+            {
+                // Clone bot
+                if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                    return;
 
-            BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
-            BotSettings.Instance.Save();
-            Program.Mainform.UpdateGridView();
+                BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
+                BotSettings.Instance.Save();
+                Program.Mainform.UpdateGridView();
+            }
         }
 
     }

@@ -174,7 +174,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 if (!Stats.IsPaused && General.DateSubtract(Stats.LastPulse) > 120)
                 {
                     if (!FixAttemptCounter()) return "Roger!";
-                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is not pulsing while it should to (120 seconds)", Parent.Demonbuddy.Proc.Id);
+                    Logger.Instance.Write(Parent, "Demonbuddy:{0}: is not pulsing while it should (120 seconds)", Parent.Demonbuddy.Proc.Id);
                     return "FixPulse";
                 }
                 if (!Stats.IsInGame && General.DateSubtract(Stats.LastGame) > 90)

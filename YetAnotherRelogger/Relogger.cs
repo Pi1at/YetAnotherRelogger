@@ -127,8 +127,8 @@ namespace YetAnotherRelogger
                         {
                             // Check if process is responding
                             bot.Diablo.CrashCheck();
-                            //if (bot.AntiIdle.IsInitialized)
-                            //    bot.Demonbuddy.CrashCheck();
+                            if (bot.AntiIdle.IsInitialized)
+                                bot.Demonbuddy.CrashCheck();
 
                             if (!bot.Diablo.IsRunning)
                             {
