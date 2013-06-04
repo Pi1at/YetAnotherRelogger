@@ -286,7 +286,7 @@ namespace YetAnotherRelogger.Forms
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-            if (richTextBox1.Lines.Length > 300)
+            if (richTextBox1.Lines.Length > 65535)
                 richTextBox1.Clear();
             // scroll down
             richTextBox1.ScrollToCaret();
@@ -489,6 +489,36 @@ namespace YetAnotherRelogger.Forms
                 BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
                 BotSettings.Instance.Save();
                 Program.Mainform.UpdateGridView();
+            }
+        }
+
+        private void btnOpenLog_Click(object sender, EventArgs e)
+        {
+            bool shiftkey = (Control.ModifierKeys & Keys.Shift) != 0;
+
+            if (shiftkey)
+            {
+                try
+                {
+                    Logger.Instance.ClearBuffer();
+                    Process.Start(Logger.Instance.LogDirectory);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.Write("Unable to open log directory {0}: {1}", Logger.Instance.LogDirectory, ex);
+                }
+            }
+            else
+            {
+                try
+                {
+                    Logger.Instance.ClearBuffer();
+                    Process.Start(Logger.Instance.Logfile);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.Write("Unable to open log file {0}: {1}", Logger.Instance.Logfile, ex);
+                }
             }
         }
 

@@ -36,6 +36,16 @@ namespace YetAnotherRelogger.Helpers
 
 
         private string _logfile;
+
+        public string Logfile
+        {
+            get { return _logfile; }
+            private set { _logfile = value; }
+        }
+        public string LogDirectory
+        {
+            get { return Path.GetDirectoryName(Logfile); }
+        }
         private bool _canLog;
         private void Initialize()
         {

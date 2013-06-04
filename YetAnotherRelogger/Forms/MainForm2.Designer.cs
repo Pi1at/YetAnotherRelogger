@@ -106,6 +106,8 @@
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.labelStats = new System.Windows.Forms.Label();
             this.restartAllDb = new System.Windows.Forms.Button();
+            this.btnOpenLog = new System.Windows.Forms.Button();
+            this.logDirectoryTT = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -701,11 +703,24 @@
             this.restartAllDb.UseVisualStyleBackColor = true;
             this.restartAllDb.Click += new System.EventHandler(this.restartAllDb_Click);
             // 
+            // btnOpenLog
+            // 
+            this.btnOpenLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOpenLog.Location = new System.Drawing.Point(527, 467);
+            this.btnOpenLog.Name = "btnOpenLog";
+            this.btnOpenLog.Size = new System.Drawing.Size(88, 23);
+            this.btnOpenLog.TabIndex = 9;
+            this.btnOpenLog.Text = "Open Log File";
+            this.logDirectoryTT.SetToolTip(this.btnOpenLog, "Shift-click to open log directory");
+            this.btnOpenLog.UseVisualStyleBackColor = true;
+            this.btnOpenLog.Click += new System.EventHandler(this.btnOpenLog_Click);
+            // 
             // MainForm2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(714, 498);
+            this.Controls.Add(this.btnOpenLog);
             this.Controls.Add(this.restartAllDb);
             this.Controls.Add(this.labelStats);
             this.Controls.Add(this.tabControl1);
@@ -799,5 +814,7 @@
         private System.Windows.Forms.Button btnClone;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
         private System.Windows.Forms.Button restartAllDb;
+        private System.Windows.Forms.Button btnOpenLog;
+        private System.Windows.Forms.ToolTip logDirectoryTT;
     }
 }
