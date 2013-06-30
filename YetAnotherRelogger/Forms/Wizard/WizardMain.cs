@@ -350,6 +350,7 @@ namespace YetAnotherRelogger.Forms.Wizard
                 shouldClose = true;
                 WizardMain.ActiveForm.Close();
 
+                BotSettings.Instance.Save();
                 Program.Mainform.UpdateGridView();
                 return;
             }

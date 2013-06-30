@@ -466,19 +466,15 @@ namespace YetAnotherRelogger.Forms
 
         private void btnClone_Click(object sender, EventArgs e)
         {
-            lock (BotSettings.Instance)
-            {
-                // Clone bot
-                if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
-                    return;
-
-                BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
-                BotSettings.Instance.Save();
-                Program.Mainform.UpdateGridView();
-            }
+            DoClone();
         }
 
         private void cloneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DoClone();
+        }
+
+        private void DoClone()
         {
             lock (BotSettings.Instance)
             {
@@ -486,11 +482,16 @@ namespace YetAnotherRelogger.Forms
                 if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
                     return;
 
+                int idx = dataGridView1.CurrentRow.Index;
+
                 BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
                 BotSettings.Instance.Save();
+                BotSettings.Instance.Load();
                 Program.Mainform.UpdateGridView();
+                dataGridView1.Rows[idx].Selected = true;
             }
         }
+
 
         private void btnOpenLog_Click(object sender, EventArgs e)
         {
