@@ -283,6 +283,11 @@ namespace YetAnotherRelogger.Helpers.Bot
             var timeout = DateTime.Now;
             while (true)
             {
+                if (Program.Pause)
+                {
+                    timeout = DateTime.Now;
+                    return;
+                }
                 if (General.DateSubtract(timeout) > 30)
                 {
                     Logger.Instance.Write("Diablo:{0}: Failed to start!", Proc.Id);
@@ -321,13 +326,16 @@ namespace YetAnotherRelogger.Helpers.Bot
                 Logger.Instance.Write("Demonbuddy start delay, waiting {0} seconds", Settings.Default.DemonbuddyStartDelay);
                 Thread.Sleep((int) Settings.Default.DemonbuddyStartDelay*1000);
             }
-        }
-
-        
+        }        
 
         [XmlIgnore] private DateTime _timeStartTime;
         private bool LimitStartTime(bool reset = false)
         {
+            if (Program.Pause)
+            {
+                _timeStartTime = DateTime.Now;
+                return false;
+            }
             if (reset)
                 _timeStartTime = DateTime.Now;
             else if (General.DateSubtract(_timeStartTime) > (int)Settings.Default.DiabloStartTimeLimit)

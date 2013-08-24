@@ -11,9 +11,12 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class DemonbuddyClass
     {
-        [XmlIgnore] public BotClass Parent { get; set; }
-        [XmlIgnore] private Process _proc;
-        [XmlIgnore] public Process Proc
+        [XmlIgnore]
+        public BotClass Parent { get; set; }
+        [XmlIgnore]
+        private Process _proc;
+        [XmlIgnore]
+        public Process Proc
         {
             get { return _proc; }
             set
@@ -24,17 +27,22 @@ namespace YetAnotherRelogger.Helpers.Bot
             }
         }
 
-        [XmlIgnore] private bool _isStopped;
-        [XmlIgnore] public bool IsRunning { get {  return (Proc != null && !Proc.HasExited && !_isStopped); } }
+        [XmlIgnore]
+        private bool _isStopped;
+        [XmlIgnore]
+        public bool IsRunning { get { return (Proc != null && !Proc.HasExited && !_isStopped); } }
 
-        [XmlIgnore] public  IntPtr MainWindowHandle;
+        [XmlIgnore]
+        public IntPtr MainWindowHandle;
 
         // Buddy Auth
         public string BuddyAuthUsername { get; set; }
         public string BuddyAuthPassword { get; set; }
-        [XmlIgnore] public DateTime LoginTime { get; set; }
-        [XmlIgnore] public bool FoundLoginTime { get; set; }
-        
+        [XmlIgnore]
+        public DateTime LoginTime { get; set; }
+        [XmlIgnore]
+        public bool FoundLoginTime { get; set; }
+
         // Demonbuddy
         public string Location { get; set; }
         public string Key { get; set; }
@@ -50,7 +58,8 @@ namespace YetAnotherRelogger.Helpers.Bot
         public int CpuCount { get; set; }
         public int ProcessorAffinity { get; set; }
 
-        [XmlIgnore] public int AllProcessors
+        [XmlIgnore]
+        public int AllProcessors
         {
             get
             {
@@ -67,9 +76,11 @@ namespace YetAnotherRelogger.Helpers.Bot
         public int Y { get; set; }
         public int W { get; set; }
         public int H { get; set; }
-        [XmlIgnore] public Rectangle AutoPos;
+        [XmlIgnore]
+        public Rectangle AutoPos;
 
-        [XmlIgnore] private bool _crashTenderRestart;
+        [XmlIgnore]
+        private bool _crashTenderRestart;
 
         public bool ForceEnableAllPlugins { get; set; }
 
@@ -128,7 +139,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 {
                     if (Proc != null && !Proc.HasExited)
                         Proc.CloseMainWindow();
-                        //Proc.Kill();
+                    //Proc.Kill();
                 }
                 catch (Exception ex)
                 {
@@ -171,7 +182,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     if (file == null || (file.Equals("YAR_Kickstart.xml") || file.Equals("YAR_TMP_Kickstart.xml")))
                         profilepath = Parent.ProfileSchedule.Current.Location;
 
-                    var profile = new Profile() {Location = profilepath};
+                    var profile = new Profile() { Location = profilepath };
                     var path = ProfileKickstart.GenerateKickstart(profile);
                     Logger.Instance.Write("Using Profile {0}", path);
                     arguments += string.Format(" -profile=\"{0}\"", path);
@@ -195,7 +206,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
                 Debug.WriteLine("DB Arguments: {0}", arguments);
 
-                var p = new ProcessStartInfo(Location, arguments) {WorkingDirectory = Path.GetDirectoryName(Location)};
+                var p = new ProcessStartInfo(Location, arguments) { WorkingDirectory = Path.GetDirectoryName(Location) };
                 p = UserAccount.ImpersonateStartInfo(p, Parent);
 
                 // Check/Install latest Communicator plugin
@@ -221,7 +232,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                         ProcessorAffinity = AllProcessors; // set it to all ones
                         CpuCount = Environment.ProcessorCount;
                     }
-                    Proc.ProcessorAffinity = (IntPtr) ProcessorAffinity;
+                    Proc.ProcessorAffinity = (IntPtr)ProcessorAffinity;
 
 
                     Logger.Instance.Write(Parent, "Demonbuddy:{0}: Waiting for process to become ready", Proc.Id);
@@ -229,6 +240,11 @@ namespace YetAnotherRelogger.Helpers.Bot
                     timeout = DateTime.Now;
                     while (true)
                     {
+                        if (Program.Pause)
+                        {
+                            timeout = DateTime.Now;
+                            return;
+                        }
                         if (General.DateSubtract(timeout) > 30)
                         {
                             Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to start!", Proc.Id);
@@ -332,7 +348,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 Proc.CloseMainWindow();
                 Parent.AntiIdle.State = IdleState.Terminate;
                 Proc.WaitForExit(60000);
-                if (Proc == null || Proc.HasExited) 
+                if (Proc == null || Proc.HasExited)
                 {
                     Logger.Instance.Write(Parent, "Demonbuddy:{0}: Closed.", Proc.Id);
                     return;
@@ -357,7 +373,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
 
             if (profilepath != null)
-                Start(profilepath:profilepath, crashtenderstart: true);
+                Start(profilepath: profilepath, crashtenderstart: true);
             else
                 Start(noprofile: true, crashtenderstart: true);
             _crashTenderRestart = false;
@@ -392,7 +408,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                         break;
                     }
                 }
-                
+
                 if (success)
                 {
                     Logger.Instance.Write(Parent, "Demonbuddy:{0}: Found matching log: {1}", Proc.Id, logfile);

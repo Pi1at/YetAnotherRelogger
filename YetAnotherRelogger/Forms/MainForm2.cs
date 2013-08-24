@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using YetAnotherRelogger.Helpers;
 using YetAnotherRelogger.Helpers.Bot;
@@ -308,6 +309,15 @@ namespace YetAnotherRelogger.Forms
 
         private void restartAllDb_Click(object sender, EventArgs e)
         {
+            m_RestartBotsThread = new Thread(RestartAllBots);
+            m_RestartBotsThread.IsBackground = true;
+            m_RestartBotsThread.Start();
+            btnRestartAllDb.Enabled = false;
+        }
+
+        private Thread m_RestartBotsThread;
+        private void RestartAllBots()
+        {
             lock (BotSettings.Instance)
             {
                 List<BotClass> runningBots = new List<BotClass>();
@@ -321,6 +331,7 @@ namespace YetAnotherRelogger.Forms
                     foreach (var bot in runningBots)
                     {
                         bot.Demonbuddy.Stop();
+                        Thread.Sleep(500);
                     }
                     foreach (var bot in runningBots)
                     {
@@ -329,6 +340,7 @@ namespace YetAnotherRelogger.Forms
                     Relogger.Instance.Start();
                 }
             }
+            btnRestartAllDb.Enabled = true;
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)

@@ -102,6 +102,7 @@ namespace YARPLUGIN
                 new Regex(@"Session is expired", RegexOptions.IgnoreCase | RegexOptions.Compiled),
                 /* Failed to attach to D3*/
                 new Regex(@"Was not able to attach to any running Diablo III process, are you running the bot already\?", RegexOptions.Compiled), 
+                new Regex(@"Traceback (most recent call last):", RegexOptions.IgnoreCase | RegexOptions.Compiled),
             };
 
         private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game...", RegexOptions.Compiled);

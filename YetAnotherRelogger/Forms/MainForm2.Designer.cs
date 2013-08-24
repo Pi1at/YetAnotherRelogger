@@ -105,7 +105,7 @@
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
             this.labelStats = new System.Windows.Forms.Label();
-            this.restartAllDb = new System.Windows.Forms.Button();
+            this.btnRestartAllDb = new System.Windows.Forms.Button();
             this.btnOpenLog = new System.Windows.Forms.Button();
             this.logDirectoryTT = new System.Windows.Forms.ToolTip(this.components);
             this.tabControl1.SuspendLayout();
@@ -694,14 +694,14 @@
             // 
             // restartAllDb
             // 
-            this.restartAllDb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.restartAllDb.Location = new System.Drawing.Point(25, 467);
-            this.restartAllDb.Name = "restartAllDb";
-            this.restartAllDb.Size = new System.Drawing.Size(83, 23);
-            this.restartAllDb.TabIndex = 8;
-            this.restartAllDb.Text = "Restart All DB";
-            this.restartAllDb.UseVisualStyleBackColor = true;
-            this.restartAllDb.Click += new System.EventHandler(this.restartAllDb_Click);
+            this.btnRestartAllDb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRestartAllDb.Location = new System.Drawing.Point(25, 467);
+            this.btnRestartAllDb.Name = "restartAllDb";
+            this.btnRestartAllDb.Size = new System.Drawing.Size(83, 23);
+            this.btnRestartAllDb.TabIndex = 8;
+            this.btnRestartAllDb.Text = "Restart All DB";
+            this.btnRestartAllDb.UseVisualStyleBackColor = true;
+            this.btnRestartAllDb.Click += new System.EventHandler(this.restartAllDb_Click);
             // 
             // btnOpenLog
             // 
@@ -721,7 +721,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(714, 498);
             this.Controls.Add(this.btnOpenLog);
-            this.Controls.Add(this.restartAllDb);
+            this.Controls.Add(this.btnRestartAllDb);
             this.Controls.Add(this.labelStats);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.btnClose);
@@ -813,7 +813,7 @@
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnClone;
         private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
-        private System.Windows.Forms.Button restartAllDb;
+        private System.Windows.Forms.Button btnRestartAllDb;
         private System.Windows.Forms.Button btnOpenLog;
         private System.Windows.Forms.ToolTip logDirectoryTT;
     }

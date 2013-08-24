@@ -80,6 +80,9 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         public string Reply()
         {
+            if (Program.Pause)
+                return "Roger!";
+
             switch (State)
             {
                 case IdleState.Initialize:
@@ -143,7 +146,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 case IdleState.Terminate:
                     Parent.Restart();
                     return "Shutdown";
-                    //break;
+                //break;
             }
             return "Roger!";
         }
@@ -221,6 +224,12 @@ namespace YetAnotherRelogger.Helpers.Bot
         private DateTime _fixAttemptTime;
         public bool FixAttemptCounter()
         {
+            if (Program.Pause)
+            {
+                FixAttempts = 0;
+                return true;
+            }
+
             if (General.DateSubtract(_fixAttemptTime) > 420)
                 FixAttempts = 0;
 
