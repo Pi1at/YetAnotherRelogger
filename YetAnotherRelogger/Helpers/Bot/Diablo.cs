@@ -144,7 +144,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             }
 
             // Check valid host
-            while (Settings.Default.ConnectionCheckIpHost && !ConnectionCheck.CheckValidConnection() && !_isStopped)
+            while (Settings.Default.ConnectionCheckHostCheck && Settings.Default.ConnectionCheckIpHost && !ConnectionCheck.CheckValidConnection() && !_isStopped)
             {
                 Parent.Status = "Wait on host validation";
                 Logger.Instance.WriteGlobal("ConnectionValidation: Waiting 10 seconds and trying again!");
@@ -289,13 +289,13 @@ namespace YetAnotherRelogger.Helpers.Bot
                     timeout = DateTime.Now;
                     return;
                 }
-                if (General.DateSubtract(timeout) > 30)
+                if (General.DateSubtract(timeout) > 30 || Proc.HasExited)
                 {
                     Logger.Instance.Write("Diablo:{0}: Failed to start!", Proc.Id);
                     Parent.Restart();
                     return;
                 }
-                Thread.Sleep(500);
+                Thread.Sleep(100);
                 try
                 {
                     Proc.Refresh();

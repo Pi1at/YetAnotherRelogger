@@ -35,11 +35,11 @@
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
+            this.cbCheck60AndClose = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox4 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.tbPingHost2 = new System.Windows.Forms.TextBox();
+            this.tbPingHost1 = new System.Windows.Forms.TextBox();
+            this.cbCheckConnection = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -100,11 +100,11 @@
             // groupBox2
             // 
             this.groupBox2.Controls.Add(this.label3);
-            this.groupBox2.Controls.Add(this.checkBox3);
+            this.groupBox2.Controls.Add(this.cbCheck60AndClose);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBox4);
-            this.groupBox2.Controls.Add(this.textBox3);
-            this.groupBox2.Controls.Add(this.checkBox2);
+            this.groupBox2.Controls.Add(this.tbPingHost2);
+            this.groupBox2.Controls.Add(this.tbPingHost1);
+            this.groupBox2.Controls.Add(this.cbCheckConnection);
             this.groupBox2.Location = new System.Drawing.Point(3, 3);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(363, 102);
@@ -121,18 +121,18 @@
             this.label3.TabIndex = 5;
             this.label3.Text = "Ping to";
             // 
-            // checkBox3
+            // cbCheck60AndClose
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckCloseBots;
-            this.checkBox3.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox3.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckCloseBots", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox3.Location = new System.Drawing.Point(10, 42);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(275, 17);
-            this.checkBox3.TabIndex = 4;
-            this.checkBox3.Text = "Check every 60 seconds and close all bots on failure";
-            this.checkBox3.UseVisualStyleBackColor = true;
+            this.cbCheck60AndClose.AutoSize = true;
+            this.cbCheck60AndClose.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckCloseBots;
+            this.cbCheck60AndClose.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbCheck60AndClose.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckCloseBots", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.cbCheck60AndClose.Location = new System.Drawing.Point(10, 42);
+            this.cbCheck60AndClose.Name = "cbCheck60AndClose";
+            this.cbCheck60AndClose.Size = new System.Drawing.Size(275, 17);
+            this.cbCheck60AndClose.TabIndex = 4;
+            this.cbCheck60AndClose.Text = "Check every 60 seconds and close all bots on failure";
+            this.cbCheck60AndClose.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -143,39 +143,39 @@
             this.label2.TabIndex = 3;
             this.label2.Text = "or";
             // 
-            // textBox4
+            // tbPingHost2
             // 
-            this.textBox4.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckPingHost2", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox4.Location = new System.Drawing.Point(216, 68);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(135, 20);
-            this.textBox4.TabIndex = 2;
-            this.textBox4.Text = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckPingHost2;
-            this.textBox4.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
+            this.tbPingHost2.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckPingHost2", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.tbPingHost2.Location = new System.Drawing.Point(216, 68);
+            this.tbPingHost2.Name = "tbPingHost2";
+            this.tbPingHost2.Size = new System.Drawing.Size(135, 20);
+            this.tbPingHost2.TabIndex = 2;
+            this.tbPingHost2.Text = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckPingHost2;
+            this.tbPingHost2.TextChanged += new System.EventHandler(this.textBox4_TextChanged);
             // 
-            // textBox3
+            // tbPingHost1
             // 
-            this.textBox3.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckPingHost1", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox3.Location = new System.Drawing.Point(53, 68);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(135, 20);
-            this.textBox3.TabIndex = 1;
-            this.textBox3.Text = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckPingHost1;
-            this.textBox3.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
+            this.tbPingHost1.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckPingHost1", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.tbPingHost1.Location = new System.Drawing.Point(53, 68);
+            this.tbPingHost1.Name = "tbPingHost1";
+            this.tbPingHost1.Size = new System.Drawing.Size(135, 20);
+            this.tbPingHost1.TabIndex = 1;
+            this.tbPingHost1.Text = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckPingHost1;
+            this.tbPingHost1.TextChanged += new System.EventHandler(this.textBox3_TextChanged);
             // 
-            // checkBox2
+            // cbCheckConnection
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckPing;
-            this.checkBox2.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckPing", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox2.Location = new System.Drawing.Point(10, 19);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(136, 17);
-            this.checkBox2.TabIndex = 0;
-            this.checkBox2.Text = "Check before bot starts";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.cbCheckConnection.AutoSize = true;
+            this.cbCheckConnection.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckPing;
+            this.cbCheckConnection.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbCheckConnection.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckPing", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.cbCheckConnection.Location = new System.Drawing.Point(10, 19);
+            this.cbCheckConnection.Name = "cbCheckConnection";
+            this.cbCheckConnection.Size = new System.Drawing.Size(136, 17);
+            this.cbCheckConnection.TabIndex = 0;
+            this.cbCheckConnection.Text = "Check before bot starts";
+            this.cbCheckConnection.UseVisualStyleBackColor = true;
+            this.cbCheckConnection.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // ConnectionCheck
             // 
@@ -199,10 +199,10 @@
         private System.Windows.Forms.CheckBox checkBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox4;
-        private System.Windows.Forms.TextBox textBox3;
-        private System.Windows.Forms.CheckBox checkBox2;
-        private System.Windows.Forms.CheckBox checkBox3;
+        private System.Windows.Forms.TextBox tbPingHost2;
+        private System.Windows.Forms.TextBox tbPingHost1;
+        private System.Windows.Forms.CheckBox cbCheckConnection;
+        private System.Windows.Forms.CheckBox cbCheck60AndClose;
         private System.Windows.Forms.Label label3;
 
     }

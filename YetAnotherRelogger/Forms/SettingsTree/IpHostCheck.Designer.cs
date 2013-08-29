@@ -31,13 +31,13 @@
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.cbEnableHostCheck = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.checkBox7 = new System.Windows.Forms.CheckBox();
-            this.checkBox5 = new System.Windows.Forms.CheckBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
+            this.tbAddressList = new System.Windows.Forms.TextBox();
+            this.cbEnableIPCheck = new System.Windows.Forms.CheckBox();
+            this.cbCheck60AndClose = new System.Windows.Forms.CheckBox();
+            this.cbCheckBeforeBotStart = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.SuspendLayout();
@@ -45,8 +45,8 @@
             // groupBox3
             // 
             this.groupBox3.Controls.Add(this.groupBox4);
-            this.groupBox3.Controls.Add(this.checkBox5);
-            this.groupBox3.Controls.Add(this.checkBox4);
+            this.groupBox3.Controls.Add(this.cbCheck60AndClose);
+            this.groupBox3.Controls.Add(this.cbCheckBeforeBotStart);
             this.groupBox3.Location = new System.Drawing.Point(3, 3);
             this.groupBox3.Name = "groupBox3";
             this.groupBox3.Size = new System.Drawing.Size(494, 342);
@@ -57,11 +57,11 @@
             // groupBox4
             // 
             this.groupBox4.Controls.Add(this.label3);
-            this.groupBox4.Controls.Add(this.checkBox1);
+            this.groupBox4.Controls.Add(this.cbEnableHostCheck);
             this.groupBox4.Controls.Add(this.label2);
             this.groupBox4.Controls.Add(this.label1);
-            this.groupBox4.Controls.Add(this.textBox1);
-            this.groupBox4.Controls.Add(this.checkBox7);
+            this.groupBox4.Controls.Add(this.tbAddressList);
+            this.groupBox4.Controls.Add(this.cbEnableIPCheck);
             this.groupBox4.Location = new System.Drawing.Point(6, 64);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(482, 272);
@@ -77,20 +77,20 @@
             this.label3.Size = new System.Drawing.Size(265, 39);
             this.label3.TabIndex = 6;
             this.label3.Text = "To allow a Host or IP simply place the \'@\' sign in front\r\n(be sure to place all a" +
-                "llowed hosts/ips before all others)\r\n- Example: @192.168.1.200";
+    "llowed hosts/ips before all others)\r\n- Example: @192.168.1.200";
             // 
-            // checkBox1
+            // cbEnableHostCheck
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckHostCheck;
-            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckHostCheck", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox1.Location = new System.Drawing.Point(6, 42);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(117, 17);
-            this.checkBox1.TabIndex = 5;
-            this.checkBox1.Text = "Enable Host check";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.cbEnableHostCheck.AutoSize = true;
+            this.cbEnableHostCheck.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckHostCheck;
+            this.cbEnableHostCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckHostCheck", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.cbEnableHostCheck.Location = new System.Drawing.Point(6, 42);
+            this.cbEnableHostCheck.Name = "cbEnableHostCheck";
+            this.cbEnableHostCheck.Size = new System.Drawing.Size(117, 17);
+            this.cbEnableHostCheck.TabIndex = 5;
+            this.cbEnableHostCheck.Text = "Enable Host check";
+            this.cbEnableHostCheck.UseVisualStyleBackColor = true;
+            this.cbEnableHostCheck.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
             // 
             // label2
             // 
@@ -100,8 +100,8 @@
             this.label2.Size = new System.Drawing.Size(180, 91);
             this.label2.TabIndex = 4;
             this.label2.Text = "IP:\r\n- Range: 192.168.1.0-192.168.3.255\r\n- Wildcard: 192.168.*.*\r\n               " +
-                "or: 192.1??.*.*\r\nHost:\r\n- Wildcard: *.dynamic.provider.nl\r\n               or: na" +
-                "me.*.provider.nl\r\n";
+    "or: 192.1??.*.*\r\nHost:\r\n- Wildcard: *.dynamic.provider.nl\r\n               or: na" +
+    "me.*.provider.nl\r\n";
             // 
             // label1
             // 
@@ -113,55 +113,55 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "Examples\r\n";
             // 
-            // textBox1
+            // tbAddressList
             // 
-            this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckIpHostList", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.textBox1.Location = new System.Drawing.Point(5, 65);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(285, 152);
-            this.textBox1.TabIndex = 2;
-            this.textBox1.Text = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckIpHostList;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.tbAddressList.DataBindings.Add(new System.Windows.Forms.Binding("Text", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckIpHostList", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.tbAddressList.Location = new System.Drawing.Point(5, 65);
+            this.tbAddressList.Multiline = true;
+            this.tbAddressList.Name = "tbAddressList";
+            this.tbAddressList.Size = new System.Drawing.Size(285, 152);
+            this.tbAddressList.TabIndex = 2;
+            this.tbAddressList.Text = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckIpHostList;
+            this.tbAddressList.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
-            // checkBox7
+            // cbEnableIPCheck
             // 
-            this.checkBox7.AutoSize = true;
-            this.checkBox7.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckIpCheck;
-            this.checkBox7.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckIpCheck", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox7.Location = new System.Drawing.Point(6, 19);
-            this.checkBox7.Name = "checkBox7";
-            this.checkBox7.Size = new System.Drawing.Size(105, 17);
-            this.checkBox7.TabIndex = 1;
-            this.checkBox7.Text = "Enable IP check";
-            this.checkBox7.UseVisualStyleBackColor = true;
-            this.checkBox7.CheckedChanged += new System.EventHandler(this.checkBox7_CheckedChanged);
+            this.cbEnableIPCheck.AutoSize = true;
+            this.cbEnableIPCheck.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckIpCheck;
+            this.cbEnableIPCheck.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckIpCheck", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.cbEnableIPCheck.Location = new System.Drawing.Point(6, 19);
+            this.cbEnableIPCheck.Name = "cbEnableIPCheck";
+            this.cbEnableIPCheck.Size = new System.Drawing.Size(105, 17);
+            this.cbEnableIPCheck.TabIndex = 1;
+            this.cbEnableIPCheck.Text = "Enable IP check";
+            this.cbEnableIPCheck.UseVisualStyleBackColor = true;
+            this.cbEnableIPCheck.CheckedChanged += new System.EventHandler(this.checkBox7_CheckedChanged);
             // 
-            // checkBox5
+            // cbCheck60AndClose
             // 
-            this.checkBox5.AutoSize = true;
-            this.checkBox5.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckIpHostCloseBots;
-            this.checkBox5.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckIpHostCloseBots", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox5.Location = new System.Drawing.Point(12, 42);
-            this.checkBox5.Name = "checkBox5";
-            this.checkBox5.Size = new System.Drawing.Size(275, 17);
-            this.checkBox5.TabIndex = 1;
-            this.checkBox5.Text = "Check every 60 seconds and close all bots on failure";
-            this.checkBox5.UseVisualStyleBackColor = true;
-            this.checkBox5.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
+            this.cbCheck60AndClose.AutoSize = true;
+            this.cbCheck60AndClose.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckIpHostCloseBots;
+            this.cbCheck60AndClose.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckIpHostCloseBots", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.cbCheck60AndClose.Location = new System.Drawing.Point(12, 42);
+            this.cbCheck60AndClose.Name = "cbCheck60AndClose";
+            this.cbCheck60AndClose.Size = new System.Drawing.Size(275, 17);
+            this.cbCheck60AndClose.TabIndex = 1;
+            this.cbCheck60AndClose.Text = "Check every 60 seconds and close all bots on failure";
+            this.cbCheck60AndClose.UseVisualStyleBackColor = true;
+            this.cbCheck60AndClose.CheckedChanged += new System.EventHandler(this.checkBox5_CheckedChanged);
             // 
-            // checkBox4
+            // cbCheckBeforeBotStart
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckIpHost;
-            this.checkBox4.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckIpHost", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox4.Location = new System.Drawing.Point(12, 19);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(136, 17);
-            this.checkBox4.TabIndex = 0;
-            this.checkBox4.Text = "Check before bot starts";
-            this.checkBox4.UseVisualStyleBackColor = true;
-            this.checkBox4.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
+            this.cbCheckBeforeBotStart.AutoSize = true;
+            this.cbCheckBeforeBotStart.Checked = global::YetAnotherRelogger.Properties.Settings.Default.ConnectionCheckIpHost;
+            this.cbCheckBeforeBotStart.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "ConnectionCheckIpHost", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.cbCheckBeforeBotStart.Location = new System.Drawing.Point(12, 19);
+            this.cbCheckBeforeBotStart.Name = "cbCheckBeforeBotStart";
+            this.cbCheckBeforeBotStart.Size = new System.Drawing.Size(136, 17);
+            this.cbCheckBeforeBotStart.TabIndex = 0;
+            this.cbCheckBeforeBotStart.Text = "Check before bot starts";
+            this.cbCheckBeforeBotStart.UseVisualStyleBackColor = true;
+            this.cbCheckBeforeBotStart.CheckedChanged += new System.EventHandler(this.checkBox4_CheckedChanged);
             // 
             // IpHostCheck
             // 
@@ -182,12 +182,12 @@
 
         private System.Windows.Forms.GroupBox groupBox3;
         private System.Windows.Forms.GroupBox groupBox4;
-        private System.Windows.Forms.CheckBox checkBox7;
-        private System.Windows.Forms.CheckBox checkBox5;
-        private System.Windows.Forms.CheckBox checkBox4;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.CheckBox cbEnableIPCheck;
+        private System.Windows.Forms.CheckBox cbCheck60AndClose;
+        private System.Windows.Forms.CheckBox cbCheckBeforeBotStart;
+        private System.Windows.Forms.TextBox tbAddressList;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox cbEnableHostCheck;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
     }

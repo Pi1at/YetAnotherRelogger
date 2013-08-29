@@ -132,6 +132,9 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (Proc.Responding)
                 _lastRepsonse = DateTime.Now;
 
+            if (DateTime.Now.Subtract(Proc.StartTime).TotalMilliseconds < (90 * 1000))
+                return;
+
             if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 30 seconds", Proc.Id);
