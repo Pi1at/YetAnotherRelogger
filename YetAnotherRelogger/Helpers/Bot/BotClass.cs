@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using YetAnotherRelogger.Helpers.Stats;
 using YetAnotherRelogger.Helpers.Tools;
@@ -204,24 +206,25 @@ namespace YetAnotherRelogger.Helpers.Bot
         public object Clone()
         {
             BotClass clone = new BotClass()
-            {
-                AntiIdle = this.AntiIdle,
-                ChartStats = this.ChartStats,
-                CreateWindowsUser = this.CreateWindowsUser,
-                D3PrefsLocation = this.D3PrefsLocation,
-                Demonbuddy = this.Demonbuddy,
-                Description = this.Description,
-                Diablo = this.Diablo,
-                DiabloCloneLocation = this.DiabloCloneLocation,
-                Name = this.Name,
-                ProfileSchedule = this.ProfileSchedule,
-                UseDiabloClone = this.UseDiabloClone,
-                UseWindowsUser = this.UseWindowsUser,
-                Week = this.Week,
-                WindowsUserName = this.WindowsUserName,
-                WindowsUserPassword = this.WindowsUserPassword
-            };
+             {
+                 AntiIdle = this.AntiIdle.Copy(),
+                 ChartStats = this.ChartStats.Copy(),
+                 CreateWindowsUser = this.CreateWindowsUser.Copy(),
+                 D3PrefsLocation = this.D3PrefsLocation.Copy(),
+                 Demonbuddy = this.Demonbuddy.Copy(),
+                 Description = this.Description.Copy(),
+                 Diablo = this.Diablo.Copy(),
+                 DiabloCloneLocation = this.DiabloCloneLocation.Copy(),
+                 Name = this.Name.Copy(),
+                 ProfileSchedule = this.ProfileSchedule.Copy(),
+                 UseDiabloClone = this.UseDiabloClone.Copy(),
+                 UseWindowsUser = this.UseWindowsUser.Copy(),
+                 Week = this.Week.Copy(),
+                 WindowsUserName = this.WindowsUserName.Copy(),
+                 WindowsUserPassword = this.WindowsUserPassword.Copy()
+             };
             return clone;
         }
+
     }
 }

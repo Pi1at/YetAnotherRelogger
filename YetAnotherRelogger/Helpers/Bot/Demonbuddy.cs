@@ -12,6 +12,7 @@ namespace YetAnotherRelogger.Helpers.Bot
     public class DemonbuddyClass
     {
         [XmlIgnore]
+        [NoCopy]
         public BotClass Parent { get; set; }
         [XmlIgnore]
         private Process _proc;

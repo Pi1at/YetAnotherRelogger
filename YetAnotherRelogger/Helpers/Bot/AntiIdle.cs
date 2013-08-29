@@ -7,6 +7,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class AntiIdleClass
     {
+        [NoCopy]
         public BotClass Parent;
         public BotStats Stats;
         public DateTime LastStats;

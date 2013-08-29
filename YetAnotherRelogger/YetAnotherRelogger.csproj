@@ -151,6 +151,7 @@
     <Compile Include="Forms\Wizard\SetAffinity.Designer.cs">
       <DependentUpon>SetAffinity.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\Attributes\NoCopy.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\DiabloClone.cs" />
     <Compile Include="Helpers\Enums\Loglevel.cs" />
@@ -241,6 +242,7 @@
     <Compile Include="Helpers\Hotkeys\SelectAction.Designer.cs">
       <DependentUpon>SelectAction.cs</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ObjectExtensions.cs" />
     <Compile Include="Helpers\ProfileKickstart.cs" />
     <Compile Include="Helpers\Bot\ProfileSchedule.cs" />
     <Compile Include="Helpers\BuddyAuth.cs" />

@@ -701,7 +701,7 @@
             this.btnRestartAllDb.TabIndex = 8;
             this.btnRestartAllDb.Text = "Restart All DB";
             this.btnRestartAllDb.UseVisualStyleBackColor = true;
-            this.btnRestartAllDb.Click += new System.EventHandler(this.restartAllDb_Click);
+            this.btnRestartAllDb.Click += new System.EventHandler(this.btnRestartAllDb_Click);
             // 
             // btnOpenLog
             // 

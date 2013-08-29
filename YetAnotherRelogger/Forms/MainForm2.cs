@@ -307,7 +307,7 @@ namespace YetAnotherRelogger.Forms
             }
         }
 
-        private void restartAllDb_Click(object sender, EventArgs e)
+        private void btnRestartAllDb_Click(object sender, EventArgs e)
         {
             m_RestartBotsThread = new Thread(RestartAllBots);
             m_RestartBotsThread.IsBackground = true;
@@ -331,12 +331,12 @@ namespace YetAnotherRelogger.Forms
                     foreach (var bot in runningBots)
                     {
                         bot.Demonbuddy.Stop();
-                        Thread.Sleep(500);
+                        //Thread.Sleep(500);
                     }
-                    foreach (var bot in runningBots)
-                    {
-                        bot.Demonbuddy.Start();
-                    }
+                    //foreach (var bot in runningBots)
+                    //{
+                    //    bot.Demonbuddy.Start();
+                    //}
                     Relogger.Instance.Start();
                 }
             }
@@ -498,7 +498,10 @@ namespace YetAnotherRelogger.Forms
 
                 BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
                 BotSettings.Instance.Save();
+                // Load settings
                 BotSettings.Instance.Load();
+                Settings.Default.Reload();
+                
                 Program.Mainform.UpdateGridView();
                 dataGridView1.Rows[idx].Selected = true;
             }

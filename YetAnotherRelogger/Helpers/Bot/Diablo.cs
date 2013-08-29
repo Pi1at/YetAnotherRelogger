@@ -14,6 +14,7 @@ namespace YetAnotherRelogger.Helpers.Bot
     public class DiabloClass
     {
         [XmlIgnore]
+        [NoCopy]
         public BotClass Parent { get; set; }
 
         public string Username { get; set; }
