@@ -313,18 +313,6 @@ namespace YetAnotherRelogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string ISBoxerPath {
-            get {
-                return ((string)(this["ISBoxerPath"]));
-            }
-            set {
-                this["ISBoxerPath"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool ConnectionCheckPing {
             get {
@@ -680,6 +668,18 @@ namespace YetAnotherRelogger.Properties {
             }
             set {
                 this["StatsEnabled"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\InnerSpace\\InnerSpace.exe")]
+        public string ISBoxerPath {
+            get {
+                return ((string)(this["ISBoxerPath"]));
+            }
+            set {
+                this["ISBoxerPath"] = value;
             }
         }
     }

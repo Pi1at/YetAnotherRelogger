@@ -74,9 +74,6 @@
     <Setting Name="AutoPosForceWorkingAreaH" Type="System.Decimal" Scope="User">
       <Value Profile="(Default)">200</Value>
     </Setting>
-    <Setting Name="ISBoxerPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
-    </Setting>
     <Setting Name="ConnectionCheckPing" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -166,6 +163,9 @@
     </Setting>
     <Setting Name="StatsEnabled" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="ISBoxerPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C:\Program Files (x86)\InnerSpace\InnerSpace.exe</Value>
     </Setting>
   </Settings>
 </SettingsFile>
