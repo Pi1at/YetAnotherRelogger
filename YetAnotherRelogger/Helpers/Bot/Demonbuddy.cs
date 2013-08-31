@@ -137,7 +137,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
-                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 30 seconds", Proc.Id);
+                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 90 seconds", Proc.Id);
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Killing process", Proc.Id);
                 try
                 {

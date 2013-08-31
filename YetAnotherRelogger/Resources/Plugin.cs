@@ -68,6 +68,7 @@ using Zeta.CommonBot.Settings;
 using Zeta.TreeSharp;
 using UIElement = Zeta.Internals.UIElement;
 using System.Windows.Threading;
+using System.Collections.Generic;
 
 namespace YARPLUGIN
 {
@@ -105,8 +106,10 @@ namespace YARPLUGIN
                 new Regex(@"Traceback (most recent call last):", RegexOptions.IgnoreCase | RegexOptions.Compiled),
             };
 
-        private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game...", RegexOptions.Compiled);
-        private static readonly Regex pluginsCompiled = new Regex(@"There are \d+ plugins.", RegexOptions.Compiled);
+        private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game", RegexOptions.Compiled);
+        private static readonly Regex pluginsCompiled = new Regex(@"There are \d+ plugins\.", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
+        private static readonly Regex logMessageCapture = new Regex(@"^\[(?<Timestamp>[\d:\.]+) (?<LogLevel>[NDVE])\] (?<Message>.*)$", RegexOptions.Compiled);
+        private static readonly Regex yarRegex = new Regex(@"^\[YetAnotherRelogger\].*", RegexOptions.Compiled);
         private static readonly string d3Exit = "Diablo III Exited";
         private static readonly string getCellWeightsException = "Zeta.Navigation.MainGridProvider.GetCellWeights";
 
@@ -169,6 +172,7 @@ namespace YARPLUGIN
             _yarThread.Start();
 
             Send("Initialized");
+            Log("YAR Plugin Initialized");
         }
 
         public void OnShutdown()
@@ -367,13 +371,27 @@ namespace YARPLUGIN
                     // Scan log items
                     foreach (Logging.LogMessage lm in buffer.Where(x => x != null))
                     {
-                        count++; // add to counter
                         string msg = lm.Message;
+                        if (yarRegex.IsMatch(msg))
+                            continue;
+
+                        count++; // add to counter
                         // Log level specific scanning to prevent uneeded cpu usage
                         switch (lm.Level)
                         {
                             case LogLevel.Diagnostic:
-                                if (!_allPluginsCompiled && FindPluginsCompiled(msg)) continue; // Find all plugins compiled line
+                                var m = pluginsCompiled.Match(msg);
+                                if (m.Success)
+                                {
+                                    Log("Plugins Compiled matched");
+                                    _allPluginsCompiled = true;
+                                    Send("AllCompiled"); // tell relogger about all plugin compile so the relogger can tell what to do next
+                                    continue;
+                                }
+                                // Find all plugins compiled line
+                                //if (!_allPluginsCompiled && FindPluginsCompiled(msg))
+                                //    continue;
+
                                 // Find Start stop button click
                                 if (msg.Equals("Start/Stop Button Clicked!") && !BotMain.IsRunning)
                                 {
@@ -408,7 +426,7 @@ namespace YARPLUGIN
                                 {
                                     Send("CrashTender " + ProfileManager.CurrentProfile.Path); // tell relogger to "crash tender" :)
                                     breakloop = true; // break out of loop
-                                    break; 
+                                    break;
                                 }
                                 // YAR compatibility with other plugins
                                 if (ReCompatibility.Any(re => re.IsMatch(msg)))
@@ -442,7 +460,6 @@ namespace YARPLUGIN
 
         public bool FindPluginsCompiled(string msg)
         {
-            //var m = new Regex(@"There are \d+ plugins.").Match(msg);
             var m = pluginsCompiled.Match(msg);
             if (m.Success)
             {
@@ -693,7 +710,17 @@ namespace YARPLUGIN
         {
             PluginContainer test;
             DateTime limit;
-            foreach (var plugin in PluginManager.Plugins)
+
+            var disabledPlugins = PluginManager.Plugins.Where(p => !p.Enabled);
+            if (!disabledPlugins.Any())
+                return;
+
+            Log("Disabled plugins found. User requested all plugins be enabled through YAR. Stopping bot to enable plugins...");
+
+            BotMain.Stop();
+            Thread.Sleep(1000);
+
+            foreach (var plugin in disabledPlugins)
             {
                 try
                 {
@@ -716,6 +743,9 @@ namespace YARPLUGIN
                     LogException(ex);
                 }
             }
+
+            Log("Finished enabling plugins. Starting the bot...");
+            BotMain.Start();
         }
         #endregion
 

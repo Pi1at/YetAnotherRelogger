@@ -7,11 +7,11 @@ using YetAnotherRelogger;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle(null)]
+[assembly: AssemblyTitle("YetAnotherRelogger")]
 [assembly: AssemblyDescription(null)]
 [assembly: AssemblyConfiguration(null)]
 [assembly: AssemblyCompany(null)]
-[assembly: AssemblyProduct(null)]
+[assembly: AssemblyProduct("YetAnotherRelogger")]
 [assembly: AssemblyCopyright(null)]
 [assembly: AssemblyTrademark(null)]
 [assembly: AssemblyCulture(null)]
