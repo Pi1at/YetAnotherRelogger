@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
-using System.ComponentModel;
 using YetAnotherRelogger.Helpers.Enums;
 using YetAnotherRelogger.Helpers.Tools;
-using YetAnotherRelogger.Properties;
 
 
 namespace YetAnotherRelogger.Helpers.Bot
@@ -23,23 +22,31 @@ namespace YetAnotherRelogger.Helpers.Bot
         public int MaxRandomTime { get; set; }
         public BindingList<Profile> Profiles { get; set; }
         public bool Random { get; set; }
-        
 
-        [XmlIgnore] public Profile Current;
-        [XmlIgnore] public int Count;
-        [XmlIgnore] public int MaxRuns { get { return Current.Runs + _addRuns; } }
-        [XmlIgnore] public int MaxTime { get { return Current.Minutes + _addTime; } }
-        [XmlIgnore] public DateTime StartTime;
-        [XmlIgnore] private int _addRuns;
-        [XmlIgnore] private int _addTime;
+
+        [XmlIgnore]
+        public Profile Current;
+        [XmlIgnore]
+        public int Count;
+        [XmlIgnore]
+        public int MaxRuns { get { return Current.Runs + _addRuns; } }
+        [XmlIgnore]
+        public int MaxTime { get { return Current.Minutes + _addTime; } }
+        [XmlIgnore]
+        public DateTime StartTime;
+        [XmlIgnore]
+        private int _addRuns;
+        [XmlIgnore]
+        private int _addTime;
 
         [XmlIgnore]
         public string GetProfile
         {
             get
             {
-                // Stay on same profile when not ready yet
-                if (!Current.IsDone) return Current.Location;
+                // Stay on same profile when not ready yet, or if this is the only profile
+                if (!Current.IsDone)
+                    return ProfileKickstart.GenerateKickstart(Current);
 
                 var rnd = new MersenneTwister();
 
@@ -61,7 +68,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
                 Logger.Instance.Write("Current profile: \"{0}\" Runs:{1} Time:{2} mintues ({3})", Current.Name, MaxRuns, MaxTime, Current.Location);
 
-                return Settings.Default.UseKickstart ? ProfileKickstart.GenerateKickstart(Current) : Current.Location;
+                return ProfileKickstart.GenerateKickstart(Current);
             }
         }
 
@@ -93,6 +100,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         public int Runs { get; set; }
         public int Minutes { get; set; }
         public MonsterPower MonsterPowerLevel { get; set; }
-        [XmlIgnore] public bool IsDone { get; set; }
+        [XmlIgnore]
+        public bool IsDone { get; set; }
     }
 }

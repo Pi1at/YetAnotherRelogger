@@ -14,13 +14,13 @@ namespace YetAnotherRelogger.Helpers
         private const string YarKickstart = @"<!-- This is a automaticly generated profile by YetAnotherRelogger
 It is used to ensure a profile starts without causing DB to choken it -->
 <Profile>
-    <Name>YAR Profile Kickstart: {profile}</Name>
-    <KillMonsters>True</KillMonsters>
-    <PickupLoot>True</PickupLoot>
-    {gameparams}
-        <Order>
-            <LoadProfile profile=""{profile_path}"" />
-        </Order>
+  <Name>YAR Profile Kickstart: {profile}</Name>
+  <KillMonsters>True</KillMonsters>
+  <PickupLoot>True</PickupLoot>
+  {gameparams}
+    <Order>
+      <LoadProfile profile=""{profile_path}"" />
+    </Order>
 </Profile>";
         public static string GenerateKickstart(Profile profile, bool tmpkickstart = false)
         {
