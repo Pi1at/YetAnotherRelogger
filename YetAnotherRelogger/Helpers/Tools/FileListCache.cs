@@ -5,18 +5,19 @@ namespace YetAnotherRelogger.Helpers.Tools
 {
     public class FileListCache
     {
+        private readonly string _rootpath;
+        public HashSet<MyFile> FileList;
+
         public FileListCache(string path)
         {
             _rootpath = path;
             updatelist(path);
         }
 
-        public HashSet<MyFile> FileList;
-        private readonly string _rootpath;
-
         private void updatelist(string path, bool newlist = true)
         {
-            if (newlist) FileList = new HashSet<MyFile>();
+            if (newlist)
+                FileList = new HashSet<MyFile>();
             if (!path.Equals(_rootpath))
             {
                 FileList.Add(new MyFile
@@ -25,7 +26,7 @@ namespace YetAnotherRelogger.Helpers.Tools
                     directory = true
                 });
             }
-            foreach (var file in Directory.GetFiles(path))
+            foreach (string file in Directory.GetFiles(path))
             {
                 FileList.Add(new MyFile
                 {
@@ -34,7 +35,7 @@ namespace YetAnotherRelogger.Helpers.Tools
                 });
             }
 
-            foreach (var dir in Directory.GetDirectories(path))
+            foreach (string dir in Directory.GetDirectories(path))
                 updatelist(dir, false);
         }
 

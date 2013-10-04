@@ -139,7 +139,7 @@ namespace YARPLUGIN
         public Window DisplayWindow { get { return null; } }
         private bool _allPluginsCompiled;
         private Thread _yarThread;
-        private Thread _scanlogthread;
+
         private BotStats _bs;
         private bool _pulseFix;
 
@@ -160,6 +160,13 @@ namespace YARPLUGIN
         #region Plugin Events
         public void OnInitialize()
         {
+            // Force enable YAR
+            foreach (var plugin in PluginManager.Plugins)
+            {
+                if (!plugin.Enabled && plugin.Plugin.Name == this.Name)
+                    plugin.Enabled = true;
+            }
+
             _bs = new BotStats();
 
             lmd = new Logging.LogMessageDelegate(Logging_OnLogMessage);
@@ -185,7 +192,9 @@ namespace YARPLUGIN
         Logging.LogMessageDelegate lmd;
         public void OnEnabled()
         {
-
+            Pulsator.OnPulse += Pulse_Main;
+            Pulsator.OnPulse += Pulse_MessageQueue;
+            Pulsator.OnPulse += Pulse_ScanLogWorker;
 
             if (_yarThread == null || (_yarThread != null && !_yarThread.IsAlive))
             {
@@ -198,6 +207,10 @@ namespace YARPLUGIN
 
         public void OnDisabled()
         {
+            Pulsator.OnPulse -= Pulse_Main;
+            Pulsator.OnPulse -= Pulse_MessageQueue;
+            Pulsator.OnPulse -= Pulse_ScanLogWorker;
+
             Log("Disabled!");
 
             // Pulsefix disabled plugin
@@ -215,8 +228,15 @@ namespace YARPLUGIN
 
         private static Stopwatch pulseTimer = new Stopwatch();
 
-        public void OnPulse()
+        private void Pulse_Main(object sender, EventArgs e)
         {
+            if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
+                return;
+
+            // Handle errors and other strange situations
+            ErrorHandling();
+
+            // YAR Health Check
             _pulseCheck = true;
             _bs.LastPulse = DateTime.Now.Ticks;
 
@@ -247,7 +267,10 @@ namespace YARPLUGIN
 
             if (pulseTimer.ElapsedMilliseconds > 1000)
                 pulseTimer.Restart();
+        }
 
+        public void OnPulse()
+        {
             using (ZetaDia.Memory.AcquireFrame())
             {
                 if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
@@ -289,68 +312,43 @@ namespace YARPLUGIN
         #endregion
 
         #region Logging Monitor
-
+        Queue<ReadOnlyCollection<Logging.LogMessage>> MessageQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
         void Logging_OnLogMessage(ReadOnlyCollection<Logging.LogMessage> messages)
         {
-            try
-            {
-                // Create new log buffer
-                if (_logBuffer == null)
-                    _logBuffer = messages.ToArray();
-                else
-                {
-                    // Append to existing log buffer
-                    lock (_logBuffer)
-                    {
-                        var newbuffer = _logBuffer.Concat(messages.ToArray()).ToArray();
-                        _logBuffer = newbuffer;
-                    }
-                }
-
-                // Start Scan log thread with lower priority
-                if (_scanlogthread == null || (_scanlogthread != null && !_scanlogthread.IsAlive))
-                {
-                    try
-                    {
-                        ThreadPriority priority;
-                        switch (Process.GetCurrentProcess().PriorityClass)
-                        {
-                            case ProcessPriorityClass.High:
-                                priority = ThreadPriority.AboveNormal;
-                                break;
-                            case ProcessPriorityClass.AboveNormal:
-                                priority = ThreadPriority.Normal;
-                                break;
-                            default:
-                                priority = ThreadPriority.BelowNormal;
-                                break;
-                        }
-
-                        _scanlogthread = new Thread(ScanLogWorker)
-                                             {
-                                                 Priority = priority,
-                                                 IsBackground = true
-                                             };
-                        _scanlogthread.Start();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log("Failed to assign priority to scanlogthread:");
-                        LogException(ex);
-
-                        Log("Starting scanlogthread with same priority");
-                        _scanlogthread = new Thread(ScanLogWorker) { IsBackground = true };
-                        _scanlogthread.Start();
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                LogException(ex);
-            }
+            MessageQueue.Enqueue(messages);
         }
+        void Pulse_MessageQueue(object sender, EventArgs e)
+        {
+            Queue<ReadOnlyCollection<Logging.LogMessage>> localQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
+            lock (MessageQueue)
+                while (MessageQueue.Any())
+                    localQueue.Enqueue(MessageQueue.Dequeue());
+
+            foreach (var messages in localQueue)
+                try
+                {
+                    // Create new log buffer
+                    if (_logBuffer == null)
+                        _logBuffer = messages.ToArray();
+                    else
+                    {
+                        // Append to existing log buffer
+                        lock (_logBuffer)
+                        {
+                            var newbuffer = _logBuffer.Concat(messages.ToArray()).ToArray();
+                            _logBuffer = newbuffer;
+                        }
+                    }
+
+                }
+                catch (Exception ex)
+                {
+                    LogException(ex);
+                }
+        }
+
         private Logging.LogMessage[] _logBuffer;
-        private void ScanLogWorker()
+        private void Pulse_ScanLogWorker(object sender, EventArgs e)
         {
             // Keep Thread alive while log buffer is not empty
             while (_logBuffer != null)
@@ -489,9 +487,7 @@ namespace YARPLUGIN
                 }
 
                 _bs.IsRunning = BotMain.IsRunning;
-
-                // Handle errors and other strange situations
-                ErrorHandling();
+                _bs.IsPaused = BotMain.IsPaused;
 
                 // Send stats
                 Send("XML:" + _bs.ToXmlString(), xml: true);

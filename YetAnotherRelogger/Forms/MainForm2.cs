@@ -6,29 +6,35 @@ using System.Drawing;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using YetAnotherRelogger.Forms.SettingsTree;
+using YetAnotherRelogger.Forms.Wizard;
 using YetAnotherRelogger.Helpers;
 using YetAnotherRelogger.Helpers.Bot;
 using YetAnotherRelogger.Helpers.Hotkeys;
 using YetAnotherRelogger.Helpers.Tools;
 using YetAnotherRelogger.Properties;
+using AutoPosition = YetAnotherRelogger.Forms.SettingsTree.AutoPosition;
+using ConnectionCheck = YetAnotherRelogger.Helpers.ConnectionCheck;
+using General = YetAnotherRelogger.Forms.SettingsTree.General;
+using ProfileKickstart = YetAnotherRelogger.Forms.SettingsTree.ProfileKickstart;
 
 namespace YetAnotherRelogger.Forms
 {
     public partial class MainForm2 : Form
     {
+        private bool bClose;
+        private Thread m_RestartBotsThread;
+        private ContextMenu m_menu;
+
         public MainForm2()
         {
             InitializeComponent();
-            treeView1.NodeMouseClick += new TreeNodeMouseClickEventHandler(treeView1_NodeMouseClick);
+            treeView1.NodeMouseClick += treeView1_NodeMouseClick;
         }
-
-        private ContextMenu m_menu;
-        private bool bClose;
 
         private void MainForm2_Load(object sender, EventArgs e)
         {
-
-            this.Text = string.Format("R-YAR [{0}] BETA", Program.VERSION);
+            Text = string.Format("R-YAR [{0}] BETA", Program.VERSION);
 
             Logger.Instance.WriteGlobal("rrrix's Yet Another Relogger fork Version {0}", Program.VERSION);
             // Check if we are run as admin
@@ -39,33 +45,34 @@ namespace YetAnotherRelogger.Forms
             // this is used for Windows autostart in a sutation where user moved/renamed the relogger
             if (Settings.Default.StartWithWindows && !Settings.Default.Location.Equals(Application.ExecutablePath))
             {
-                Logger.Instance.WriteGlobal("Application current path does not match last saved path. Updating registy key.");
+                Logger.Instance.WriteGlobal(
+                    "Application current path does not match last saved path. Updating registy key.");
                 // Update to current location
                 Settings.Default.Location = Application.ExecutablePath;
                 // Update Regkey
                 RegistryClass.WindowsAutoStartAdd();
             }
 
-            this.Resize += new EventHandler(MainForm2_Resize);
+            Resize += MainForm2_Resize;
 
             // Set stuff for list of bots
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.MultiSelect = false;
-            dataGridView1.MouseUp += new MouseEventHandler(dataGridView1_MouseUp);
-            dataGridView1.CellValueChanged += new DataGridViewCellEventHandler(dataGridView1_CellValueChanged);
+            dataGridView1.MouseUp += dataGridView1_MouseUp;
+            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
             UpdateGridView();
 
             // OnClose
-            Closing += new CancelEventHandler(MainForm2_Closing);
+            Closing += MainForm2_Closing;
 
             // TrayIcon
             ToggleIcon();
-            TrayIcon.Icon = this.Icon;
-            TrayIcon.DoubleClick += new EventHandler(TrayIcon_DoubleClick);
+            TrayIcon.Icon = Icon;
+            TrayIcon.DoubleClick += TrayIcon_DoubleClick;
             m_menu = new ContextMenu();
-            m_menu.MenuItems.Add(0, new MenuItem("Show", new EventHandler(Show_Click)));
-            m_menu.MenuItems.Add(1, new MenuItem("Hide", new EventHandler(Hide_Click)));
-            m_menu.MenuItems.Add(2, new MenuItem("Exit", new EventHandler(Exit_Click)));
+            m_menu.MenuItems.Add(0, new MenuItem("Show", Show_Click));
+            m_menu.MenuItems.Add(1, new MenuItem("Hide", Hide_Click));
+            m_menu.MenuItems.Add(2, new MenuItem("Exit", Exit_Click));
             TrayIcon.ContextMenu = m_menu;
 
             // Minimize on start
@@ -86,83 +93,33 @@ namespace YetAnotherRelogger.Forms
 
         protected void MainForm2_Closing(object sender, CancelEventArgs e)
         {
-            if (!bClose && Properties.Settings.Default.CloseToTray)
+            if (!bClose && Settings.Default.CloseToTray)
             {
                 e.Cancel = true;
                 HideMe();
                 ToggleIcon();
                 ShowNotification("Yet Another Relogger", "Is still running");
-
             }
         }
 
-        #region Tray Icon
-
-        public void ShowNotification(string title, string msg, ToolTipIcon icon = ToolTipIcon.None)
+        private void MainForm2_Resize(object sender, EventArgs e)
         {
-            if (!Properties.Settings.Default.ShowNotification || !TrayIcon.Visible) return;
-            TrayIcon.ShowBalloonTip(500, title, msg, icon);
-        }
-        public void ToggleIcon()
-        {
-            TrayIcon.Visible = (Properties.Settings.Default.AlwaysShowTray ||
-                                (!this.Visible || this.WindowState == FormWindowState.Minimized));
-        }
-        protected void Exit_Click(Object sender, EventArgs e)
-        {
-            bClose = true;
-            this.Close();
-        }
-        protected void Hide_Click(Object sender, EventArgs e)
-        {
-            ToggleIcon();
-            ShowNotification("Yet Another Relogger", "Is still running");
-            HideMe();
-        }
-        protected void Show_Click(Object sender, EventArgs e)
-        {
-            ShowMe();
-            WinAPI.ShowWindow(this.Handle, WinAPI.WindowShowStyle.ShowNormal);
-            ToggleIcon();
-        }
-        void TrayIcon_DoubleClick(object sender, EventArgs e)
-        {
-            ShowMe();
-            WinAPI.ShowWindow(this.Handle, WinAPI.WindowShowStyle.ShowNormal);
-            ToggleIcon();
-        }
-
-        void ShowMe()
-        {
-            ShowInTaskbar = true;
-            Visible = true;
-            Show();
-        }
-        void HideMe()
-        {
-            ShowInTaskbar = false;
-            Visible = false;
-            Hide();
-        }
-        #endregion
-
-        void MainForm2_Resize(object sender, EventArgs e)
-        {
-            if (FormWindowState.Minimized == this.WindowState && Properties.Settings.Default.MinimizeToTray)
+            if (FormWindowState.Minimized == WindowState && Settings.Default.MinimizeToTray)
             {
                 ToggleIcon();
                 ShowNotification("Yet Another Relogger", "Is still running");
-                this.Hide();
+                Hide();
             }
         }
 
-        void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == dataGridView1.Columns["isEnabled"].Index)
             {
                 try
                 {
-                    BotSettings.Instance.Bots[e.RowIndex].IsEnabled = (bool)dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+                    BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
+                        (bool) dataGridView1[e.ColumnIndex, e.RowIndex].Value;
                     BotSettings.Instance.Save();
                 }
                 catch
@@ -171,9 +128,9 @@ namespace YetAnotherRelogger.Forms
             }
         }
 
-        void dataGridView1_MouseUp(object sender, MouseEventArgs e)
+        private void dataGridView1_MouseUp(object sender, MouseEventArgs e)
         {
-            var hitTestInfo = dataGridView1.HitTest(e.X, e.Y);
+            DataGridView.HitTestInfo hitTestInfo = dataGridView1.HitTest(e.X, e.Y);
             if (hitTestInfo.Type == DataGridViewHitTestType.Cell)
             {
                 if (e.Button == MouseButtons.Right)
@@ -188,7 +145,7 @@ namespace YetAnotherRelogger.Forms
             }
         }
 
-        void selectRow(int index)
+        private void selectRow(int index)
         {
             foreach (DataGridViewRow row in dataGridView1.Rows)
                 row.Selected = false;
@@ -246,9 +203,11 @@ namespace YetAnotherRelogger.Forms
             {
                 ConnectionCheck.Reset();
                 // Start All
-                foreach (var row in dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool)row.Cells["isEnabled"].Value))
+                foreach (
+                    DataGridViewRow row in
+                        dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool) row.Cells["isEnabled"].Value))
                 {
-                    BotSettings.Instance.Bots[row.Index].Start(force: checkBoxForce.Checked);
+                    BotSettings.Instance.Bots[row.Index].Start(checkBoxForce.Checked);
                 }
             }
         }
@@ -258,7 +217,7 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Open new bot wizard
-                var wm = new Wizard.WizardMain { TopMost = true };
+                var wm = new WizardMain {TopMost = true};
                 wm.ShowDialog();
             }
         }
@@ -270,7 +229,7 @@ namespace YetAnotherRelogger.Forms
                 // Edit bot
                 if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
                     return;
-                var wm = new Wizard.WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
+                var wm = new WizardMain(dataGridView1.CurrentRow.Index) {TopMost = true};
 
                 wm.ShowDialog();
             }
@@ -278,10 +237,12 @@ namespace YetAnotherRelogger.Forms
 
         private void btnClose_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show(this, "Are you sure you want to close Yet Another Relogger?", "Close Yet Another Relogger?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (
+                MessageBox.Show(this, "Are you sure you want to close Yet Another Relogger?",
+                    "Close Yet Another Relogger?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 bClose = true;
-                this.Close();
+                Close();
             }
         }
 
@@ -299,7 +260,7 @@ namespace YetAnotherRelogger.Forms
             {
                 Relogger.Instance.Stop();
                 // Stop All
-                foreach (var bot in BotSettings.Instance.Bots)
+                foreach (BotClass bot in BotSettings.Instance.Bots)
                 {
                     bot.Stop();
                 }
@@ -315,20 +276,19 @@ namespace YetAnotherRelogger.Forms
             btnRestartAllDb.Enabled = false;
         }
 
-        private Thread m_RestartBotsThread;
         private void RestartAllBots()
         {
             lock (BotSettings.Instance)
             {
-                List<BotClass> runningBots = new List<BotClass>();
-                foreach (var bot in BotSettings.Instance.Bots.Where(b => b.IsRunning))
+                var runningBots = new List<BotClass>();
+                foreach (BotClass bot in BotSettings.Instance.Bots.Where(b => b.IsRunning))
                 {
                     runningBots.Add(bot);
                 }
                 if (runningBots.Any())
                 {
                     Relogger.Instance.Stop();
-                    foreach (var bot in runningBots)
+                    foreach (BotClass bot in runningBots)
                     {
                         bot.Demonbuddy.Stop();
                         //Thread.Sleep(500);
@@ -344,18 +304,21 @@ namespace YetAnotherRelogger.Forms
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
-        {// Start
+        {
+// Start
             BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Start();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
-        {// Stop
+        {
+// Stop
             if (BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].IsStarted)
                 BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Stop();
         }
 
         private void statsToolStripMenuItem_Click(object sender, EventArgs e)
-        {// Bot Stats
+        {
+// Bot Stats
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -363,7 +326,9 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Delete Bot
-                if (MessageBox.Show("Are you sure you want to delete this bot?", "Delete bot", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                if (
+                    MessageBox.Show("Are you sure you want to delete this bot?", "Delete bot", MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question) == DialogResult.Yes)
                 {
                     BotSettings.Instance.Bots.RemoveAt(dataGridView1.CurrentRow.Index);
                     BotSettings.Instance.Save();
@@ -377,10 +342,11 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Edit bot
-                var wm = new Wizard.WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
+                var wm = new WizardMain(dataGridView1.CurrentRow.Index) {TopMost = true};
                 wm.ShowDialog();
             }
         }
+
         private void forceStartToolStripMenuItem_Click(object sender, EventArgs e)
         {
             lock (BotSettings.Instance)
@@ -389,60 +355,9 @@ namespace YetAnotherRelogger.Forms
                 BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Start(true);
             }
         }
-        #region Settings Tree
-
-        public UserControl UcSetting = new UserControl(); // holds current settings user control
-        void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-        {
-            if (e.Button != MouseButtons.Left) return;
-
-            var tmp = new UserControl();
-            switch (e.Node.Name)
-            {
-                case "General": // General
-                    tmp = new SettingsTree.General();
-                    break;
-                case "AutoPos": // Auto postion
-                    tmp = new SettingsTree.AutoPosition();
-                    break;
-                case "PingCheck":
-                case "ConnectionCheck":
-                    tmp = new SettingsTree.ConnectionCheck();
-                    break;
-                case "IpHostCheck":
-                    tmp = new SettingsTree.IpHostCheck();
-                    break;
-                case "AntiIdle":
-                    tmp = new SettingsTree.AntiIdle();
-                    break;
-                case "ProfileKickstart":
-                    tmp = new SettingsTree.ProfileKickstart();
-                    break;
-                case "HotKeys":
-                    tmp = new SettingsTree.HotKeys();
-                    break;
-                case "Stats":
-                    tmp = new SettingsTree.Stats();
-                    break;
-            }
-
-            // Check if new user control should be displayed
-            if (!tmp.Name.Equals(UcSetting.Name))
-            {
-                //var c = tabControl1.TabPages[1].Controls;
-                var c = SettingsPanel.Controls;
-                if (c.Contains(UcSetting)) c.Remove(UcSetting);
-
-                UcSetting = tmp;
-                //_ucSetting.Left = 180;
-                c.Add(UcSetting);
-            }
-        }
-        #endregion
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
         }
 
         private void btnPause_Click(object sender, EventArgs e)
@@ -501,7 +416,7 @@ namespace YetAnotherRelogger.Forms
                 // Load settings
                 BotSettings.Instance.Load();
                 Settings.Default.Reload();
-                
+
                 Program.Mainform.UpdateGridView();
                 dataGridView1.Rows[idx].Selected = true;
             }
@@ -510,7 +425,7 @@ namespace YetAnotherRelogger.Forms
 
         private void btnOpenLog_Click(object sender, EventArgs e)
         {
-            bool shiftkey = (Control.ModifierKeys & Keys.Shift) != 0;
+            bool shiftkey = (ModifierKeys & Keys.Shift) != 0;
 
             if (shiftkey)
             {
@@ -538,6 +453,117 @@ namespace YetAnotherRelogger.Forms
             }
         }
 
+        #region Settings Tree
 
+        public UserControl UcSetting = new UserControl(); // holds current settings user control
+
+        private void treeView1_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left)
+                return;
+
+            var tmp = new UserControl();
+            switch (e.Node.Name)
+            {
+                case "General": // General
+                    tmp = new General();
+                    break;
+                case "AutoPos": // Auto postion
+                    tmp = new AutoPosition();
+                    break;
+                case "PingCheck":
+                case "ConnectionCheck":
+                    tmp = new SettingsTree.ConnectionCheck();
+                    break;
+                case "IpHostCheck":
+                    tmp = new IpHostCheck();
+                    break;
+                case "AntiIdle":
+                    tmp = new AntiIdle();
+                    break;
+                case "ProfileKickstart":
+                    tmp = new ProfileKickstart();
+                    break;
+                case "HotKeys":
+                    tmp = new HotKeys();
+                    break;
+                case "Stats":
+                    tmp = new Stats();
+                    break;
+            }
+
+            // Check if new user control should be displayed
+            if (!tmp.Name.Equals(UcSetting.Name))
+            {
+                //var c = tabControl1.TabPages[1].Controls;
+                Control.ControlCollection c = SettingsPanel.Controls;
+                if (c.Contains(UcSetting))
+                    c.Remove(UcSetting);
+
+                UcSetting = tmp;
+                //_ucSetting.Left = 180;
+                c.Add(UcSetting);
+            }
+        }
+
+        #endregion
+
+        #region Tray Icon
+
+        public void ShowNotification(string title, string msg, ToolTipIcon icon = ToolTipIcon.None)
+        {
+            if (!Settings.Default.ShowNotification || !TrayIcon.Visible)
+                return;
+            TrayIcon.ShowBalloonTip(500, title, msg, icon);
+        }
+
+        public void ToggleIcon()
+        {
+            TrayIcon.Visible = (Settings.Default.AlwaysShowTray ||
+                                (!Visible || WindowState == FormWindowState.Minimized));
+        }
+
+        protected void Exit_Click(Object sender, EventArgs e)
+        {
+            bClose = true;
+            Close();
+        }
+
+        protected void Hide_Click(Object sender, EventArgs e)
+        {
+            ToggleIcon();
+            ShowNotification("Yet Another Relogger", "Is still running");
+            HideMe();
+        }
+
+        protected void Show_Click(Object sender, EventArgs e)
+        {
+            ShowMe();
+            WinAPI.ShowWindow(Handle, WinAPI.WindowShowStyle.ShowNormal);
+            ToggleIcon();
+        }
+
+        private void TrayIcon_DoubleClick(object sender, EventArgs e)
+        {
+            ShowMe();
+            WinAPI.ShowWindow(Handle, WinAPI.WindowShowStyle.ShowNormal);
+            ToggleIcon();
+        }
+
+        private void ShowMe()
+        {
+            ShowInTaskbar = true;
+            Visible = true;
+            Show();
+        }
+
+        private void HideMe()
+        {
+            ShowInTaskbar = false;
+            Visible = false;
+            Hide();
+        }
+
+        #endregion
     }
 }

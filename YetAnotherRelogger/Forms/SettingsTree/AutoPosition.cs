@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using YetAnotherRelogger.Helpers;
@@ -13,16 +12,18 @@ namespace YetAnotherRelogger.Forms.SettingsTree
         public AutoPosition()
         {
             InitializeComponent();
-            dataGridView1.CellValueChanged += new DataGridViewCellEventHandler(dataGridView1_CellValueChanged);
+            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
         }
 
-        void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.ColumnIndex == dataGridView1.Columns["Enabled"].Index && dataGridView1.SelectedCells.Count > 0)
             {
                 try
                 {
-                    Settings.Default.AutoPosScreens.FirstOrDefault(x => x != null && x.Order == dataGridView1.SelectedCells[0].RowIndex).Enabled = (bool)dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["Enabled"].Value;
+                    Settings.Default.AutoPosScreens.FirstOrDefault(
+                        x => x != null && x.Order == dataGridView1.SelectedCells[0].RowIndex).Enabled =
+                        (bool) dataGridView1.Rows[dataGridView1.SelectedCells[0].RowIndex].Cells["Enabled"].Value;
                 }
                 catch
                 {
@@ -71,12 +72,12 @@ namespace YetAnotherRelogger.Forms.SettingsTree
 
         private void button7_Click(object sender, EventArgs e)
         {
-            Helpers.AutoPosition.PositionWindows();
+            AutoPos.PositionWindows();
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Helpers.AutoPosition.UpdateScreens();
+            AutoPos.UpdateScreens();
             updateGridView();
         }
 
@@ -84,7 +85,8 @@ namespace YetAnotherRelogger.Forms.SettingsTree
         {
             dataGridView1.DataSource = null;
             dataGridView1.DataSource = Settings.Default.AutoPosScreens;
-            if (dataGridView1.DataSource == null) return;
+            if (dataGridView1.DataSource == null)
+                return;
             //dataGridView1.Columns["Order"].Visible = false;
             dataGridView1.Columns["Bounds"].Visible = false;
             dataGridView1.Columns["WorkingArea"].Visible = false;
@@ -95,21 +97,30 @@ namespace YetAnotherRelogger.Forms.SettingsTree
         }
 
         private void button1_Click(object sender, EventArgs e)
-        { // UP
-            if (dataGridView1.SelectedCells.Count <= 0 && dataGridView1.SelectedCells[0].RowIndex <= 0) return;
+        {
+            // UP
+            if (dataGridView1.SelectedCells.Count <= 0 && dataGridView1.SelectedCells[0].RowIndex <= 0)
+                return;
             try
             {
-                var index = dataGridView1.SelectedCells[0].RowIndex;
-                var test = Settings.Default.AutoPosScreens.FirstOrDefault(x => x.Name == (string)dataGridView1.Rows[index].Cells["Name"].Value && x.Order > 0);
+                int index = dataGridView1.SelectedCells[0].RowIndex;
+                AutoPos.ScreensClass test =
+                    Settings.Default.AutoPosScreens.FirstOrDefault(
+                        x => x.Name == (string) dataGridView1.Rows[index].Cells["Name"].Value && x.Order > 0);
                 if (test != null)
                 {
                     test.Order--;
                     index--;
-                    test = Settings.Default.AutoPosScreens.FirstOrDefault(x => index >= 0 && x.Name == (string) dataGridView1.Rows[index].Cells["Name"].Value && x.Order >= 0);
-                    if (test != null) test.Order++;
+                    test =
+                        Settings.Default.AutoPosScreens.FirstOrDefault(
+                            x =>
+                                index >= 0 && x.Name == (string) dataGridView1.Rows[index].Cells["Name"].Value &&
+                                x.Order >= 0);
+                    if (test != null)
+                        test.Order++;
                 }
                 // Sort and update list
-                Settings.Default.AutoPosScreens.Sort((s1, s2) => s1.Order.CompareTo(s2.Order)); 
+                Settings.Default.AutoPosScreens.Sort((s1, s2) => s1.Order.CompareTo(s2.Order));
                 updateGridView();
             }
             catch (Exception ex)
@@ -119,19 +130,30 @@ namespace YetAnotherRelogger.Forms.SettingsTree
         }
 
         private void button2_Click(object sender, EventArgs e)
-        { // Down
-            if (dataGridView1.SelectedCells.Count <= 0 && dataGridView1.SelectedCells[0].RowIndex <= 0) return;
+        {
+            // Down
+            if (dataGridView1.SelectedCells.Count <= 0 && dataGridView1.SelectedCells[0].RowIndex <= 0)
+                return;
             try
             {
-                var index = dataGridView1.SelectedCells[0].RowIndex;
-                var max = Settings.Default.AutoPosScreens.Count - 1;
-                var test = Settings.Default.AutoPosScreens.FirstOrDefault(x => x.Name == (string)dataGridView1.Rows[index].Cells["Name"].Value && x.Order < Settings.Default.AutoPosScreens.Count - 1);
+                int index = dataGridView1.SelectedCells[0].RowIndex;
+                int max = Settings.Default.AutoPosScreens.Count - 1;
+                AutoPos.ScreensClass test =
+                    Settings.Default.AutoPosScreens.FirstOrDefault(
+                        x =>
+                            x.Name == (string) dataGridView1.Rows[index].Cells["Name"].Value &&
+                            x.Order < Settings.Default.AutoPosScreens.Count - 1);
                 if (test != null)
                 {
                     test.Order++;
                     index++;
-                    test = Settings.Default.AutoPosScreens.FirstOrDefault(x => index <= max && x.Name == (string)dataGridView1.Rows[index].Cells["Name"].Value && x.Order <= max);
-                    if (test != null) test.Order--;
+                    test =
+                        Settings.Default.AutoPosScreens.FirstOrDefault(
+                            x =>
+                                index <= max && x.Name == (string) dataGridView1.Rows[index].Cells["Name"].Value &&
+                                x.Order <= max);
+                    if (test != null)
+                        test.Order--;
                 }
                 // Sort and update list
                 Settings.Default.AutoPosScreens.Sort((s1, s2) => s1.Order.CompareTo(s2.Order));

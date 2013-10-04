@@ -5,23 +5,23 @@ namespace YetAnotherRelogger.Forms.Wizard
 {
     public partial class Heroes : UserControl
     {
+        private readonly WizardMain WM;
+
         public Heroes(WizardMain parent)
         {
             WM = parent;
             InitializeComponent();
-            this.VisibleChanged += new EventHandler(Heroes_VisibleChanged);
+            VisibleChanged += Heroes_VisibleChanged;
         }
-        private WizardMain WM;
 
-        void Heroes_VisibleChanged(object sender, EventArgs e)
+        private void Heroes_VisibleChanged(object sender, EventArgs e)
         {
-            if (this.Visible)
+            if (Visible)
                 WM.NextStep("Heroes");
         }
 
         private void Heroes_Load(object sender, EventArgs e)
         {
-            
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -31,7 +31,6 @@ namespace YetAnotherRelogger.Forms.Wizard
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
-
         }
     }
 }

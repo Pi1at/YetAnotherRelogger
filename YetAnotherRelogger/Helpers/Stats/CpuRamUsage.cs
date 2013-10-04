@@ -1,24 +1,23 @@
 ﻿/* http://www.philosophicalgeek.com/2009/01/03/determine-cpu-usage-of-current-process-c-and-c/ */
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
-using ComTypes = System.Runtime.InteropServices.ComTypes;
+using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
 
 namespace YetAnotherRelogger.Helpers.Stats
 {
     public class CpuRamUsage
     {
-        [DllImport("kernel32.dll", SetLastError = true)]
-        static extern bool GetSystemTimes(out ComTypes.FILETIME lpIdleTime, out ComTypes.FILETIME lpKernelTime, out ComTypes.FILETIME lpUserTime);
-
-        private ComTypes.FILETIME _lastSysKernel;
-        private ComTypes.FILETIME _lastSysUser;
-        private ComTypes.FILETIME _lastSysIdle;
+        private bool _initialized;
+        private FILETIME _lastSysIdle;
+        private FILETIME _lastSysKernel;
+        private FILETIME _lastSysUser;
         private HashSet<ProcUsage> _procUsageList;
-        public double TotalCpuUsage { get; private set; }
+        private bool glitchRecover;
 
         public CpuRamUsage()
         {
@@ -26,18 +25,22 @@ namespace YetAnotherRelogger.Helpers.Stats
             _procUsageList = new HashSet<ProcUsage>();
         }
 
-        private bool _initialized;
+        public double TotalCpuUsage { get; private set; }
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool GetSystemTimes(out FILETIME lpIdleTime, out FILETIME lpKernelTime,
+            out FILETIME lpUserTime);
+
         private bool Init()
         {
             return GetSystemTimes(out _lastSysIdle, out _lastSysKernel, out _lastSysUser);
         }
 
-        private bool glitchRecover;
         public bool Update()
         {
             try
             {
-                ComTypes.FILETIME sysIdle, sysKernel, sysUser;
+                FILETIME sysIdle, sysKernel, sysUser;
 
                 if (!_initialized)
                 {
@@ -50,12 +53,12 @@ namespace YetAnotherRelogger.Helpers.Stats
                     return false;
 
                 // Calculate tot system cpu time
-                var sysKernelDiff = SubtractTimes(sysKernel, _lastSysKernel);
-                var sysUserDiff = SubtractTimes(sysUser, _lastSysUser);
-                var sysIdleDiff = SubtractTimes(sysIdle, _lastSysIdle);
-                var sysTotal = sysKernelDiff + sysUserDiff;
+                ulong sysKernelDiff = SubtractTimes(sysKernel, _lastSysKernel);
+                ulong sysUserDiff = SubtractTimes(sysUser, _lastSysUser);
+                ulong sysIdleDiff = SubtractTimes(sysIdle, _lastSysIdle);
+                ulong sysTotal = sysKernelDiff + sysUserDiff;
 
-                if (!validDiff((long)sysKernelDiff) || !validDiff((long)sysUserDiff) || !validDiff((long)sysIdleDiff))
+                if (!validDiff((long) sysKernelDiff) || !validDiff((long) sysUserDiff) || !validDiff((long) sysIdleDiff))
                 {
                     //Debug.WriteLine("Stats: Negative Tick Difference");
                     //Debug.WriteLine("kernel: {0,-20} :: {1,-20} Diff:{2,-20} :: {3} miliseconds", ((UInt64)(sysKernel.dwHighDateTime << 32)) | (UInt64)sysKernel.dwLowDateTime, ((UInt64)(_lastSysKernel.dwHighDateTime << 32)) | (UInt64)_lastSysKernel.dwLowDateTime, sysKernelDiff, TimeSpan.FromTicks((long)sysKernelDiff).TotalMilliseconds);
@@ -66,25 +69,26 @@ namespace YetAnotherRelogger.Helpers.Stats
                     _lastSysKernel = sysKernel;
                     _lastSysUser = sysUser;
                     _lastSysIdle = sysIdle;
-                    Thread.Sleep(100);// give windows time to recover
+                    Thread.Sleep(100); // give windows time to recover
                     return Update();
                 }
 
                 // Calculate total Cpu usage
-                var totalUsage = sysTotal > 0 ? ((sysTotal - sysIdleDiff) * 100d / sysTotal) : TotalCpuUsage;
+                double totalUsage = sysTotal > 0 ? ((sysTotal - sysIdleDiff)*100d/sysTotal) : TotalCpuUsage;
                 TotalCpuUsage = totalUsage < 0 ? TotalCpuUsage : totalUsage;
 
                 var newList = new HashSet<ProcUsage>();
-                foreach (var proc in Process.GetProcesses())
+                foreach (Process proc in Process.GetProcesses())
                 {
                     try
                     {
                         // Skip proc with id 0
-                        if (proc.Id == 0) continue;
+                        if (proc.Id == 0)
+                            continue;
 
                         Int64 procTotal;
-                        var oldCpuUsage = 0d;
-                        var p = GetById(proc.Id);
+                        double oldCpuUsage = 0d;
+                        ProcUsage p = GetById(proc.Id);
                         if (p != null)
                         {
                             procTotal = proc.TotalProcessorTime.Ticks - p.LastProcTime.Ticks;
@@ -93,7 +97,8 @@ namespace YetAnotherRelogger.Helpers.Stats
                         else
                             procTotal = 0;
 
-                        var usage = glitchRecover ? oldCpuUsage : ((100.0 * procTotal) / sysTotal); // Calculate process CPU Usage
+                        double usage = glitchRecover ? oldCpuUsage : ((100.0*procTotal)/sysTotal);
+                            // Calculate process CPU Usage
                         // Add Process to list
                         newList.Add(new ProcUsage
                         {
@@ -140,6 +145,7 @@ namespace YetAnotherRelogger.Helpers.Stats
         {
             return TimeSpan.FromTicks(ticks).TotalMilliseconds > 0;
         }
+
         public ProcUsage GetById(int id)
         {
             try
@@ -150,37 +156,37 @@ namespace YetAnotherRelogger.Helpers.Stats
             {
                 return null;
             }
-
         }
 
         /// <summary>
-        /// Get Process CPU Usage
+        ///     Get Process CPU Usage
         /// </summary>
         /// <param name="id">Process Id</param>
         /// <returns>Cpu usage</returns>
         public Usage GetUsageById(int id)
         {
-            var p = GetById(id);
+            ProcUsage p = GetById(id);
             return p != null ? p.Usage : null;
         }
 
-        private static UInt64 SubtractTimes(ComTypes.FILETIME a, ComTypes.FILETIME b)
+        private static UInt64 SubtractTimes(FILETIME a, FILETIME b)
         {
-            var aInt = ((UInt64)(a.dwHighDateTime << 32)) | (UInt64)a.dwLowDateTime;
-            var bInt = ((UInt64)(b.dwHighDateTime << 32)) | (UInt64)b.dwLowDateTime;
+            ulong aInt = ((UInt64) (a.dwHighDateTime << 32)) | (UInt64) a.dwLowDateTime;
+            ulong bInt = ((UInt64) (b.dwHighDateTime << 32)) | (UInt64) b.dwLowDateTime;
             return aInt - bInt;
         }
 
         public class ProcUsage
         {
+            public TimeSpan LastProcTime;
+            public Process Process;
+            public Usage Usage;
+
             public ProcUsage()
             {
                 LastProcTime = TimeSpan.MinValue;
                 Process = new Process();
             }
-            public TimeSpan LastProcTime;
-            public Process Process;
-            public Usage Usage;
         }
 
         public class Usage

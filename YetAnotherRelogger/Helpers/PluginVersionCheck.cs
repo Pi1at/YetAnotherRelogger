@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using YetAnotherRelogger.Properties;
-
 
 namespace YetAnotherRelogger.Helpers
 {
@@ -17,13 +15,13 @@ namespace YetAnotherRelogger.Helpers
                 Logger.Instance.Write("Checking plugin: {0}", path);
                 if (File.Exists(path))
                 {
-                    var check = Resources.Plugin.Split('\n')[0].TrimEnd(); // read the first line of Plugin.cs
+                    string check = Resources.Plugin.Split('\n')[0].TrimEnd(); // read the first line of Plugin.cs
                     using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         var reader = new StreamReader(fs);
-                        for (var i = 0; i < 3; i++) // check the first three lines of installed Plugin.cs
+                        for (int i = 0; i < 3; i++) // check the first three lines of installed Plugin.cs
                         {
-                            var line = reader.ReadLine();
+                            string line = reader.ReadLine();
                             if (line != null && line.Equals(check)) // line matches resource\Plugin first line
                             {
                                 Logger.Instance.Write("Plugin is installed and latest version: {0}", check);

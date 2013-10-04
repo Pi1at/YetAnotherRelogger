@@ -9,40 +9,41 @@ namespace YetAnotherRelogger.Forms.Wizard
 {
     public partial class WizardMain : Form
     {
+        private readonly BotClass bot;
+        public SetAffinity AffinityDemonbuddy;
+        public SetAffinity AffinityDiablo;
+        public int FinishCount;
+        private int _mainCount;
+        private int _stepCount;
+        private Advanced _ucAdvanced;
+        private DemonbuddyOptions _ucDemonbuddy;
+        public DiabloOptions _ucDiablo;
+        private Heroes _ucHeroes;
+        private ProfileSchedule _ucProfileSchedule;
+        private WeekSchedule _ucWeekSchedule;
+        private int index = -1;
+        private bool shouldClose;
+
         public WizardMain()
         {
             InitializeComponent();
         }
+
         public WizardMain(int index)
         {
             this.index = index;
-            this.bot = BotSettings.Instance.Bots[index];
+            bot = BotSettings.Instance.Bots[index];
             InitializeComponent();
         }
+
         public void NextStep(string title)
         {
-            this.Text = string.Format("{0} (Step {1}/{2})", title, _stepCount-2, FinishCount-2);
+            Text = string.Format("{0} (Step {1}/{2})", title, _stepCount - 2, FinishCount - 2);
         }
-
-        private int _stepCount;
-        public int FinishCount;
-        private int _mainCount;
-        private DemonbuddyOptions _ucDemonbuddy;
-        public DiabloOptions _ucDiablo;
-        private WeekSchedule _ucWeekSchedule;
-        private ProfileSchedule _ucProfileSchedule;
-        private Heroes _ucHeroes;
-        private Advanced _ucAdvanced;
-        public SetAffinity AffinityDiablo;
-        public SetAffinity AffinityDemonbuddy;
-        
-
-        private BotClass bot;
-        private int index = -1;
 
         private void WizardMain_Load(object sender, EventArgs e)
         {
-            Closing += new CancelEventHandler(WizardMain_Closing);
+            Closing += WizardMain_Closing;
 
             _mainCount = Controls.Count;
             _stepCount = _mainCount; // set start point
@@ -54,15 +55,16 @@ namespace YetAnotherRelogger.Forms.Wizard
             _ucProfileSchedule = new ProfileSchedule(this);
             _ucAdvanced = new Advanced(this);
 
-            
+
             Controls.Add(_ucDemonbuddy);
             Controls.Add(_ucDiablo);
             Controls.Add(_ucWeekSchedule);
             //Controls.Add(ucHeroes);
             Controls.Add(_ucProfileSchedule);
             Controls.Add(_ucAdvanced);
-            _ucDiablo.Visible = _ucWeekSchedule.Visible = _ucProfileSchedule.Visible = _ucHeroes.Visible = _ucAdvanced.Visible = false;
-            FinishCount = Controls.Count-1; // Get Finish count
+            _ucDiablo.Visible =
+                _ucWeekSchedule.Visible = _ucProfileSchedule.Visible = _ucHeroes.Visible = _ucAdvanced.Visible = false;
+            FinishCount = Controls.Count - 1; // Get Finish count
 
             AffinityDiablo = new SetAffinity();
             AffinityDemonbuddy = new SetAffinity();
@@ -70,6 +72,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             if (bot != null)
                 LoadData();
         }
+
         private void LoadData()
         {
             // Load data
@@ -88,7 +91,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             // Demonbuddy
             _ucDemonbuddy.textBox4.Text = bot.Demonbuddy.Location;
             _ucDemonbuddy.textBox3.Text = bot.Demonbuddy.Key;
-            
+
             _ucDemonbuddy.comboBox1.Text = bot.Demonbuddy.CombatRoutine;
             _ucDemonbuddy.checkBox1.Checked = bot.Demonbuddy.NoFlash;
             _ucDemonbuddy.checkBox2.Checked = bot.Demonbuddy.AutoUpdate;
@@ -125,7 +128,8 @@ namespace YetAnotherRelogger.Forms.Wizard
 
             if (AffinityDiablo.cpus.Count != bot.Diablo.CpuCount)
             {
-                Logger.Instance.Write("For whatever reason Diablo and UI see different number of CPUs, affinity disabled");
+                Logger.Instance.Write(
+                    "For whatever reason Diablo and UI see different number of CPUs, affinity disabled");
             }
             else
             {
@@ -143,7 +147,8 @@ namespace YetAnotherRelogger.Forms.Wizard
 
             if (AffinityDemonbuddy.cpus.Count != bot.Demonbuddy.CpuCount)
             {
-                Logger.Instance.Write("For whatever reason Demonbuddy and UI see different number of CPUs, affinity disabled");
+                Logger.Instance.Write(
+                    "For whatever reason Demonbuddy and UI see different number of CPUs, affinity disabled");
             }
             else
             {
@@ -202,11 +207,13 @@ namespace YetAnotherRelogger.Forms.Wizard
                 b.D3PrefsLocation = _ucAdvanced.textBox3.Text;
                 b.UseDiabloClone = _ucAdvanced.checkBox3.Checked;
                 b.DiabloCloneLocation = _ucAdvanced.textBox2.Text;
-                
+
                 // Demonbuddy
                 db.Location = _ucDemonbuddy.textBox4.Text;
                 db.Key = _ucDemonbuddy.textBox3.Text;
-                db.CombatRoutine = _ucDemonbuddy.comboBox1.SelectedItem != null ? _ucDemonbuddy.comboBox1.SelectedItem.ToString() : _ucDemonbuddy.comboBox1.Text ;
+                db.CombatRoutine = _ucDemonbuddy.comboBox1.SelectedItem != null
+                    ? _ucDemonbuddy.comboBox1.SelectedItem.ToString()
+                    : _ucDemonbuddy.comboBox1.Text;
                 db.NoFlash = _ucDemonbuddy.checkBox1.Checked;
                 db.AutoUpdate = _ucDemonbuddy.checkBox2.Checked;
                 db.NoUpdate = _ucDemonbuddy.checkBox3.Checked;
@@ -234,7 +241,7 @@ namespace YetAnotherRelogger.Forms.Wizard
                 d.Region = _ucDiablo.comboBox2.SelectedItem.ToString();
                 d.UseAuthenticator = _ucDiablo.checkBox1.Checked;
                 d.Serial = string.Format("{0}-{1}-{2}-{3}", _ucDiablo.textBox4.Text, _ucDiablo.textBox5.Text,
-                                         _ucDiablo.textBox7.Text, _ucDiablo.textBox6.Text);
+                    _ucDiablo.textBox7.Text, _ucDiablo.textBox6.Text);
                 d.RestoreCode = _ucDiablo.textBox8.Text;
                 d.Priority = _ucDiablo.comboBox3.SelectedIndex;
                 d.UseIsBoxer = _ucDiablo.checkBox2.Checked;
@@ -266,7 +273,8 @@ namespace YetAnotherRelogger.Forms.Wizard
                         intProcessorAffinity = -1;
                     d.ProcessorAffinity = intProcessorAffinity;
                 }
-                if (AffinityDiablo != null) AffinityDiablo.Dispose();
+                if (AffinityDiablo != null)
+                    AffinityDiablo.Dispose();
 
                 // Affinity Demonbuddy
                 if (db.CpuCount != Environment.ProcessorCount)
@@ -292,7 +300,8 @@ namespace YetAnotherRelogger.Forms.Wizard
                         intProcessorAffinity = -1;
                     db.ProcessorAffinity = intProcessorAffinity;
                 }
-                if (AffinityDemonbuddy != null) AffinityDemonbuddy.Dispose();
+                if (AffinityDemonbuddy != null)
+                    AffinityDemonbuddy.Dispose();
 
                 d.ManualPosSize = _ucDiablo.checkBox3.Checked;
                 int.TryParse(_ucDiablo.textBox2.Text, out result);
@@ -318,7 +327,6 @@ namespace YetAnotherRelogger.Forms.Wizard
                 b.Demonbuddy = db;
                 b.Diablo = d;
                 b.ProfileSchedule = ps;
-
 
 
                 if (bot != null && index >= 0)
@@ -348,7 +356,7 @@ namespace YetAnotherRelogger.Forms.Wizard
 
                 BotSettings.Instance.Save();
                 shouldClose = true;
-                WizardMain.ActiveForm.Close();
+                ActiveForm.Close();
 
                 BotSettings.Instance.Save();
                 Program.Mainform.UpdateGridView();
@@ -361,35 +369,62 @@ namespace YetAnotherRelogger.Forms.Wizard
                 _stepCount++;
                 Controls[_stepCount].Visible = true; // Show new
             }
-         
+
             if (_stepCount > _mainCount)
                 button2.Enabled = true;
             if (_stepCount == FinishCount)
                 button1.Text = "Save!";
+        }
 
+        private void button2_Click(object sender, EventArgs e)
+        {
+            // BACK
+
+            Controls[_stepCount].Visible = false; // Hide old
+            _stepCount--;
+            Controls[_stepCount].Visible = true; // Show new
+            if (_stepCount == _mainCount)
+                button2.Enabled = false;
+            if (_stepCount < FinishCount)
+                button1.Text = "Next ->";
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            // CANCEL
+            Close();
+        }
+
+        private void WizardMain_Closing(object sender, CancelEventArgs e)
+        {
+            if (!shouldClose &&
+                MessageBox.Show("This will close the wizard without saving.\nAre you sure?", "Warning",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
+                e.Cancel = true;
         }
 
         #region Validate User Input
+
+        private readonly Color _invalidColor = Color.FromArgb(255, 0, 0);
+        private readonly Color _validColor = Color.White;
+
         private bool ValidateControl(object control)
         {
-            if (control.GetType() == typeof(DemonbuddyOptions))
+            if (control.GetType() == typeof (DemonbuddyOptions))
                 return ((DemonbuddyOptions) control).ValidateInput();
-            
-            if (control.GetType() == typeof(DiabloOptions))
-                return ((DiabloOptions)control).ValidateInput();
 
-            if (control.GetType() == typeof(ProfileSchedule))
-                return ((ProfileSchedule)control).ValidateInput();
-            
-            if (control.GetType() == typeof(WeekSchedule))
-                return ((WeekSchedule)control).ValidateInput();
+            if (control.GetType() == typeof (DiabloOptions))
+                return ((DiabloOptions) control).ValidateInput();
+
+            if (control.GetType() == typeof (ProfileSchedule))
+                return ((ProfileSchedule) control).ValidateInput();
+
+            if (control.GetType() == typeof (WeekSchedule))
+                return ((WeekSchedule) control).ValidateInput();
 
             // Else always return true
             return true;
         }
-
-        private readonly Color _invalidColor = Color.FromArgb(255, 0, 0);
-        private readonly Color _validColor = Color.White;
 
         public bool ValidateTextbox(TextBox test)
         {
@@ -402,6 +437,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             test.BackColor = _validColor;
             return true;
         }
+
         public bool ValidateMaskedTextbox(MaskedTextBox test)
         {
             if (test.Text.Length == 0)
@@ -413,30 +449,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             test.BackColor = _validColor;
             return true;
         }
+
         #endregion
-        private void button2_Click(object sender, EventArgs e)
-        { // BACK
-            
-            Controls[_stepCount].Visible = false; // Hide old
-            _stepCount--;
-            Controls[_stepCount].Visible = true; // Show new
-            if (_stepCount == _mainCount)
-                button2.Enabled = false;
-            if (_stepCount < FinishCount)
-                button1.Text = "Next ->";
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        { // CANCEL
-            this.Close();
-        }
-
-        private bool shouldClose;
-        void WizardMain_Closing(object sender, CancelEventArgs e)
-        {
-
-            if (!shouldClose && MessageBox.Show("This will close the wizard without saving.\nAre you sure?", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.No)
-                e.Cancel = true;
-        }
     }
 }

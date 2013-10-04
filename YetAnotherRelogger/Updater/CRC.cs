@@ -8,11 +8,11 @@ namespace YetAnotherRelogger.Updater
     {
         public const UInt32 DefaultPolynomial = 0xedb88320;
         public const UInt32 DefaultSeed = 0xffffffff;
-
-        private UInt32 hash;
-        private UInt32 seed;
-        private UInt32[] table;
         private static UInt32[] defaultTable;
+
+        private readonly UInt32 seed;
+        private readonly UInt32[] table;
+        private UInt32 hash;
 
         public Crc32()
         {
@@ -28,6 +28,11 @@ namespace YetAnotherRelogger.Updater
             Initialize();
         }
 
+        public override int HashSize
+        {
+            get { return 32; }
+        }
+
         public override void Initialize()
         {
             hash = seed;
@@ -41,13 +46,8 @@ namespace YetAnotherRelogger.Updater
         protected override byte[] HashFinal()
         {
             byte[] hashBuffer = UInt32ToBigEndianBytes(~hash);
-            this.HashValue = hashBuffer;
+            HashValue = hashBuffer;
             return hashBuffer;
-        }
-
-        public override int HashSize
-        {
-            get { return 32; }
         }
 
         public static UInt32 Compute(byte[] buffer)
@@ -70,10 +70,10 @@ namespace YetAnotherRelogger.Updater
             if (polynomial == DefaultPolynomial && defaultTable != null)
                 return defaultTable;
 
-            UInt32[] createTable = new UInt32[256];
+            var createTable = new UInt32[256];
             for (int i = 0; i < 256; i++)
             {
-                UInt32 entry = (UInt32)i;
+                var entry = (UInt32) i;
                 for (int j = 0; j < 8; j++)
                     if ((entry & 1) == 1)
                         entry = (entry >> 1) ^ polynomial;
@@ -101,17 +101,18 @@ namespace YetAnotherRelogger.Updater
 
         private byte[] UInt32ToBigEndianBytes(UInt32 x)
         {
-            return new byte[] {
-			(byte)((x >> 24) & 0xff),
-			(byte)((x >> 16) & 0xff),
-			(byte)((x >> 8) & 0xff),
-			(byte)(x & 0xff)
-		};
+            return new[]
+            {
+                (byte) ((x >> 24) & 0xff),
+                (byte) ((x >> 16) & 0xff),
+                (byte) ((x >> 8) & 0xff),
+                (byte) (x & 0xff)
+            };
         }
 
         public static string GetHash(string filename)
         {
-            Crc32 crc32 = new Crc32();
+            var crc32 = new Crc32();
             String hash = String.Empty;
 
             try
@@ -120,7 +121,8 @@ namespace YetAnotherRelogger.Updater
                     throw new IOException("Unknown File");
 
                 using (FileStream fs = File.Open(filename, FileMode.Open))
-                    foreach (byte b in crc32.ComputeHash(fs)) hash += b.ToString("x2").ToLower();
+                    foreach (byte b in crc32.ComputeHash(fs))
+                        hash += b.ToString("x2").ToLower();
             }
             catch (Exception ex)
             {

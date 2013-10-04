@@ -10,8 +10,8 @@ namespace YetAnotherRelogger.Helpers
 
         public static void Get()
         {
-            var args = Environment.GetCommandLineArgs();
-            foreach (var arg in args)
+            string[] args = Environment.GetCommandLineArgs();
+            foreach (string arg in args)
             {
                 switch (arg)
                 {

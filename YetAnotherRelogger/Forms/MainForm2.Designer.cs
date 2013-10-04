@@ -280,10 +280,12 @@
             // 
             // dataGridView1
             // 
+            this.dataGridView1.AllowUserToOrderColumns = true;
             this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Location = new System.Drawing.Point(6, 15);
             this.dataGridView1.Name = "dataGridView1";
@@ -692,11 +694,11 @@
             this.labelStats.Size = new System.Drawing.Size(0, 13);
             this.labelStats.TabIndex = 2;
             // 
-            // restartAllDb
+            // btnRestartAllDb
             // 
             this.btnRestartAllDb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnRestartAllDb.Location = new System.Drawing.Point(25, 467);
-            this.btnRestartAllDb.Name = "restartAllDb";
+            this.btnRestartAllDb.Name = "btnRestartAllDb";
             this.btnRestartAllDb.Size = new System.Drawing.Size(83, 23);
             this.btnRestartAllDb.TabIndex = 8;
             this.btnRestartAllDb.Text = "Restart All DB";

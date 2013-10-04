@@ -2,7 +2,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public enum IdleState
     {
-        Initialize, 
+        Initialize,
         UserStop,
         UserPause,
         StartDelay,

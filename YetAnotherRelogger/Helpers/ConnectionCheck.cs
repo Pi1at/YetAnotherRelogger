@@ -1,27 +1,30 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Text.RegularExpressions;
+using YetAnotherRelogger.Helpers.Bot;
 using YetAnotherRelogger.Helpers.Tools;
 using YetAnotherRelogger.Properties;
-using System.Net;
 
 namespace YetAnotherRelogger.Helpers
 {
     public class ConnectionCheck
     {
-        
         #region IP / Host check
+
         // Get external IP from: checkip.dyndns.org
         private static DateTime _lastcheck;
         private static bool _laststate;
+
         public static bool ValidConnection
         {
             get
             {
-                if (!Settings.Default.ConnectionCheckIpHostCloseBots) return true;
+                if (!Settings.Default.ConnectionCheckIpHostCloseBots)
+                    return true;
 
                 // Check internet every 60 seconds
                 if (General.DateSubtract(_lastcheck) > 30)
@@ -32,7 +35,7 @@ namespace YetAnotherRelogger.Helpers
                         _laststate = false;
                         Logger.Instance.Write("Invalid external IP or Hostname!");
                         Logger.Instance.Write("Waiting 30 seconds and check again!");
-                        foreach (var bot in BotSettings.Instance.Bots.Where(bot => bot != null && bot.IsRunning))
+                        foreach (BotClass bot in BotSettings.Instance.Bots.Where(bot => bot != null && bot.IsRunning))
                         {
                             if (bot.Diablo.IsRunning || bot.Demonbuddy.IsRunning)
                             {
@@ -51,34 +54,40 @@ namespace YetAnotherRelogger.Helpers
                 return _laststate;
             }
         }
+
         public static bool CheckValidConnection(bool silent = false)
         {
             try
             {
                 var wc = new WebClient();
                 wc.Headers.Add("user-agent", "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.2; .NET CLR 1.0.3705;)");
-                var data = wc.OpenRead("http://checkip.dyndns.org");
+                Stream data = wc.OpenRead("http://checkip.dyndns.org");
 
-                var ip = string.Empty;
-                var hostname = string.Empty;
+                string ip = string.Empty;
+                string hostname = string.Empty;
                 if (data != null)
                 {
                     using (var reader = new StreamReader(data))
                     {
-                        var s = reader.ReadToEnd();
-                        var m = new Regex(@".*Current IP Address: ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}).*").Match(s);
+                        string s = reader.ReadToEnd();
+                        Match m =
+                            new Regex(@".*Current IP Address: ([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}).*").Match
+                                (s);
                         if (m.Success)
                         {
                             ip = m.Groups[1].Value;
-                            if (!silent) DebugHelper.Write(string.Format("Host/IP Check: IP {0}{1}", ip, !string.IsNullOrEmpty(hostname) ? " HostName: " + hostname : ""));
-                            if (!validIp(ip, silent)) return false;
+                            if (!silent)
+                                DebugHelper.Write(string.Format("Host/IP Check: IP {0}{1}", ip,
+                                    !string.IsNullOrEmpty(hostname) ? " HostName: " + hostname : ""));
+                            if (!validIp(ip, silent))
+                                return false;
                         }
                         else
                         {
                             throw new Exception("No IP found!");
                         }
                     }
-                   // data.Close();
+                    // data.Close();
                 }
             }
             catch (Exception ex)
@@ -102,29 +111,36 @@ namespace YetAnotherRelogger.Helpers
                 DebugHelper.Exception(ex);
             }
 
-            foreach (var line in Settings.Default.ConnectionCheckIpHostList.Split('\n'))
+            foreach (string line in Settings.Default.ConnectionCheckIpHostList.Split('\n'))
             {
-                var test = line.Replace(" ", string.Empty).Trim();
-                if (test.Length < 1) continue;
-                var allowed = test.StartsWith("@");
-                if (allowed) test = test.Substring(1, test.Length-1);
+                string test = line.Replace(" ", string.Empty).Trim();
+                if (test.Length < 1)
+                    continue;
+                bool allowed = test.StartsWith("@");
+                if (allowed)
+                    test = test.Substring(1, test.Length - 1);
                 if (Settings.Default.ConnectionCheckIpCheck)
                 {
                     // Check Ip range
-                    var m = new Regex(@"([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})-([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})").Match(test);
+                    Match m =
+                        new Regex(
+                            @"([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})-([0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3})")
+                            .Match(test);
                     if (m.Success)
                     {
-                        var lowerip = IPAddress.Parse(m.Groups[1].Value);
-                        var higherip = IPAddress.Parse(m.Groups[2].Value);
-                        var inrange = new IPAddressRange(lowerip, higherip).IsInRange(IPAddress.Parse(ip));
+                        IPAddress lowerip = IPAddress.Parse(m.Groups[1].Value);
+                        IPAddress higherip = IPAddress.Parse(m.Groups[2].Value);
+                        bool inrange = new IPAddressRange(lowerip, higherip).IsInRange(IPAddress.Parse(ip));
                         if (inrange)
                         {
                             if (allowed)
                             {
-                                DebugHelper.Write(string.Format("Valid Connection: IP {0} in range -> {1}-{2}", ip, lowerip, higherip));
+                                DebugHelper.Write(string.Format("Valid Connection: IP {0} in range -> {1}-{2}", ip,
+                                    lowerip, higherip));
                                 return true;
                             }
-                            DebugHelper.Write(string.Format("Invalid Connection: IP {0} in range -> {1}-{2}", ip, lowerip, higherip));
+                            DebugHelper.Write(string.Format("Invalid Connection: IP {0} in range -> {1}-{2}", ip,
+                                lowerip, higherip));
                             return false;
                         }
                         continue;
@@ -148,7 +164,8 @@ namespace YetAnotherRelogger.Helpers
                     }
                 }
 
-                if (hostname == null) continue;
+                if (hostname == null)
+                    continue;
                 if (General.WildcardMatch(test.ToLower(), hostname.ToLower()))
                 {
                     if (allowed)
@@ -162,6 +179,7 @@ namespace YetAnotherRelogger.Helpers
             }
             return true;
         }
+
         /*
         private static bool validHost(string hostname, bool silent)
         {
@@ -183,16 +201,20 @@ namespace YetAnotherRelogger.Helpers
             return true;
         }
          */
+
         #endregion
 
         #region PingCheck & IsConnected
+
         private static DateTime _lastpingcheck;
         private static bool _lastpingstate;
+
         public static bool IsConnected
         {
             get
             {
-                if (!Settings.Default.ConnectionCheckCloseBots) return true;
+                if (!Settings.Default.ConnectionCheckCloseBots)
+                    return true;
                 // Check internet every 60 seconds
                 if (General.DateSubtract(_lastpingcheck) > 30)
                 {
@@ -201,7 +223,7 @@ namespace YetAnotherRelogger.Helpers
                     {
                         Logger.Instance.Write("Waiting 30 seconds and check again!");
                         _lastpingstate = false;
-                        foreach (var bot in BotSettings.Instance.Bots.Where(bot => bot != null && bot.IsRunning))
+                        foreach (BotClass bot in BotSettings.Instance.Bots.Where(bot => bot != null && bot.IsRunning))
                         {
                             if (bot.Diablo.IsRunning || bot.Demonbuddy.IsRunning)
                             {
@@ -227,47 +249,54 @@ namespace YetAnotherRelogger.Helpers
             try
             {
                 // Ping host 1
-                if (!silent) Logger.Instance.WriteGlobal("PingCheck: Ping -> {0}", Settings.Default.ConnectionCheckPingHost1);
-                var reply = ping.Send(Settings.Default.ConnectionCheckPingHost1, 3000);
+                if (!silent)
+                    Logger.Instance.WriteGlobal("PingCheck: Ping -> {0}", Settings.Default.ConnectionCheckPingHost1);
+                PingReply reply = ping.Send(Settings.Default.ConnectionCheckPingHost1, 3000);
                 if (reply == null)
                 {
-                    if (!silent) DebugHelper.Write("PingCheck: reply = NULL");
+                    if (!silent)
+                        DebugHelper.Write("PingCheck: reply = NULL");
                 }
                 else if (reply.Status != IPStatus.Success)
                 {
-                    if (!silent) DebugHelper.Write(string.Format("PingCheck: {0} -> {1}", reply.Address, reply.Status));
+                    if (!silent)
+                        DebugHelper.Write(string.Format("PingCheck: {0} -> {1}", reply.Address, reply.Status));
                 }
                 else
                 {
-                    if (!silent) DebugHelper.Write(string.Format("PingCheck: {0} -> {1}ms", reply.Address, reply.RoundtripTime));
+                    if (!silent)
+                        DebugHelper.Write(string.Format("PingCheck: {0} -> {1}ms", reply.Address, reply.RoundtripTime));
                     return true;
                 }
             }
             catch (Exception ex)
             {
-               DebugHelper.Write(string.Format("PingCheck: Failed with message: " + ex.Message));
-               DebugHelper.Exception(ex);
+                DebugHelper.Write(string.Format("PingCheck: Failed with message: " + ex.Message));
+                DebugHelper.Exception(ex);
             }
 
             try
             {
                 // Ping host 2
-                if (!silent) DebugHelper.Write(string.Format("PingCheck: Ping -> {0}", Settings.Default.ConnectionCheckPingHost2));
-                var reply = ping.Send(Settings.Default.ConnectionCheckPingHost2, 3000);
+                if (!silent)
+                    DebugHelper.Write(string.Format("PingCheck: Ping -> {0}", Settings.Default.ConnectionCheckPingHost2));
+                PingReply reply = ping.Send(Settings.Default.ConnectionCheckPingHost2, 3000);
                 if (reply == null)
                 {
-                    if (!silent) DebugHelper.Write(string.Format("PingCheck: reply = NULL"));
+                    if (!silent)
+                        DebugHelper.Write(string.Format("PingCheck: reply = NULL"));
                 }
                 else if (reply.Status != IPStatus.Success)
                 {
-                    if (!silent) DebugHelper.Write(string.Format("PingCheck: {0} -> {1}", reply.Address, reply.Status));
+                    if (!silent)
+                        DebugHelper.Write(string.Format("PingCheck: {0} -> {1}", reply.Address, reply.Status));
                 }
                 else
                 {
-                    if (!silent) DebugHelper.Write(string.Format("PingCheck: {0} -> {1}ms", reply.Address, reply.RoundtripTime));
+                    if (!silent)
+                        DebugHelper.Write(string.Format("PingCheck: {0} -> {1}ms", reply.Address, reply.RoundtripTime));
                     return true;
                 }
-
             }
             catch (Exception ex)
             {
@@ -277,6 +306,7 @@ namespace YetAnotherRelogger.Helpers
 
             return false;
         }
+
         #endregion
 
         public static void Reset()
@@ -287,19 +317,20 @@ namespace YetAnotherRelogger.Helpers
     }
 
     #region IPAdressRange Check
+
     public class IPAddressRange
     {
-        readonly AddressFamily addressFamily;
-        readonly byte[] lowerBytes;
-        readonly byte[] upperBytes;
+        private readonly AddressFamily addressFamily;
+        private readonly byte[] lowerBytes;
+        private readonly byte[] upperBytes;
 
         public IPAddressRange(IPAddress lower, IPAddress upper)
         {
             // Assert that lower.AddressFamily == upper.AddressFamily
 
-            this.addressFamily = lower.AddressFamily;
-            this.lowerBytes = lower.GetAddressBytes();
-            this.upperBytes = upper.GetAddressBytes();
+            addressFamily = lower.AddressFamily;
+            lowerBytes = lower.GetAddressBytes();
+            upperBytes = upper.GetAddressBytes();
         }
 
         public bool IsInRange(IPAddress address)
@@ -313,8 +344,10 @@ namespace YetAnotherRelogger.Helpers
 
             bool lowerBoundary = true, upperBoundary = true;
 
-            for (int i = 0; i < this.lowerBytes.Length &&
-                (lowerBoundary || upperBoundary); i++)
+            for (int i = 0;
+                i < lowerBytes.Length &&
+                (lowerBoundary || upperBoundary);
+                i++)
             {
                 if ((lowerBoundary && addressBytes[i] < lowerBytes[i]) ||
                     (upperBoundary && addressBytes[i] > upperBytes[i]))
@@ -329,5 +362,6 @@ namespace YetAnotherRelogger.Helpers
             return true;
         }
     }
-#endregion
+
+    #endregion
 }

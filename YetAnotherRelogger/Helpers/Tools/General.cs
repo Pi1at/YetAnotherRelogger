@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Net.NetworkInformation;
-using YetAnotherRelogger.Properties;
 
 namespace YetAnotherRelogger.Helpers.Tools
 {
     public static class General
     {
         /// <summary>
-        /// Get PriorityClass as shown in GUI
+        ///     Get PriorityClass as shown in GUI
         /// </summary>
         /// <param name="number">GUI priority number</param>
         /// <returns>ProcessPriorityClass that matches the given number</returns>
@@ -38,11 +36,12 @@ namespace YetAnotherRelogger.Helpers.Tools
 
         public static void AgentKiller()
         {
-            foreach (var p in Process.GetProcessesByName("Agent"))
+            foreach (Process p in Process.GetProcessesByName("Agent"))
             {
                 try
                 {
-                    if (!p.MainModule.FileVersionInfo.ProductName.Equals("Battle.net Update Agent")) continue;
+                    if (!p.MainModule.FileVersionInfo.ProductName.Equals("Battle.net Update Agent"))
+                        continue;
 
                     Logger.Instance.Write("Killing Agent.exe:{0}", p.Id);
                     p.Kill();
@@ -108,8 +107,8 @@ namespace YetAnotherRelogger.Helpers.Tools
 
             return output;
         }
+
         /// <summary>
-        /// 
         /// </summary>
         /// <param name="date">DateTime to subtract from current datetime</param>
         /// <param name="seconds"></param>
@@ -120,7 +119,7 @@ namespace YetAnotherRelogger.Helpers.Tools
         }
 
         /// <summary>
-        /// Returns seconds/milliseconds from a given date
+        ///     Returns seconds/milliseconds from a given date
         /// </summary>
         /// <param name="ticks">Ticks to subtract from current datetime</param>
         /// <param name="seconds"></param>
@@ -133,7 +132,8 @@ namespace YetAnotherRelogger.Helpers.Tools
 
 
         public static bool WildcardMatch(String pattern, String input)
-        {// http://www.codeproject.com/Tips/57304/Use-wildcard-characters-and-to-compare-strings
+        {
+// http://www.codeproject.com/Tips/57304/Use-wildcard-characters-and-to-compare-strings
             if (String.CompareOrdinal(pattern, input) == 0)
             {
                 return true;
@@ -141,19 +141,19 @@ namespace YetAnotherRelogger.Helpers.Tools
 
             if (String.IsNullOrEmpty(input))
             {
-                return String.IsNullOrEmpty(pattern.Trim(new Char[1] { '*' }));
+                return String.IsNullOrEmpty(pattern.Trim(new Char[1] {'*'}));
             }
-            
+
             if (pattern.Length == 0)
             {
                 return false;
             }
-            
+
             if (pattern[0] == '?')
             {
                 return WildcardMatch(pattern.Substring(1), input.Substring(1));
             }
-            
+
             if (pattern[pattern.Length - 1] == '?')
             {
                 return WildcardMatch(pattern.Substring(0, pattern.Length - 1), input.Substring(0, input.Length - 1));
@@ -164,7 +164,8 @@ namespace YetAnotherRelogger.Helpers.Tools
             }
             if (pattern[pattern.Length - 1] == '*')
             {
-                return WildcardMatch(pattern.Substring(0, pattern.Length - 1), input) || WildcardMatch(pattern, input.Substring(0, input.Length - 1));
+                return WildcardMatch(pattern.Substring(0, pattern.Length - 1), input) ||
+                       WildcardMatch(pattern, input.Substring(0, input.Length - 1));
             }
             return pattern[0] == input[0] && WildcardMatch(pattern.Substring(1), input.Substring(1));
         }

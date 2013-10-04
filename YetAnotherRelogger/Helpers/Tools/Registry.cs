@@ -10,13 +10,14 @@ namespace YetAnotherRelogger.Helpers.Tools
         {
             try
             {
-                var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+                RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
                 if (key == null)
                 {
-                    Logger.Instance.WriteGlobal("Failed to get registry key \"Software\\Microsoft\\Windows\\CurrentVersion\\Run\"");
+                    Logger.Instance.WriteGlobal(
+                        "Failed to get registry key \"Software\\Microsoft\\Windows\\CurrentVersion\\Run\"");
                     return false;
                 }
-                key.SetValue("YetAnotherRelogger", string.Format("\"{0}\" -winstart",Application.ExecutablePath));
+                key.SetValue("YetAnotherRelogger", string.Format("\"{0}\" -winstart", Application.ExecutablePath));
                 key.Close();
                 return true;
             }
@@ -27,14 +28,16 @@ namespace YetAnotherRelogger.Helpers.Tools
                 return false;
             }
         }
+
         public static bool WindowsAutoStartDel()
         {
             try
             {
-                var key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
+                RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run");
                 if (key == null)
                 {
-                    Logger.Instance.WriteGlobal("Failed to get registry key \"Software\\Microsoft\\Windows\\CurrentVersion\\Run\"");
+                    Logger.Instance.WriteGlobal(
+                        "Failed to get registry key \"Software\\Microsoft\\Windows\\CurrentVersion\\Run\"");
                     return false;
                 }
                 if (key.GetValue("YetAnotherRelogger") != null)
@@ -54,8 +57,8 @@ namespace YetAnotherRelogger.Helpers.Tools
         {
             try
             {
-                var locale = Tools.General.GetLocale(Language);
-                var key = Registry.CurrentUser.CreateSubKey(@"Software\Blizzard Entertainment\D3");
+                string locale = General.GetLocale(Language);
+                RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Blizzard Entertainment\D3");
                 if (key == null)
                 {
                     Logger.Instance.Write("Failed to get registry key for changing locale!");
@@ -76,17 +79,16 @@ namespace YetAnotherRelogger.Helpers.Tools
 
         public static bool ChangeRegion(string Region)
         {
-            
             try
             {
-                var key = Registry.CurrentUser.CreateSubKey(@"Software\Blizzard Entertainment\Battle.net\D3\");
+                RegistryKey key = Registry.CurrentUser.CreateSubKey(@"Software\Blizzard Entertainment\Battle.net\D3\");
                 if (key == null)
                 {
                     Logger.Instance.Write("Failed to get registry key for changing region!");
                     return false;
                 }
 
-                var regionUrl = "";
+                string regionUrl = "";
 
                 switch (Region)
                 {

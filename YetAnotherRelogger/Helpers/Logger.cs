@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
-using System.Diagnostics;
 using YetAnotherRelogger.Helpers.Bot;
 using YetAnotherRelogger.Helpers.Enums;
 
@@ -11,15 +11,15 @@ namespace YetAnotherRelogger.Helpers
 {
     public sealed class Logger
     {
-
         #region singleton
-        static readonly Logger instance = new Logger();
+
+        private static readonly Logger instance = new Logger();
 
         static Logger()
         {
         }
 
-        Logger()
+        private Logger()
         {
             Buffer = new List<LogMessage>();
             Initialize();
@@ -27,14 +27,13 @@ namespace YetAnotherRelogger.Helpers
 
         public static Logger Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
+
         #endregion
 
-
+        private readonly List<LogMessage> Buffer;
+        private bool _canLog;
         private string _logfile;
 
         public string Logfile
@@ -42,17 +41,18 @@ namespace YetAnotherRelogger.Helpers
             get { return _logfile; }
             private set { _logfile = value; }
         }
+
         public string LogDirectory
         {
             get { return Path.GetDirectoryName(Logfile); }
         }
-        private bool _canLog;
+
         private void Initialize()
         {
-            var filename = string.Format("{0:yyyy-MM-dd HH.mm}", DateTime.Now);
+            string filename = string.Format("{0:yyyy-MM-dd HH.mm}", DateTime.Now);
             _logfile = string.Format(@"{0}\Logs\{1}.txt", Path.GetDirectoryName(Application.ExecutablePath), filename);
             Debug.WriteLine(_logfile);
-            
+
             try
             {
                 if (!Directory.Exists(Path.GetDirectoryName(_logfile)))
@@ -65,8 +65,9 @@ namespace YetAnotherRelogger.Helpers
                 _canLog = false;
             }
         }
+
         /// <summary>
-        /// Write log message for active bot
+        ///     Write log message for active bot
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
@@ -74,14 +75,16 @@ namespace YetAnotherRelogger.Helpers
         {
             var message = new LogMessage();
             if (Relogger.Instance.CurrentBot != null)
-                message.Message = string.Format("<{0}> {1}", Relogger.Instance.CurrentBot.Name, string.Format(format, args));
+                message.Message = string.Format("<{0}> {1}", Relogger.Instance.CurrentBot.Name,
+                    string.Format(format, args));
             else
                 message.Message = string.Format("[{0}] {1}", DateTime.Now, string.Format(format, args));
             instance.AddBuffer(message);
             addToRTB(message);
         }
+
         /// <summary>
-        /// Write Log message for specific bot
+        ///     Write Log message for specific bot
         /// </summary>
         /// <param name="bot">BotClass</param>
         /// <param name="format"></param>
@@ -99,7 +102,7 @@ namespace YetAnotherRelogger.Helpers
         }
 
         /// <summary>
-        /// Write global log message
+        ///     Write global log message
         /// </summary>
         /// <param name="format"></param>
         /// <param name="args"></param>
@@ -111,7 +114,7 @@ namespace YetAnotherRelogger.Helpers
         }
 
         /// <summary>
-        /// Add custom log message to log buffer
+        ///     Add custom log message to log buffer
         /// </summary>
         /// <param name="message">Logmessage</param>
         public void AddLogmessage(LogMessage message)
@@ -122,19 +125,21 @@ namespace YetAnotherRelogger.Helpers
 
         private void addToRTB(LogMessage message)
         {
-            if (Program.Mainform == null || Program.Mainform.richTextBox1 == null) return;
+            if (Program.Mainform == null || Program.Mainform.richTextBox1 == null)
+                return;
 
             try
             {
                 Program.Mainform.Invoke(new Action(() =>
-                    {
-                        var rtb = Program.Mainform.richTextBox1;
-                        var font = new Font("Tahoma", 8, FontStyle.Regular);
-                        rtb.SelectionFont = font;
-                        rtb.SelectionColor = message.Color;
-                        var text = string.Format("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp, message.Message);
-                        rtb.AppendText(text + Environment.NewLine);
-                    }));
+                {
+                    RichTextBox rtb = Program.Mainform.richTextBox1;
+                    var font = new Font("Tahoma", 8, FontStyle.Regular);
+                    rtb.SelectionFont = font;
+                    rtb.SelectionColor = message.Color;
+                    string text = string.Format("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp,
+                        message.Message);
+                    rtb.AppendText(text + Environment.NewLine);
+                }));
             }
             catch
             {
@@ -142,7 +147,6 @@ namespace YetAnotherRelogger.Helpers
             }
         }
 
-        private List<LogMessage> Buffer;
         private void AddBuffer(LogMessage logmessage)
         {
             Buffer.Add(logmessage);
@@ -152,13 +156,14 @@ namespace YetAnotherRelogger.Helpers
 
         public void ClearBuffer()
         {
-            if (!_canLog) return;
+            if (!_canLog)
+                return;
             _canLog = false;
 
             // Write buffer to file
             using (var writer = new StreamWriter(_logfile, true))
             {
-                foreach (var message in Buffer)
+                foreach (LogMessage message in Buffer)
                 {
                     writer.WriteLine("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp, message.Message);
                 }
@@ -166,8 +171,9 @@ namespace YetAnotherRelogger.Helpers
             Buffer.Clear();
             _canLog = true;
         }
+
         /// <summary>
-        /// Get Loglevel char
+        ///     Get Loglevel char
         /// </summary>
         /// <param name="loglevel">Loglevel</param>
         /// <returns>char</returns>
@@ -184,28 +190,31 @@ namespace YetAnotherRelogger.Helpers
             }
         }
     }
+
     public class LogMessage : IDisposable
     {
+        public Color Color;
+        public Loglevel Loglevel;
+        public string Message;
+
         public LogMessage(Color color, Loglevel loglevel, string message, params object[] args)
         {
             TimeStamp = DateTime.Now;
             Loglevel = Loglevel.Normal;
         }
+
         public LogMessage()
         {
             Color = Color.Black;
             TimeStamp = DateTime.Now;
             Loglevel = Loglevel.Normal;
         }
-        public Color Color;
-        public Loglevel Loglevel;
+
         public DateTime TimeStamp { get; private set; }
-        public string Message;
 
         public void Dispose()
         {
             Message = null;
         }
     }
-    
 }

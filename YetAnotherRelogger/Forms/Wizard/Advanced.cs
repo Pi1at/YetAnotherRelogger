@@ -1,31 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Windows.Forms;
 
 namespace YetAnotherRelogger.Forms.Wizard
 {
     public partial class Advanced : UserControl
     {
+        private readonly WizardMain WM;
+
         public Advanced(WizardMain parent)
         {
             InitializeComponent();
             WM = parent;
         }
 
-        private WizardMain WM;
         private void Advanced_Load(object sender, EventArgs e)
         {
-            VisibleChanged += new EventHandler(Advanced_VisibleChanged);
+            VisibleChanged += Advanced_VisibleChanged;
         }
 
-        void Advanced_VisibleChanged(object sender, EventArgs e)
+        private void Advanced_VisibleChanged(object sender, EventArgs e)
         {
-            if (this.Visible)
+            if (Visible)
                 WM.NextStep("Advanced Settings");
         }
 

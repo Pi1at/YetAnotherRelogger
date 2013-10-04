@@ -1,27 +1,31 @@
 ﻿using System;
 using System.IO;
 using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Security.Principal;
 using System.Threading;
 using System.Windows.Forms;
-using System.Security.Principal;
-
-using YetAnotherRelogger.Helpers;
 using YetAnotherRelogger.Forms;
+using YetAnotherRelogger.Helpers;
 using YetAnotherRelogger.Helpers.Tools;
 using YetAnotherRelogger.Properties;
 
 namespace YetAnotherRelogger
 {
-    static class Program
+    internal static class Program
     {
         public const string VERSION = "0.2.0.16";
         public const int Sleeptime = 10;
+
+        public static MainForm2 Mainform;
+        public static bool IsRunAsAdmin;
+        public static bool Pause;
+
         /// <summary>
-        /// The main entry point for the application.
+        ///     The main entry point for the application.
         /// </summary>
-        /// 
         [STAThread]
-        static void Main()
+        private static void Main()
         {
             try
             {
@@ -33,7 +37,7 @@ namespace YetAnotherRelogger
                 }
 
                 // Run as admin check
-                var identity = WindowsIdentity.GetCurrent();
+                WindowsIdentity identity = WindowsIdentity.GetCurrent();
                 if (identity != null)
                     IsRunAsAdmin = (new WindowsPrincipal(identity).IsInRole(WindowsBuiltInRole.Administrator));
 
@@ -42,7 +46,8 @@ namespace YetAnotherRelogger
 
                 if (CommandLineArgs.SafeMode)
                 {
-                    var result = MessageBox.Show("Launching in safe mode!\nThis will reset some features", "YetAnotherRelogger Safe Mode", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                    DialogResult result = MessageBox.Show("Launching in safe mode!\nThis will reset some features",
+                        "YetAnotherRelogger Safe Mode", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                     if (result == DialogResult.Cancel)
                         return;
                 }
@@ -55,7 +60,8 @@ namespace YetAnotherRelogger
                     (Settings.Default.AutoPosScreens != null && Settings.Default.AutoPosScreens.Count == 0))
                     AutoPosition.UpdateScreens();
                 if (Settings.Default.D3StarterPath.Equals(string.Empty) || Settings.Default.D3StarterPath.Equals(""))
-                    Settings.Default.D3StarterPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "ThirdParty\\D3Starter.exe");
+                    Settings.Default.D3StarterPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
+                        "ThirdParty\\D3Starter.exe");
 
                 // Start background threads
                 Relogger.Instance.Start();
@@ -91,22 +97,22 @@ namespace YetAnotherRelogger
             Logger.Instance.WriteGlobal("Closed!");
             Logger.Instance.ClearBuffer();
         }
-
-        public static MainForm2 Mainform;
-        public static bool IsRunAsAdmin;
-        public static bool Pause;
     }
 
     #region SingleInstance
+
     // http://www.codeproject.com/Articles/32908/C-Single-Instance-App-With-the-Ability-To-Restore
-    static public class SingleInstance
+    public static class SingleInstance
     {
-        public static readonly int WM_SHOWFIRSTINSTANCE = WinAPI.RegisterWindowMessage("WM_SHOWFIRSTINSTANCE|{0}", ProgramInfo.AssemblyGuid);
-        static Mutex mutex;
-        static public bool Start()
+        public static readonly int WM_SHOWFIRSTINSTANCE = WinAPI.RegisterWindowMessage("WM_SHOWFIRSTINSTANCE|{0}",
+            ProgramInfo.AssemblyGuid);
+
+        private static Mutex mutex;
+
+        public static bool Start()
         {
             bool onlyInstance;
-            var mutexName = String.Format("Local\\{0}", ProgramInfo.AssemblyGuid);
+            string mutexName = String.Format("Local\\{0}", ProgramInfo.AssemblyGuid);
 
             // if you want your app to be limited to a single instance
             // across ALL SESSIONS (multiple users & terminal services), then use the following line instead:
@@ -115,15 +121,17 @@ namespace YetAnotherRelogger
             mutex = new Mutex(true, mutexName, out onlyInstance);
             return onlyInstance;
         }
-        static public void ShowFirstInstance()
+
+        public static void ShowFirstInstance()
         {
             WinAPI.PostMessage(
-                (IntPtr)WinAPI.HWND_BROADCAST,
+                (IntPtr) WinAPI.HWND_BROADCAST,
                 WM_SHOWFIRSTINSTANCE,
                 IntPtr.Zero,
                 IntPtr.Zero);
         }
-        static public void Stop()
+
+        public static void Stop()
         {
             try
             {
@@ -133,21 +141,24 @@ namespace YetAnotherRelogger
             {
                 DebugHelper.Exception(ex);
             }
-            
         }
     }
+
     #endregion
+
     #region ProgramInfo
-    static public class ProgramInfo
+
+    public static class ProgramInfo
     {
-        static public string AssemblyGuid
+        public static string AssemblyGuid
         {
             get
             {
-                var attributes = Assembly.GetEntryAssembly().GetCustomAttributes(typeof(System.Runtime.InteropServices.GuidAttribute), false);
-                return attributes.Length == 0 ? String.Empty : ((System.Runtime.InteropServices.GuidAttribute)attributes[0]).Value;
+                object[] attributes = Assembly.GetEntryAssembly().GetCustomAttributes(typeof (GuidAttribute), false);
+                return attributes.Length == 0 ? String.Empty : ((GuidAttribute) attributes[0]).Value;
             }
         }
-    } 
+    }
+
     #endregion
 }

@@ -1,23 +1,25 @@
-﻿using System.Xml.Serialization;
+﻿using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
-using System.ComponentModel;
-
+using System.Xml.Serialization;
 using YetAnotherRelogger.Helpers.Bot;
 
 namespace YetAnotherRelogger.Helpers
 {
+
     #region BotSettings
+
     public sealed class BotSettings
     {
         #region singleton
-        static readonly BotSettings instance = new BotSettings();
+
+        private static readonly BotSettings instance = new BotSettings();
 
         static BotSettings()
         {
         }
 
-        BotSettings()
+        private BotSettings()
         {
             Bots = new BindingList<BotClass>();
             settingsdirectory = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Settings");
@@ -25,22 +27,19 @@ namespace YetAnotherRelogger.Helpers
 
         public static BotSettings Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
+
         #endregion
 
+        private readonly string settingsdirectory;
         public BindingList<BotClass> Bots;
-        private string settingsdirectory;
+
         public static string SettingsDirectory
         {
-            get
-            {
-                return instance.settingsdirectory;
-            }
+            get { return instance.settingsdirectory; }
         }
+
         public void Save()
         {
             var xml = new XmlSerializer(Bots.GetType());
@@ -51,7 +50,6 @@ namespace YetAnotherRelogger.Helpers
 
             using (var writer = new StreamWriter(Path.Combine(SettingsDirectory, "Bots.xml")))
             {
-
                 xml.Serialize(writer, Bots);
             }
         }
@@ -68,12 +66,14 @@ namespace YetAnotherRelogger.Helpers
                 Bots = xml.Deserialize(reader) as BindingList<BotClass>;
             }
         }
+
         public void Clone(int index)
         {
-            BotClass original = (BotClass)Bots[index].Clone();
+            var original = (BotClass) Bots[index].Clone();
             int nextIndex = index + 1;
             Bots.Insert(nextIndex, original);
         }
     }
+
     #endregion
 }

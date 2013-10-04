@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Xml.Serialization;
 using YetAnotherRelogger.Helpers.Stats;
 using YetAnotherRelogger.Helpers.Tools;
@@ -12,37 +9,15 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class BotClass : INotifyPropertyChanged, ICloneable
     {
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            try
-            {
-                if (Program.Mainform == null) return;
-                Program.Mainform.Invoke(new Action(() =>
-                   {
-                       try
-                       {
-                           var handler = PropertyChanged;
-                           if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-                       }
-                       catch (Exception ex)
-                       {
-                           DebugHelper.Exception(ex);
-                       }
-                   }));
-            }
-            catch (Exception ex)
-            {
-                DebugHelper.Exception(ex);
-            }
-        }
-        protected bool SetField<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
+        [XmlIgnore] private AntiIdleClass _antiIdle;
+        [XmlIgnore] private DemonbuddyClass _demonbuddy;
+        [XmlIgnore] private string _demonbuddyPid;
+        [XmlIgnore] private DiabloClass _diablo;
+        [XmlIgnore] private bool _isStandby;
+        [XmlIgnore] private string _runningtime;
+        [XmlIgnore] private DateTime _standbyTime;
+
+        [XmlIgnore] private string _status;
 
         public BotClass()
         {
@@ -51,45 +26,41 @@ namespace YetAnotherRelogger.Helpers.Bot
             AntiIdle = new AntiIdleClass();
             ChartStats = new ChartStats();
         }
+
         public string Name { get; set; }
         public string Description { get; set; }
 
         public bool IsEnabled { get; set; }
 
-        [XmlIgnore]
-        private DemonbuddyClass _demonbuddy;
         public DemonbuddyClass Demonbuddy
         {
             get { return _demonbuddy; }
             set
             {
-                var db = value;
+                DemonbuddyClass db = value;
                 db.Parent = this;
                 _demonbuddy = db;
             }
         }
-        [XmlIgnore]
-        private DiabloClass _diablo;
+
         public DiabloClass Diablo
         {
             get { return _diablo; }
             set
             {
-                var d = value;
+                DiabloClass d = value;
                 d.Parent = this;
                 _diablo = d;
             }
         }
 
         [XmlIgnore]
-        private AntiIdleClass _antiIdle;
-        [XmlIgnore]
         public AntiIdleClass AntiIdle
         {
             get { return _antiIdle; }
             set
             {
-                var ai = value;
+                AntiIdleClass ai = value;
                 ai.Parent = this;
                 _antiIdle = ai;
             }
@@ -100,19 +71,20 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         [XmlIgnore]
         public bool IsStarted { get; set; }
+
         [XmlIgnore]
         public bool IsRunning { get; set; }
 
         // Standby to try again at a later moment
-        [XmlIgnore]
-        private bool _isStandby;
+
         [XmlIgnore]
         public bool IsStandby
         {
             get
             {
                 // Increase retry count by 15 mins with a max of 1 hour
-                if (_isStandby && General.DateSubtract(_standbyTime) > 900 * (AntiIdle.InitAttempts > 4 ? 4 : AntiIdle.InitAttempts))
+                if (_isStandby &&
+                    General.DateSubtract(_standbyTime) > 900*(AntiIdle.InitAttempts > 4 ? 4 : AntiIdle.InitAttempts))
                 {
                     _isStandby = false;
                     _diablo.Start();
@@ -126,25 +98,36 @@ namespace YetAnotherRelogger.Helpers.Bot
                 _isStandby = value;
             }
         }
-        [XmlIgnore]
-        private DateTime _standbyTime;
 
         [XmlIgnore]
-        private string _status;
-        [XmlIgnore]
-        public string Status { get { return _status; } set { SetField(ref _status, value, "Status"); } }
+        public string Status
+        {
+            get { return _status; }
+            set { SetField(ref _status, value, "Status"); }
+        }
 
         [XmlIgnore]
         public DateTime StartTime { get; set; }
+
         [XmlIgnore]
-        private string _runningtime;
-        [XmlIgnore]
-        public string RunningTime { get { return _runningtime; } set { SetField(ref _runningtime, value, "RunningTime"); } }
+        public string RunningTime
+        {
+            get { return _runningtime; }
+            set { SetField(ref _runningtime, value, "RunningTime"); }
+        }
 
         [XmlIgnore]
         public ChartStats ChartStats { get; set; }
 
+        [XmlIgnore]
+        public string DemonbuddyPid
+        {
+            get { return _demonbuddyPid; }
+            set { SetField(ref _demonbuddyPid, value, "DemonbuddyPid"); }
+        }
+
         #region Advanced Options Variables
+
         // Windows User
         public bool UseWindowsUser { get; set; }
         public bool CreateWindowsUser { get; set; }
@@ -157,12 +140,68 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         // D3Prefs
         public string D3PrefsLocation { get; set; }
+
         #endregion
 
-        [XmlIgnore]
-        private string _demonbuddyPid;
-        [XmlIgnore]
-        public string DemonbuddyPid { get { return _demonbuddyPid; } set { SetField(ref _demonbuddyPid, value, "DemonbuddyPid"); } }
+        public object Clone()
+        {
+            var clone = new BotClass
+            {
+                AntiIdle = AntiIdle.Copy(),
+                ChartStats = ChartStats.Copy(),
+                CreateWindowsUser = CreateWindowsUser.Copy(),
+                D3PrefsLocation = D3PrefsLocation.Copy(),
+                Demonbuddy = Demonbuddy.Copy(),
+                Description = Description.Copy(),
+                Diablo = Diablo.Copy(),
+                DiabloCloneLocation = DiabloCloneLocation.Copy(),
+                Name = Name.Copy(),
+                ProfileSchedule = ProfileSchedule.Copy(),
+                UseDiabloClone = UseDiabloClone.Copy(),
+                UseWindowsUser = UseWindowsUser.Copy(),
+                Week = Week.Copy(),
+                WindowsUserName = WindowsUserName.Copy(),
+                WindowsUserPassword = WindowsUserPassword.Copy()
+            };
+            return clone;
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            try
+            {
+                if (Program.Mainform == null)
+                    return;
+                Program.Mainform.Invoke(new Action(() =>
+                {
+                    try
+                    {
+                        PropertyChangedEventHandler handler = PropertyChanged;
+                        if (handler != null)
+                            handler(this, new PropertyChangedEventArgs(propertyName));
+                    }
+                    catch (Exception ex)
+                    {
+                        DebugHelper.Exception(ex);
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                DebugHelper.Exception(ex);
+            }
+        }
+
+        protected bool SetField<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
 
         public void Start(bool force = false)
         {
@@ -202,29 +241,5 @@ namespace YetAnotherRelogger.Helpers.Bot
             _demonbuddy.Stop();
             _diablo.Stop();
         }
-
-        public object Clone()
-        {
-            BotClass clone = new BotClass()
-             {
-                 AntiIdle = this.AntiIdle.Copy(),
-                 ChartStats = this.ChartStats.Copy(),
-                 CreateWindowsUser = this.CreateWindowsUser.Copy(),
-                 D3PrefsLocation = this.D3PrefsLocation.Copy(),
-                 Demonbuddy = this.Demonbuddy.Copy(),
-                 Description = this.Description.Copy(),
-                 Diablo = this.Diablo.Copy(),
-                 DiabloCloneLocation = this.DiabloCloneLocation.Copy(),
-                 Name = this.Name.Copy(),
-                 ProfileSchedule = this.ProfileSchedule.Copy(),
-                 UseDiabloClone = this.UseDiabloClone.Copy(),
-                 UseWindowsUser = this.UseWindowsUser.Copy(),
-                 Week = this.Week.Copy(),
-                 WindowsUserName = this.WindowsUserName.Copy(),
-                 WindowsUserPassword = this.WindowsUserPassword.Copy()
-             };
-            return clone;
-        }
-
     }
 }

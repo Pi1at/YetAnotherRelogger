@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Linq;
 using System.IO;
 using System.IO.Pipes;
+using System.Linq;
 using System.Threading;
 using System.Xml.Serialization;
 using YetAnotherRelogger.Helpers.Bot;
@@ -14,45 +14,43 @@ namespace YetAnotherRelogger.Helpers
     public class Communicator
     {
         #region singleton
-        static readonly Communicator instance = new Communicator();
+
+        private static readonly Communicator instance = new Communicator();
 
         static Communicator()
         {
         }
 
-        Communicator()
+        private Communicator()
         {
         }
 
         public static Communicator Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
+
         #endregion
 
         private static int _connections;
+        private Thread _threadWorker;
+
         public static int Connections
         {
-            get
-            {
-                return _connections;
-            }
+            get { return _connections; }
             set
             {
                 _connections = value < 0 ? 0 : value;
                 StatConnections += _connections;
             }
         }
+
         public static int StatConnections { get; set; }
         public static int StatFailed { get; set; }
 
-        Thread _threadWorker;
         public void Start()
         {
-            _threadWorker = new Thread(Worker) { IsBackground = true };
+            _threadWorker = new Thread(Worker) {IsBackground = true};
             _threadWorker.Start();
         }
 
@@ -75,31 +73,69 @@ namespace YetAnotherRelogger.Helpers
             }
         }
 
-        class HandleClient : IDisposable
+        private class HandleClient : IDisposable
         {
             private StreamReader _reader;
-            private StreamWriter _writer;
             private NamedPipeServerStream _stream;
+            private StreamWriter _writer;
 
             public HandleClient(NamedPipeServerStream stream)
             {
                 _stream = stream;
                 _reader = new StreamReader(stream);
-                _writer = new StreamWriter(stream) { AutoFlush = true };
+                _writer = new StreamWriter(stream) {AutoFlush = true};
+            }
+
+            public void Dispose()
+            {
+                //Free managed resources
+                if (_stream != null)
+                {
+                    try
+                    {
+                        _stream.Close();
+                    }
+                    catch
+                    {
+                    }
+                    _stream = null;
+                }
+                if (_reader != null)
+                {
+                    try
+                    {
+                        _reader.Close();
+                    }
+                    catch
+                    {
+                    }
+                    _reader = null;
+                }
+                if (_writer != null)
+                {
+                    try
+                    {
+                        _writer.Close();
+                    }
+                    catch
+                    {
+                    }
+                    _writer = null;
+                }
             }
 
             public void Start()
             {
-                var isXml = false;
-                var xml = string.Empty;
-                var duration = DateTime.Now;
+                bool isXml = false;
+                string xml = string.Empty;
+                DateTime duration = DateTime.Now;
                 Connections++;
                 try
                 {
                     Debug.WriteLine("PipeConnection [{0}]: Connected:{1}", _stream.GetHashCode(), _stream.IsConnected);
                     while (_stream.IsConnected)
                     {
-                        var temp = _reader.ReadLine();
+                        string temp = _reader.ReadLine();
                         if (temp == null)
                         {
                             Thread.Sleep(Program.Sleeptime);
@@ -107,7 +143,8 @@ namespace YetAnotherRelogger.Helpers
                         }
                         if (temp.Equals("END"))
                         {
-                            Debug.WriteLine("PipeConnection [{0}]: Duration:{1} XML:{2}", _stream.GetHashCode(), General.DateSubtract(duration, false), xml);
+                            Debug.WriteLine("PipeConnection [{0}]: Duration:{1} XML:{2}", _stream.GetHashCode(),
+                                General.DateSubtract(duration, false), xml);
                             HandleXml(xml);
                         }
 
@@ -123,7 +160,8 @@ namespace YetAnotherRelogger.Helpers
                         }
                         else
                         {
-                            Debug.WriteLine("PipeConnection [{0}]: Duration:{1} Data:{2}", _stream.GetHashCode(), General.DateSubtract(duration, false), temp);
+                            Debug.WriteLine("PipeConnection [{0}]: Duration:{1} Data:{2}", _stream.GetHashCode(),
+                                General.DateSubtract(duration, false), temp);
                             HandleMsg(temp);
                         }
                     }
@@ -133,7 +171,8 @@ namespace YetAnotherRelogger.Helpers
                     Console.WriteLine(ex.Message);
                     StatFailed++;
                 }
-                Debug.WriteLine("PipeConnection [{0}]: Connected:{1} Duration:{2}ms", _stream.GetHashCode(), _stream.IsConnected, General.DateSubtract(duration, false));
+                Debug.WriteLine("PipeConnection [{0}]: Connected:{1} Duration:{2}ms", _stream.GetHashCode(),
+                    _stream.IsConnected, General.DateSubtract(duration, false));
                 Dispose();
                 Connections--;
             }
@@ -141,7 +180,7 @@ namespace YetAnotherRelogger.Helpers
             private void HandleXml(string data)
             {
                 BotStats stats;
-                var xml = new XmlSerializer(typeof(BotStats));
+                var xml = new XmlSerializer(typeof (BotStats));
                 using (var stringReader = new StringReader(data))
                 {
                     stats = xml.Deserialize(stringReader) as BotStats;
@@ -151,10 +190,15 @@ namespace YetAnotherRelogger.Helpers
                 {
                     try
                     {
-                        var bot = BotSettings.Instance.Bots.FirstOrDefault(b => (b != null && b.Demonbuddy != null && b.Demonbuddy.Proc != null) && b.Demonbuddy.Proc.Id == stats.Pid);
+                        BotClass bot =
+                            BotSettings.Instance.Bots.FirstOrDefault(
+                                b =>
+                                    (b != null && b.Demonbuddy != null && b.Demonbuddy.Proc != null) &&
+                                    b.Demonbuddy.Proc.Id == stats.Pid);
                         if (bot != null)
                         {
-                            if (bot.AntiIdle.Stats == null) bot.AntiIdle.Stats = new BotStats();
+                            if (bot.AntiIdle.Stats == null)
+                                bot.AntiIdle.Stats = new BotStats();
 
                             bot.AntiIdle.UpdateCoinage(stats.Coinage);
                             bot.AntiIdle.Stats = stats;
@@ -185,12 +229,16 @@ namespace YetAnotherRelogger.Helpers
                 Debug.WriteLine("Recieved: " + msg);
                 try
                 {
-                    var pid = msg.Split(':')[0];
-                    var cmd = msg.Substring(pid.Length + 1).Split(' ')[0];
+                    string pid = msg.Split(':')[0];
+                    string cmd = msg.Substring(pid.Length + 1).Split(' ')[0];
                     int x;
                     msg = msg.Substring(((x = pid.Length + cmd.Length + 2) >= msg.Length ? 0 : x));
 
-                    var b = BotSettings.Instance.Bots.FirstOrDefault(f => (f.Demonbuddy != null && f.Demonbuddy.Proc != null) && f.Demonbuddy.Proc.Id == Convert.ToInt32(pid));
+                    BotClass b =
+                        BotSettings.Instance.Bots.FirstOrDefault(
+                            f =>
+                                (f.Demonbuddy != null && f.Demonbuddy.Proc != null) &&
+                                f.Demonbuddy.Proc.Id == Convert.ToInt32(pid));
                     if (b == null)
                     {
                         Send("Error: Unknown process");
@@ -202,12 +250,12 @@ namespace YetAnotherRelogger.Helpers
                     {
                         case "Initialized":
                             b.AntiIdle.Stats = new BotStats
-                                          {
-                                              LastGame = DateTime.Now.Ticks,
-                                              LastPulse = DateTime.Now.Ticks,
-                                              PluginPulse = DateTime.Now.Ticks,
-                                              LastRun = DateTime.Now.Ticks
-                                          };
+                            {
+                                LastGame = DateTime.Now.Ticks,
+                                LastPulse = DateTime.Now.Ticks,
+                                PluginPulse = DateTime.Now.Ticks,
+                                LastRun = DateTime.Now.Ticks
+                            };
                             b.AntiIdle.LastStats = DateTime.Now;
                             b.AntiIdle.State = IdleState.CheckIdle;
                             b.AntiIdle.IsInitialized = true;
@@ -217,13 +265,14 @@ namespace YetAnotherRelogger.Helpers
                         case "GameLeft":
                             b.ProfileSchedule.Count++;
                             if (b.ProfileSchedule.Current.Runs > 0)
-                                Logger.Instance.Write(b, "Runs completed ({0}/{1})", b.ProfileSchedule.Count, b.ProfileSchedule.MaxRuns);
+                                Logger.Instance.Write(b, "Runs completed ({0}/{1})", b.ProfileSchedule.Count,
+                                    b.ProfileSchedule.MaxRuns);
                             else
                                 Logger.Instance.Write(b, "Runs completed {0}", b.ProfileSchedule.Count);
 
                             if (b.ProfileSchedule.IsDone)
                             {
-                                var newprofile = b.ProfileSchedule.GetProfile;
+                                string newprofile = b.ProfileSchedule.GetProfile;
                                 Logger.Instance.Write(b, "Next profile: {0}", newprofile);
                                 Send("LoadProfile " + newprofile);
                             }
@@ -242,7 +291,7 @@ namespace YetAnotherRelogger.Helpers
                             b.AntiIdle.State = IdleState.StartDelay;
                             Send("Roger!");
                             break;
-                        // Giles Compatibility
+                            // Giles Compatibility
                         case "ThirdpartyStop":
                             b.Status = string.Format("Thirdparty Stop: {0:d-m H:M:s}", DateTime.Now);
                             b.AntiIdle.State = IdleState.UserStop;
@@ -265,17 +314,18 @@ namespace YetAnotherRelogger.Helpers
                             Send("Roger!");
                             break;
                         case "CheckConnection":
-                            ConnectionCheck.CheckValidConnection(silent: true);
+                            ConnectionCheck.CheckValidConnection(true);
                             Send("Roger!");
                             break;
                         case "NewMonsterPowerLevel":
-                            Logger.Instance.Write(b, "Sending MonsterPowerLevel: {0}", b.ProfileSchedule.Current.MonsterPowerLevel);
-                            Send("MonsterPower " + (int)b.ProfileSchedule.Current.MonsterPowerLevel);
+                            Logger.Instance.Write(b, "Sending MonsterPowerLevel: {0}",
+                                b.ProfileSchedule.Current.MonsterPowerLevel);
+                            Send("MonsterPower " + (int) b.ProfileSchedule.Current.MonsterPowerLevel);
                             break;
                         case "D3Exit":
                             Send("Shutdown");
                             break;
-                        // Unknown command reply
+                            // Unknown command reply
                         default:
                             Send("Unknown command!");
                             Logger.Instance.WriteGlobal("Unknown command recieved: " + msg);
@@ -306,30 +356,6 @@ namespace YetAnotherRelogger.Helpers
             public void SendShutdown()
             {
                 Send("Shutdown");
-            }
-
-            public void Dispose()
-            {
-                //Free managed resources
-                if (_stream != null)
-                {
-                    try { _stream.Close(); }
-                    catch { }
-                    _stream = null;
-                }
-                if (_reader != null)
-                {
-                    try { _reader.Close(); }
-                    catch { }
-                    _reader = null;
-                }
-                if (_writer != null)
-                {
-                    try { _writer.Close(); }
-                    catch { }
-                    _writer = null;
-                }
-
             }
         }
     }

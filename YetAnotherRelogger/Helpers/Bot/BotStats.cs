@@ -4,16 +4,16 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class BotStats
     {
-        public int Pid;
-        public long LastRun;
-        public long LastPulse;
-        public long PluginPulse;
-        public long LastGame;
-        public bool IsPaused;
-        public bool IsRunning;
+        public int Coinage;
         public bool IsInGame;
         public bool IsLoadingWorld;
-        public int Coinage;
+        public bool IsPaused;
+        public bool IsRunning;
+        public long LastGame;
+        public long LastPulse;
+        public long LastRun;
+        public int Pid;
+        public long PluginPulse;
 
         public void Reset()
         {

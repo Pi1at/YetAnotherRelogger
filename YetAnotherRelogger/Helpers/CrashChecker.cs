@@ -8,19 +8,23 @@ namespace YetAnotherRelogger.Helpers
     {
         public static bool IsResponding(Process proc)
         {
-            if (proc == null) return false;
+            if (proc == null)
+                return false;
             return (testResponse(proc.MainWindowHandle));
         }
+
         public static bool IsResponding(IntPtr handle)
         {
             return (testResponse(handle));
         }
+
         private static bool testResponse(IntPtr handle)
         {
             UIntPtr dummy;
-            var result = IntPtr.Zero;
+            IntPtr result = IntPtr.Zero;
 
-            result = WinAPI.SendMessageTimeout(handle, 0, UIntPtr.Zero, IntPtr.Zero, WinAPI.SendMessageTimeoutFlags.SMTO_ABORTIFHUNG, 1000, out dummy);
+            result = WinAPI.SendMessageTimeout(handle, 0, UIntPtr.Zero, IntPtr.Zero,
+                WinAPI.SendMessageTimeoutFlags.SMTO_ABORTIFHUNG, 1000, out dummy);
 
             return (result != IntPtr.Zero);
         }

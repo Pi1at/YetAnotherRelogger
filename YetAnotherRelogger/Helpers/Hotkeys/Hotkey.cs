@@ -16,39 +16,59 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
             Key = new Keys();
             Actions = new BindingList<Action>();
         }
-        [XmlIgnore] public int HookId { get; set; }
+
+        [XmlIgnore]
+        public int HookId { get; set; }
+
         public string Name { get; set; }
         public ModifierKeys Modifier { get; set; }
         public Keys Key { get; set; }
         public BindingList<Action> Actions { get; set; }
     }
+
     [Serializable]
     public class Action : INotifyPropertyChanged
     {
+        [XmlIgnore] private string _name;
+        [XmlIgnore] private int _order;
+
         public Action()
         {
             UniqueId = Guid.NewGuid(); // Generate new UniqueId
         }
+
+        public Guid UniqueId { get; set; }
+
+        public int Order
+        {
+            get { return _order; }
+            set { SetField(ref _order, value, "Order"); }
+        }
+
+        public string Name
+        {
+            get { return _name; }
+            set { SetField(ref _name, value, "Name"); }
+        }
+
+        public string Description { get; set; }
+        public Version Version { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
+
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            var handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null)
+                handler(this, new PropertyChangedEventArgs(propertyName));
         }
+
         protected bool SetField<T>(ref T field, T value, string propertyName)
         {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            if (EqualityComparer<T>.Default.Equals(field, value))
+                return false;
             field = value;
             OnPropertyChanged(propertyName);
             return true;
         }
-
-        public Guid UniqueId { get; set; }
-        [XmlIgnore] private int _order;
-        public int Order { get { return _order; } set { SetField(ref _order, value, "Order"); } }
-        [XmlIgnore] private string _name;
-        public string Name { get { return _name; } set { SetField(ref _name, value, "Name"); } }
-        public string Description { get; set; }
-        public Version Version { get; set; }
     }
 }

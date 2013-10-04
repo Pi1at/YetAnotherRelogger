@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading;
 using YetAnotherRelogger.Helpers.Bot;
 using YetAnotherRelogger.Helpers.Tools;
 
@@ -13,33 +10,35 @@ namespace YetAnotherRelogger.Helpers
 {
     public static class DiabloClone
     {
+        private static readonly HashSet<NoLink> _noLinks = new HashSet<NoLink>
+        {
+            new NoLink {Source = @"Data_D3\PC\MPQs\Cache\*", Directory = true},
+            new NoLink {Source = @"InspectorReporter\ReportedBugs\*", Directory = true},
+            new NoLink {Source = @".agent.db", Directory = false},
+            new NoLink {Source = @"App-*.dmp", Directory = false},
+            new NoLink {Source = @"*.lock", Directory = false},
+        };
+
         [DllImport("kernel32.dll")]
-        static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
+        private static extern bool CreateSymbolicLink(string lpSymlinkFileName, string lpTargetFileName, int dwFlags);
+
         [DllImport("kernel32.dll", SetLastError = true, CharSet = CharSet.Auto)]
-        static extern bool CreateHardLink(string lpFileName, string lpExistingFileName, IntPtr lpSecurityAttributes);
+        private static extern bool CreateHardLink(string lpFileName, string lpExistingFileName,
+            IntPtr lpSecurityAttributes);
 
         // Dont link this list
-        private static HashSet<NoLink> _noLinks = new HashSet<NoLink>
-                             {
-                                 new NoLink {Source=@"Data_D3\PC\MPQs\Cache\*",Directory = true},
-                                 new NoLink {Source=@"InspectorReporter\ReportedBugs\*",Directory = true},
-                                 new NoLink {Source=@".agent.db",Directory = false},
-                                 new NoLink {Source=@"App-*.dmp",Directory = false},
-                                 new NoLink {Source=@"*.lock",Directory = false},
-                             };
 
         public static void Create(BotClass bot)
         {
             var imp = new Impersonator();
             try
             {
-                
                 if (bot.UseWindowsUser)
                     imp.Impersonate(bot.WindowsUserName, "localhost", bot.WindowsUserPassword);
 
                 bot.Status = "Create Diablo Clone";
-                var basepath = Path.GetDirectoryName(bot.Diablo.Location);
-                var clonepath = Path.Combine(bot.DiabloCloneLocation, "Diablo III");
+                string basepath = Path.GetDirectoryName(bot.Diablo.Location);
+                string clonepath = Path.Combine(bot.DiabloCloneLocation, "Diablo III");
 
                 // if diablo base path does not exist stop here!
                 if (basepath != null && !Directory.Exists(basepath))
@@ -49,12 +48,12 @@ namespace YetAnotherRelogger.Helpers
                 }
 
                 // Check if given language is installed on basepath
-                var testpath = Path.Combine(basepath, @"Data_D3\PC\MPQs", General.GetLocale(bot.Diablo.Language));
+                string testpath = Path.Combine(basepath, @"Data_D3\PC\MPQs", General.GetLocale(bot.Diablo.Language));
                 if (!Directory.Exists(testpath))
                 {
                     bot.Stop();
                     throw new Exception(string.Format("ERROR: {0} language is not installed (path: {1})",
-                                                      bot.Diablo.Language, testpath));
+                        bot.Diablo.Language, testpath));
                 }
 
 
@@ -70,7 +69,7 @@ namespace YetAnotherRelogger.Helpers
                 var cloneFileCache = new FileListCache(clonepath);
 
                 // Check if all links are made for our clone
-                foreach (var p in baseFileCache.FileList)
+                foreach (FileListCache.MyFile p in baseFileCache.FileList)
                 {
                     try
                     {
@@ -79,7 +78,7 @@ namespace YetAnotherRelogger.Helpers
                             if (!_noLinks.Any(n => General.WildcardMatch(n.Source, p.Path)))
                             {
                                 Logger.Instance.Write(bot, "NewLink: {0} -> {1}", Path.Combine(clonepath, p.Path),
-                                                      Path.Combine(basepath, p.Path));
+                                    Path.Combine(basepath, p.Path));
                                 //if (!CreateSymbolicLink( Path.Combine(clonepath,p.Path),  Path.Combine(basepath,p.Path), 1))
                                 //  throw new Exception("Failed to create link!");
                                 Directory.CreateDirectory(Path.Combine(clonepath, p.Path));
@@ -91,19 +90,19 @@ namespace YetAnotherRelogger.Helpers
                             if (!_noLinks.Any(n => General.WildcardMatch(n.Source, p.Path)))
                             {
                                 Logger.Instance.Write(bot, "NewLink: {0} -> {1}", Path.Combine(clonepath, p.Path),
-                                                      Path.Combine(basepath, p.Path));
+                                    Path.Combine(basepath, p.Path));
                                 if (Path.GetExtension(Path.Combine(clonepath, p.Path)).ToLower().Equals(".exe"))
                                 {
                                     if (
                                         !CreateHardLink(Path.Combine(clonepath, p.Path), Path.Combine(basepath, p.Path),
-                                                        IntPtr.Zero))
+                                            IntPtr.Zero))
                                         throw new Exception("Failed to create link!");
                                 }
                                 else
                                 {
                                     if (
                                         !CreateSymbolicLink(Path.Combine(clonepath, p.Path),
-                                                            Path.Combine(basepath, p.Path), 0))
+                                            Path.Combine(basepath, p.Path), 0))
                                         throw new Exception("Failed to create link!");
                                 }
                             }
@@ -140,7 +139,6 @@ namespace YetAnotherRelogger.Helpers
                     }
                 }
                  */
-                
             }
             catch (Exception ex)
             {
@@ -152,9 +150,9 @@ namespace YetAnotherRelogger.Helpers
         }
     }
 
-    struct NoLink
+    internal struct NoLink
     {
-        public string Source;
         public bool Directory;
+        public string Source;
     }
 }

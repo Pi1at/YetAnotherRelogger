@@ -1,11 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using System.Diagnostics;
-
 using YetAnotherRelogger.Helpers;
 using YetAnotherRelogger.Helpers.Bot;
-using YetAnotherRelogger.Helpers.Tools;
 using YetAnotherRelogger.Properties;
 
 namespace YetAnotherRelogger
@@ -13,43 +11,43 @@ namespace YetAnotherRelogger
     public sealed class Relogger
     {
         #region singleton
-        static readonly Relogger instance = new Relogger();
+
+        private static readonly Relogger instance = new Relogger();
 
         static Relogger()
         {
         }
 
-        Relogger()
+        private Relogger()
         {
         }
 
         public static Relogger Instance
         {
-            get
-            {
-                return instance;
-            }
+            get { return instance; }
         }
+
         #endregion
 
+        public BotClass CurrentBot;
+        private bool _autoStartDone;
         private bool _isStopped;
-        Thread _threadRelogger;
+        private Thread _threadRelogger;
+
         public void Start()
         {
             _isStopped = false;
-            _threadRelogger = new Thread(new ThreadStart(ReloggerWorker)) {IsBackground = true};
+            _threadRelogger = new Thread(ReloggerWorker) { IsBackground = true };
             _threadRelogger.Start();
         }
 
-        
+
         public void Stop()
         {
             _isStopped = true;
             _threadRelogger.Abort();
         }
 
-        public BotClass CurrentBot;
-        private bool _autoStartDone;
         private void ReloggerWorker()
         {
             // Check if we are launched by windows RUN
@@ -57,8 +55,8 @@ namespace YetAnotherRelogger
             {
                 _autoStartDone = true;
                 Logger.Instance.WriteGlobal("Windows auto start delaying with {0} seconds", Settings.Default.StartDelay);
-                Thread.Sleep((int)Settings.Default.StartDelay*1000);
-                foreach (var bot in BotSettings.Instance.Bots.Where(c => c.IsEnabled))
+                Thread.Sleep((int)Settings.Default.StartDelay * 1000);
+                foreach (BotClass bot in BotSettings.Instance.Bots.Where(c => c.IsEnabled))
                 {
                     bot.AntiIdle.Reset(freshstart: true); // Reset AntiIdle
                     bot.IsStarted = true;
@@ -69,7 +67,7 @@ namespace YetAnotherRelogger
             if (CommandLineArgs.AutoStart && !_autoStartDone)
             {
                 _autoStartDone = true;
-                foreach (var bot in BotSettings.Instance.Bots.Where(c => c.IsEnabled))
+                foreach (BotClass bot in BotSettings.Instance.Bots.Where(c => c.IsEnabled))
                 {
                     bot.AntiIdle.Reset(freshstart: true); // Reset AntiIdle
                     bot.IsStarted = true;
@@ -96,11 +94,12 @@ namespace YetAnotherRelogger
                         continue;
                     }
 
-                    foreach (var bot in BotSettings.Instance.Bots.Where(bot => bot != null))
+                    foreach (BotClass bot in BotSettings.Instance.Bots.Where(bot => bot != null))
                     {
-                        if (Program.Pause) break;
+                        if (Program.Pause)
+                            break;
 
-                        var time = DateTime.Now; // set current time to calculate sleep time at end of loop
+                        DateTime time = DateTime.Now; // set current time to calculate sleep time at end of loop
                         CurrentBot = bot;
                         //Debug.WriteLine(bot.Name + ":" + ":" + bot.IsRunning);
                         //Debug.WriteLine("State=" + bot.AntiIdle.State);
@@ -132,8 +131,9 @@ namespace YetAnotherRelogger
 
                             if (!bot.Diablo.IsRunning)
                             {
-                                Logger.Instance.Write("Diablo:{0}: Process is not running", bot.Diablo.Proc.Id);
-                                if (bot.Demonbuddy.IsRunning)
+                                if (bot.Diablo.Proc != null)
+                                    Logger.Instance.Write("Diablo:{0}: Process is not running", bot.Diablo.Proc.Id);
+                                if (bot.Demonbuddy.IsRunning && bot.Demonbuddy.Proc != null)
                                 {
                                     Logger.Instance.Write("Demonbuddy:{0}: Closing db", bot.Demonbuddy.Proc.Id);
                                     bot.Demonbuddy.Stop();
@@ -158,26 +158,28 @@ namespace YetAnotherRelogger
                                     bot.AntiIdle.State = IdleState.NewProfile;
                                 }
                             }
-
-                        } 
+                        }
                         else
                         {
                             //Logger.Instance.Write("Bot Standby={0} Running={1} D3Running={2} DBRunning={3}", bot.IsStandby, bot.IsRunning, bot.Diablo.IsRunning, bot.Demonbuddy.IsRunning);
                             bot.StartTime = DateTime.Now;
                         }
                         // calculate sleeptime
-                        var sleep = (int) (Program.Sleeptime - DateTime.Now.Subtract(time).TotalMilliseconds);
-                        if (sleep > 0) Thread.Sleep(sleep);
+                        var sleep = (int)(Program.Sleeptime - DateTime.Now.Subtract(time).TotalMilliseconds);
+                        if (sleep > 0)
+                            Thread.Sleep(sleep);
                     }
                 } // try
                 catch (InvalidOperationException)
-                { // Catch error when bot is edited while in a loop
+                {
+                    // Catch error when bot is edited while in a loop
                     //Logger.Instance.WriteGlobal(iox.Message);
                     continue;
                 }
                 catch (Exception ex)
                 {
-                    if (_isStopped) return;
+                    if (_isStopped)
+                        return;
                     Logger.Instance.WriteGlobal("Relogger Crashed! with message {0}", ex.Message);
                     DebugHelper.Exception(ex);
                     Logger.Instance.WriteGlobal("Waiting 10 seconds and try again!");
@@ -191,10 +193,12 @@ namespace YetAnotherRelogger
         private bool StartBoth(BotClass bot)
         {
             bot.Diablo.Start();
-            if (!bot.Diablo.IsRunning) return false;
+            if (!bot.Diablo.IsRunning)
+                return false;
 
             bot.Demonbuddy.Start();
-            if (!bot.Demonbuddy.IsRunning) return false;
+            if (!bot.Demonbuddy.IsRunning)
+                return false;
 
             bot.Status = "Monitoring";
             return true;

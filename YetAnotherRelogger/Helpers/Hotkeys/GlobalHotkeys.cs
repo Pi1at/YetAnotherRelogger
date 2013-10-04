@@ -20,7 +20,7 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         private GlobalHotkeys()
         {
             _keyboardHook = new KeyboardHook();
-            _keyboardHook.KeyPressed += new EventHandler<KeyPressedEventArgs>(hook_KeyPressed);
+            _keyboardHook.KeyPressed += hook_KeyPressed;
         }
 
         public static GlobalHotkeys Instance
@@ -31,17 +31,19 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         #endregion
 
         private readonly KeyboardHook _keyboardHook;
-        
+
         public void Load()
         {
-            if (Settings.Default.HotKeys.Count == 0) return;
+            if (Settings.Default.HotKeys.Count == 0)
+                return;
             Logger.Instance.WriteGlobal("## Loading Hotkeys ##");
-            foreach (var hk in Settings.Default.HotKeys)
+            foreach (Hotkey hk in Settings.Default.HotKeys)
             {
-                Logger.Instance.WriteGlobal("Register hotkey: {0} - {1}+{2}", hk.Name, hk.Modifier.ToString().Replace(", ", "+"),hk.Key);
+                Logger.Instance.WriteGlobal("Register hotkey: {0} - {1}+{2}", hk.Name,
+                    hk.Modifier.ToString().Replace(", ", "+"), hk.Key);
                 hk.HookId = _keyboardHook.RegisterHotKey(hk.Modifier, hk.Key);
 
-                foreach (var action in hk.Actions)
+                foreach (Action action in hk.Actions)
                 {
                     Debug.WriteLine("Initialize Hotkey: {0} {1}", action.Name, action.Version);
                     ActionContainer.GetAction(action.Name, action.Version).OnInitialize(hk);
@@ -50,7 +52,7 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         }
 
         /// <summary>
-        /// Add a Global Hotkey
+        ///     Add a Global Hotkey
         /// </summary>
         /// <param name="hotkey">Hotkey</param>
         /// <returns>True on success</returns>
@@ -62,16 +64,15 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
             {
                 Settings.Default.HotKeys.Add(hotkey);
                 Logger.Instance.WriteGlobal("Register hotkey: {0} - {1}+{2}", hotkey.Name,
-                                            hotkey.Modifier.ToString().Replace(", ", "+"), hotkey.Key);
+                    hotkey.Modifier.ToString().Replace(", ", "+"), hotkey.Key);
                 id = _keyboardHook.RegisterHotKey(hotkey.Modifier, hotkey.Key);
                 hotkey.HookId = id;
 
-                foreach (var action in hotkey.Actions)
+                foreach (Action action in hotkey.Actions)
                 {
                     Debug.WriteLine("Initialize Hotkey: {0} {1}", action.Name, action.Version);
                     ActionContainer.GetAction(action.Name, action.Version).OnInitialize(hotkey);
                 }
-
             }
             catch (Exception ex)
             {
@@ -82,17 +83,17 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         }
 
         /// <summary>
-        /// Remove a Global Hotkey
+        ///     Remove a Global Hotkey
         /// </summary>
         /// <param name="id">Hotkey id</param>
         /// <returns></returns>
         public bool Remove(int id)
         {
-            var hk = Settings.Default.HotKeys.FirstOrDefault(x => x.HookId == id);
+            Hotkey hk = Settings.Default.HotKeys.FirstOrDefault(x => x.HookId == id);
             if (hk != null)
             {
                 _keyboardHook.UnregisterHotkey(id);
-                foreach (var action in hk.Actions)
+                foreach (Action action in hk.Actions)
                 {
                     Debug.WriteLine("Dispose Hotkey: {0} {1}", action.Name, action.Version);
                     ActionContainer.GetAction(action.Name, action.Version).OnDispose();
@@ -104,11 +105,11 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
 
         private void hook_KeyPressed(object sender, KeyPressedEventArgs e)
         {
-            Debug.WriteLine("Hotkey pressed: " + e.Modifier.ToString() +"+ "+ e.Key.ToString());
-            var hk = Settings.Default.HotKeys.FirstOrDefault(x => x.Modifier == e.Modifier && x.Key == e.Key);
+            Debug.WriteLine("Hotkey pressed: " + e.Modifier.ToString() + "+ " + e.Key.ToString());
+            Hotkey hk = Settings.Default.HotKeys.FirstOrDefault(x => x.Modifier == e.Modifier && x.Key == e.Key);
             if (hk != null)
             {
-                foreach (var action in hk.Actions)
+                foreach (Action action in hk.Actions)
                 {
                     Debug.WriteLine("Calling Hotkey Onpress Event for: {0} {1}", action.Name, action.Version);
                     ActionContainer.GetAction(action.Name, action.Version).OnPressed();
@@ -117,7 +118,7 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         }
 
         /// <summary>
-        /// Translate Keys to ModifierKeys standard for GlobalHotkeys
+        ///     Translate Keys to ModifierKeys standard for GlobalHotkeys
         /// </summary>
         /// <param name="keys">Keys as ModifierKeys</param>
         /// <returns>ModifierKeys</returns>

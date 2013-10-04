@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using YetAnotherRelogger.Forms.SettingsTree;
-using YetAnotherRelogger.Helpers.Hotkeys.Actions;
 using YetAnotherRelogger.Properties;
 
 namespace YetAnotherRelogger.Helpers.Hotkeys
 {
     public partial class NewHotkey : Form
     {
+        public Hotkey HotkeyNew;
+        private CatchHotkey _catchHotkey;
+
         public NewHotkey()
         {
             InitializeComponent();
-            HotkeyNew = new Hotkey ();
-            
+            HotkeyNew = new Hotkey();
         }
 
         public NewHotkey(Hotkey hotkey)
@@ -26,8 +26,6 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
             HotkeyNew = hotkey;
         }
 
-        public Hotkey HotkeyNew;
-        private CatchHotkey _catchHotkey;
         public override sealed string Text
         {
             get { return base.Text; }
@@ -35,8 +33,9 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         }
 
         private void NewHotkey_Load(object sender, EventArgs e)
-        { // Load
-            Closed += new EventHandler(NewHotkey_Closed);
+        {
+            // Load
+            Closed += NewHotkey_Closed;
             UpdateDataGridview();
         }
 
@@ -53,22 +52,25 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         }
 
         private void button1_Click(object sender, EventArgs e)
-        { // Catch new hotkey
+        {
+            // Catch new hotkey
             _catchHotkey = new CatchHotkey(this);
             _catchHotkey.ShowDialog(this);
         }
 
         private void button3_Click(object sender, EventArgs e)
-        { // Save
+        {
+            // Save
             // Check if Hotkey is valid to be saved
             if (textBox1.Text.Trim().Equals(""))
             {
-                MessageBox.Show(this, "You did not enter a name for your Hotkey", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(this, "You did not enter a name for your Hotkey", "Error", MessageBoxButtons.OK,
+                    MessageBoxIcon.Error);
                 return;
             }
 
             HotkeyNew.Name = textBox1.Text.Trim();
-            var hk = Settings.Default.HotKeys.FirstOrDefault(x => x.HookId == HotkeyNew.HookId);
+            Hotkey hk = Settings.Default.HotKeys.FirstOrDefault(x => x.HookId == HotkeyNew.HookId);
             if (hk == null)
             {
                 GlobalHotkeys.Instance.Add(HotkeyNew);
@@ -82,7 +84,8 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         }
 
         private void button2_Click(object sender, EventArgs e)
-        { // Cancel
+        {
+            // Cancel
             Close();
         }
 
@@ -93,17 +96,20 @@ namespace YetAnotherRelogger.Helpers.Hotkeys
         }
 
         private void button4_Click(object sender, EventArgs e)
-        { // Edit
+        {
+            // Edit
             var action = new SelectAction(HotkeyNew);
             action.ShowDialog(this);
         }
 
         private void button5_Click(object sender, EventArgs e)
-        { // Open config window
+        {
+            // Open config window
             if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
                 return;
-            var selected = dataGridView1.CurrentRow;
-            var action = ActionContainer.GetAction((string)selected.Cells["Name"].Value, (Version)selected.Cells["Version"].Value);
+            DataGridViewRow selected = dataGridView1.CurrentRow;
+            IHotkeyAction action = ActionContainer.GetAction((string) selected.Cells["Name"].Value,
+                (Version) selected.Cells["Version"].Value);
             if (action != null)
             {
                 if (action.ConfigWindow != null)

@@ -22,12 +22,13 @@ It is used to ensure a profile starts without causing DB to choken it -->
       <LoadProfile profile=""{profile_path}"" />
     </Order>
 </Profile>";
+
         public static string GenerateKickstart(Profile profile, bool tmpkickstart = false)
         {
             try
             {
-
-                var path = Path.Combine(Path.GetDirectoryName(profile.Location), string.Format("YAR{0}_Kickstart.xml", tmpkickstart ? "_TMP" : ""));
+                string path = Path.Combine(Path.GetDirectoryName(profile.Location),
+                    string.Format("YAR{0}_Kickstart.xml", tmpkickstart ? "_TMP" : ""));
 
                 if (File.Exists(path))
                 {
@@ -37,21 +38,21 @@ It is used to ensure a profile starts without causing DB to choken it -->
 
 
                 Logger.Instance.Write("Generate new Kickstart profile: {0}", path);
-                var kickstartprofile = YarKickstart;
+                string kickstartprofile = YarKickstart;
                 // Replace stuff with current profile
                 kickstartprofile = kickstartprofile.Replace("{profile}", profile.Name);
                 kickstartprofile = kickstartprofile.Replace("{profile_path}", profile.Location);
                 kickstartprofile = kickstartprofile.Replace("{delay}", Settings.Default.KickstartDelay.ToString());
 
                 // Get current profile GameParams
-                var gameparams = string.Empty;
+                string gameparams = string.Empty;
                 using (var reader = new StreamReader(profile.Location))
                 {
                     string line;
                     // Read line for line and match with GameParamsRegex pattern to finde GameParams tag
                     while ((line = reader.ReadLine()) != null)
                     {
-                        var m = new Regex(GameParamsRegex).Match(line);
+                        Match m = new Regex(GameParamsRegex).Match(line);
                         if (m.Success)
                         {
                             gameparams = m.Groups[1].Value;

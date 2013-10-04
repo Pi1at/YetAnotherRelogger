@@ -1,4 +1,5 @@
 ﻿/* http://www.pinvoke.net/default.aspx/user32/EnumWindows.html */
+
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -7,8 +8,6 @@ namespace YetAnotherRelogger.Helpers.Tools
 {
     public static class FindWindow
     {
-        private delegate bool EnumWindowsProc(IntPtr hWnd, ref SearchData data);
-
         [DllImport("user32.dll")]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, ref SearchData data);
@@ -22,18 +21,12 @@ namespace YetAnotherRelogger.Helpers.Tools
         [DllImport("user32.dll", SetLastError = true)]
         private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
 
-        private class SearchData
-        {
-            public string SearchString;
-            public IntPtr Handle;
-            public int ParentId;
-        }
-
         private static bool EnumProcClass(IntPtr hWnd, ref SearchData data)
         {
             uint procId;
             GetWindowThreadProcessId(hWnd, out procId);
-            if (data.ParentId != (int) procId) return true;
+            if (data.ParentId != (int) procId)
+                return true;
 
             var sb = new StringBuilder(1024);
             GetClassName(hWnd, sb, sb.Capacity);
@@ -49,7 +42,8 @@ namespace YetAnotherRelogger.Helpers.Tools
         {
             uint procId;
             GetWindowThreadProcessId(hWnd, out procId);
-            if (data.ParentId != (int) procId) return true;
+            if (data.ParentId != (int) procId)
+                return true;
 
             var sb = new StringBuilder(1024);
             GetClassName(hWnd, sb, sb.Capacity);
@@ -65,7 +59,8 @@ namespace YetAnotherRelogger.Helpers.Tools
         {
             uint procId;
             GetWindowThreadProcessId(hWnd, out procId);
-            if (data.ParentId != (int) procId) return true;
+            if (data.ParentId != (int) procId)
+                return true;
 
             var sb = new StringBuilder(1024);
             GetWindowText(hWnd, sb, sb.Capacity);
@@ -81,7 +76,8 @@ namespace YetAnotherRelogger.Helpers.Tools
         {
             uint procId;
             GetWindowThreadProcessId(hWnd, out procId);
-            if (data.ParentId != (int) procId) return true;
+            if (data.ParentId != (int) procId)
+                return true;
 
             var sb = new StringBuilder(1024);
             GetWindowText(hWnd, sb, sb.Capacity);
@@ -92,11 +88,13 @@ namespace YetAnotherRelogger.Helpers.Tools
             }
             return true;
         }
+
         private static bool EnumProcCaptionEquals(IntPtr hWnd, ref SearchData data)
         {
             uint procId;
             GetWindowThreadProcessId(hWnd, out procId);
-            if (data.ParentId != (int)procId) return true;
+            if (data.ParentId != (int) procId)
+                return true;
 
             var sb = new StringBuilder(1024);
             GetWindowText(hWnd, sb, sb.Capacity);
@@ -107,40 +105,49 @@ namespace YetAnotherRelogger.Helpers.Tools
             }
             return true;
         }
+
         public static IntPtr FindWindowClass(string search, int pid)
         {
             var sd = new SearchData {SearchString = search, ParentId = pid};
-            EnumWindows(new EnumWindowsProc(EnumProcClass), ref sd);
+            EnumWindows(EnumProcClass, ref sd);
             return sd.Handle;
         }
 
         public static IntPtr WindowContainsClass(string search, int pid)
         {
             var sd = new SearchData {SearchString = search, ParentId = pid};
-            EnumWindows(new EnumWindowsProc(EnumProcContainsClass), ref sd);
+            EnumWindows(EnumProcContainsClass, ref sd);
             return sd.Handle;
         }
 
         public static IntPtr FindWindowCaption(string search, int pid)
         {
             var sd = new SearchData {SearchString = search, ParentId = pid};
-            EnumWindows(new EnumWindowsProc(EnumProcCaption), ref sd);
+            EnumWindows(EnumProcCaption, ref sd);
             return sd.Handle;
         }
 
         public static IntPtr EqualsWindowCaption(string search, int pid)
         {
-            var sd = new SearchData { SearchString = search, ParentId = pid };
-            EnumWindows(new EnumWindowsProc(EnumProcCaptionEquals), ref sd);
+            var sd = new SearchData {SearchString = search, ParentId = pid};
+            EnumWindows(EnumProcCaptionEquals, ref sd);
             return sd.Handle;
         }
 
         public static IntPtr FindWindowContainsCaption(string search, int pid)
         {
             var sd = new SearchData {SearchString = search, ParentId = pid};
-            EnumWindows(new EnumWindowsProc(EnumProcContainsCaption), ref sd);
+            EnumWindows(EnumProcContainsCaption, ref sd);
             return sd.Handle;
+        }
+
+        private delegate bool EnumWindowsProc(IntPtr hWnd, ref SearchData data);
+
+        private class SearchData
+        {
+            public IntPtr Handle;
+            public int ParentId;
+            public string SearchString;
         }
     }
 }
-

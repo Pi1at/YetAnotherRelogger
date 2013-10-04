@@ -8,12 +8,12 @@ namespace YetAnotherRelogger.Forms.SettingsTree
 {
     public partial class HotKeys : UserControl
     {
+        private NewHotkey _newHotkey;
+
         public HotKeys()
         {
             InitializeComponent();
         }
-
-        private NewHotkey _newHotkey;
 
         private void HotKeys_Load(object sender, EventArgs e)
         {
@@ -21,25 +21,36 @@ namespace YetAnotherRelogger.Forms.SettingsTree
         }
 
         private void button1_Click(object sender, EventArgs e)
-        { // Create new hotkey
+        {
+            // Create new hotkey
             _newHotkey = new NewHotkey();
             _newHotkey.ShowDialog(this);
         }
 
         private void button2_Click(object sender, EventArgs e)
-        { // Edit hotkey
-            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0) return;
-            var hk = Settings.Default.HotKeys.FirstOrDefault(x => x.HookId == (int)dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells["HookId"].Value);
-            if (hk == null) return;
+        {
+            // Edit hotkey
+            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                return;
+            Hotkey hk =
+                Settings.Default.HotKeys.FirstOrDefault(
+                    x => x.HookId == (int) dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells["HookId"].Value);
+            if (hk == null)
+                return;
             _newHotkey = new NewHotkey(hk);
             _newHotkey.ShowDialog(this);
         }
 
         private void button3_Click(object sender, EventArgs e)
-        { // Delete hotkey
-            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0) return;
-            var hk = Settings.Default.HotKeys.FirstOrDefault(x => x.HookId == (int)dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells["HookId"].Value);
-            if (hk == null) return;
+        {
+            // Delete hotkey
+            if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                return;
+            Hotkey hk =
+                Settings.Default.HotKeys.FirstOrDefault(
+                    x => x.HookId == (int) dataGridView1.Rows[dataGridView1.CurrentRow.Index].Cells["HookId"].Value);
+            if (hk == null)
+                return;
             GlobalHotkeys.Instance.Remove(hk.HookId);
             UpdateGridview();
         }

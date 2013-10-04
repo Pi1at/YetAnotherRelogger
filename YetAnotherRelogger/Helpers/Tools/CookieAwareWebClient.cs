@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Net;
 
 namespace YetAnotherRelogger.Helpers.Tools
@@ -7,28 +8,25 @@ namespace YetAnotherRelogger.Helpers.Tools
     {
         private readonly CookieContainer _cookies = new CookieContainer();
 
+        public CookieContainer Cookies
+        {
+            get { return _cookies; }
+        }
+
         protected override WebRequest GetWebRequest(Uri address)
         {
-            var webRequest = base.GetWebRequest(address);
-            if (webRequest != null && webRequest.GetType() == typeof(HttpWebRequest))
+            WebRequest webRequest = base.GetWebRequest(address);
+            if (webRequest != null && webRequest.GetType() == typeof (HttpWebRequest))
             {
-                ((HttpWebRequest)webRequest).CookieContainer = _cookies;
+                ((HttpWebRequest) webRequest).CookieContainer = _cookies;
             }
             return webRequest;
         }
 
-        public CookieContainer Cookies
-        {
-            get
-            {
-                return _cookies;
-            }
-        }
-
         private void InitializeComponent()
         {
-            var resources = new System.ComponentModel.ComponentResourceManager(typeof(CookieAwareWebClient));
-            Headers = ((System.Net.WebHeaderCollection)(resources.GetObject("$this.Headers")));
+            var resources = new ComponentResourceManager(typeof (CookieAwareWebClient));
+            Headers = ((WebHeaderCollection) (resources.GetObject("$this.Headers")));
         }
     }
 }
