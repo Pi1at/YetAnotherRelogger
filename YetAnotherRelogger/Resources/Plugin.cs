@@ -231,225 +231,252 @@ namespace YARPLUGIN
 
         private void Pulse_Main(object sender, EventArgs e)
         {
-            if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
-                return;
-
-            // Handle errors and other strange situations
-            //ErrorHandling();
-
-            // YAR Health Check
-            _pulseCheck = true;
-            _bs.LastPulse = DateTime.Now.Ticks;
-
-            _bs.PluginPulse = DateTime.Now.Ticks;
-            _bs.IsRunning = BotMain.IsRunning;
-
-            if (BotMain.IsPaused || BotMain.IsPausedForStateExecution)
+            try
             {
-                _bs.IsPaused = true;
-            }
-            else if (BotMain.IsRunning)
-            {
-                _bs.IsPaused = false;
-                _bs.LastRun = DateTime.Now.Ticks;
-            }
-            else
-                _bs.IsPaused = false;
+                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
+                    return;
 
+                // Handle errors and other strange situations
+                //ErrorHandling();
 
-            Queue<ReadOnlyCollection<Logging.LogMessage>> localQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
-            lock (MessageQueue)
-                while (MessageQueue.Any())
-                    localQueue.Enqueue(MessageQueue.Dequeue());
+                // YAR Health Check
+                _pulseCheck = true;
+                _bs.LastPulse = DateTime.Now.Ticks;
 
-            foreach (var messages in localQueue)
-                try
+                _bs.PluginPulse = DateTime.Now.Ticks;
+                _bs.IsRunning = BotMain.IsRunning;
+
+                if (BotMain.IsPaused || BotMain.IsPausedForStateExecution)
                 {
-                    // Create new log buffer
-                    if (_logBuffer == null)
-                        _logBuffer = messages.ToArray();
-                    else
+                    _bs.IsPaused = true;
+                }
+                else if (BotMain.IsRunning)
+                {
+                    _bs.IsPaused = false;
+                    _bs.LastRun = DateTime.Now.Ticks;
+                }
+                else
+                    _bs.IsPaused = false;
+
+
+                Queue<ReadOnlyCollection<Logging.LogMessage>> localQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
+                lock (MessageQueue)
+                    while (MessageQueue.Any())
+                        localQueue.Enqueue(MessageQueue.Dequeue());
+
+                foreach (var messages in localQueue)
+                    try
                     {
-                        // Append to existing log buffer
+                        // Create new log buffer
+                        if (_logBuffer == null)
+                            _logBuffer = messages.ToArray();
+                        else
+                        {
+                            // Append to existing log buffer
+                            lock (_logBuffer)
+                            {
+                                var newbuffer = _logBuffer.Concat(messages.ToArray()).ToArray();
+                                _logBuffer = newbuffer;
+                            }
+                        }
+
+                    }
+                    catch (Exception ex)
+                    {
+                        LogException(ex);
+                    }
+
+                // Keep Thread alive while log buffer is not empty
+                while (_logBuffer != null)
+                {
+                    try
+                    {
+                        var duration = DateTime.Now;
+                        Logging.LogMessage[] buffer;
+                        // Lock buffer and copy to local variable for scanning
                         lock (_logBuffer)
                         {
-                            var newbuffer = _logBuffer.Concat(messages.ToArray()).ToArray();
-                            _logBuffer = newbuffer;
+                            buffer = new Logging.LogMessage[_logBuffer.Length + 1]; // set log new local log buffer size
+                            _logBuffer.CopyTo(buffer, 0); // copy to local
+                            _logBuffer = null; // clear buffer
                         }
-                    }
-
-                }
-                catch (Exception ex)
-                {
-                    LogException(ex);
-                }
-
-            // Keep Thread alive while log buffer is not empty
-            while (_logBuffer != null)
-            {
-                try
-                {
-                    var duration = DateTime.Now;
-                    Logging.LogMessage[] buffer;
-                    // Lock buffer and copy to local variable for scanning
-                    lock (_logBuffer)
-                    {
-                        buffer = new Logging.LogMessage[_logBuffer.Length + 1]; // set log new local log buffer size
-                        _logBuffer.CopyTo(buffer, 0); // copy to local
-                        _logBuffer = null; // clear buffer
-                    }
-                    var count = 0; // Scan counter
-                    var breakloop = false;
-                    // Scan log items
-                    foreach (Logging.LogMessage lm in buffer.Where(x => x != null))
-                    {
-                        string msg = lm.Message;
-                        if (yarRegex.IsMatch(msg))
-                            continue;
-
-                        count++; // add to counter
-                        // Log level specific scanning to prevent uneeded cpu usage
-                        switch (lm.Level)
+                        var count = 0; // Scan counter
+                        var breakloop = false;
+                        // Scan log items
+                        foreach (Logging.LogMessage lm in buffer.Where(x => x != null))
                         {
-                            case LogLevel.Diagnostic:
-                                var m = pluginsCompiled.Match(msg);
-                                if (m.Success)
-                                {
-                                    Log("Plugins Compiled matched");
-                                    _allPluginsCompiled = true;
-                                    Send("AllCompiled"); // tell relogger about all plugin compile so the relogger can tell what to do next
-                                    continue;
-                                }
-                                // Find all plugins compiled line
-                                //if (!_allPluginsCompiled && FindPluginsCompiled(msg))
-                                //    continue;
+                            string msg = lm.Message;
+                            if (yarRegex.IsMatch(msg))
+                                continue;
 
-                                // Find Start stop button click
-                                if (msg.Equals("Start/Stop Button Clicked!") && !BotMain.IsRunning)
-                                {
-                                    Send("UserStop");
-                                }
-                                break; // case end
-                            default:
-                                //if (msg.Contains(d3Exit))
-                                //{
-                                //    Send("D3Exit");
-                                //    Log("Attempting to safely close Demonbuddy");
-                                //    SafeCloseProcess();
-                                //    breakloop = true;
-                                //    break;
-                                //}
-
-                                try
-                                {
-                                    if (!ZetaDia.IsInGame && FindStartDelay(msg)) continue; // Find new start delay
-                                }
-                                catch (AccessViolationException)
-                                {
-                                    if (ZetaDia.Memory.Process.HasExited)
+                            count++; // add to counter
+                            // Log level specific scanning to prevent uneeded cpu usage
+                            switch (lm.Level)
+                            {
+                                case LogLevel.Diagnostic:
+                                    var m = pluginsCompiled.Match(msg);
+                                    if (m.Success)
                                     {
-                                        Send("D3Exit"); // Proces has exited
+                                        Log("Plugins Compiled matched");
+                                        _allPluginsCompiled = true;
+                                        Send("AllCompiled"); // tell relogger about all plugin compile so the relogger can tell what to do next
+                                        continue;
+                                    }
+                                    // Find all plugins compiled line
+                                    //if (!_allPluginsCompiled && FindPluginsCompiled(msg))
+                                    //    continue;
+
+                                    // Find Start stop button click
+                                    if (msg.Equals("Start/Stop Button Clicked!") && !BotMain.IsRunning)
+                                    {
+                                        Send("UserStop");
+                                    }
+                                    break; // case end
+                                default:
+                                    //if (msg.Contains(d3Exit))
+                                    //{
+                                    //    Send("D3Exit");
+                                    //    Log("Attempting to safely close Demonbuddy");
+                                    //    SafeCloseProcess();
+                                    //    breakloop = true;
+                                    //    break;
+                                    //}
+
+                                    try
+                                    {
+                                        if (!ZetaDia.IsInGame && FindStartDelay(msg)) continue; // Find new start delay
+                                    }
+                                    catch (AccessViolationException)
+                                    {
+                                        if (ZetaDia.Memory.Process.HasExited)
+                                        {
+                                            Send("D3Exit"); // Proces has exited
+                                            breakloop = true; // break out of loop
+                                            break;
+                                        }
+                                    }
+                                    // Crash Tender check
+                                    if (ReCrashTender.Any(re => re.IsMatch(msg)))
+                                    {
+                                        Send("CrashTender " + ProfileManager.CurrentProfile.Path); // tell relogger to "crash tender" :)
                                         breakloop = true; // break out of loop
                                         break;
                                     }
-                                }
-                                // Crash Tender check
-                                if (ReCrashTender.Any(re => re.IsMatch(msg)))
-                                {
-                                    Send("CrashTender " + ProfileManager.CurrentProfile.Path); // tell relogger to "crash tender" :)
-                                    breakloop = true; // break out of loop
-                                    break;
-                                }
-                                // YAR compatibility with other plugins
-                                if (ReCompatibility.Any(re => re.IsMatch(msg)))
-                                    Send("ThirdpartyStop");
-                                break; // case end
+                                    // YAR compatibility with other plugins
+                                    if (ReCompatibility.Any(re => re.IsMatch(msg)))
+                                        Send("ThirdpartyStop");
+                                    break; // case end
+                            }
+                            if (breakloop) break; // Check if we need to break out of loop
                         }
-                        if (breakloop) break; // Check if we need to break out of loop
+
+                        if (count > 1) Logging.WriteDiagnostic("[YetAnotherRelogger] Scanned {0} log items in {1}ms", count, DateTime.Now.Subtract(duration).TotalMilliseconds);
                     }
-
-                    if (count > 1) Logging.WriteDiagnostic("[YetAnotherRelogger] Scanned {0} log items in {1}ms", count, DateTime.Now.Subtract(duration).TotalMilliseconds);
+                    catch (Exception ex)
+                    {
+                        LogException(ex);
+                    }
                 }
-                catch (Exception ex)
+
+                if (!pulseTimer.IsRunning)
                 {
-                    LogException(ex);
+                    pulseTimer.Start();
                 }
-            }
 
-            if (!pulseTimer.IsRunning)
+                if (pulseTimer.ElapsedMilliseconds <= 1000)
+                {
+                    return;
+                }
+
+                if (pulseTimer.ElapsedMilliseconds > 1000)
+                    pulseTimer.Restart();
+            }
+            catch (Exception ex)
             {
-                pulseTimer.Start();
+                Log("Exception in Pulse_Main: {0}", ex);
             }
-
-            if (pulseTimer.ElapsedMilliseconds <= 1000)
-            {
-                return;
-            }
-
-            if (pulseTimer.ElapsedMilliseconds > 1000)
-                pulseTimer.Restart();
-
         }
-
 
         private static List<Composite> originalBotBehavior;
         private void ReplaceBotBehavior()
         {
-            if (originalBotBehavior == null)
-                originalBotBehavior = TreeHooks.Instance.Hooks["BotBehavior"];
-
-            if (DateTime.Now.Subtract(new DateTime(_bs.LastPulse)).TotalMilliseconds > 5000)
+            try
             {
-                TreeHooks.Instance.ReplaceHook("BotBehavior", CreateBotBehavior(originalBotBehavior));
-                _bs.LastPulse = DateTime.Now.Ticks;
+                if (originalBotBehavior == null)
+                    originalBotBehavior = TreeHooks.Instance.Hooks["BotBehavior"];
+
+                if (DateTime.Now.Subtract(new DateTime(_bs.LastPulse)).TotalMilliseconds > 5000)
+                {
+                    TreeHooks.Instance.ReplaceHook("BotBehavior", CreateBotBehavior(originalBotBehavior));
+                    _bs.LastPulse = DateTime.Now.Ticks;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.WriteException(ex);
             }
         }
 
         internal Composite CreateBotBehavior(List<Composite> originals)
         {
-            originals.Insert(0, new Action(ret => Pulse_Main(null, null)));
-            Composite[] children = originals.ToArray();
+            try
+            {
+                originals.Insert(0, new Action(ret => Pulse_Main(null, null)));
+                Composite[] children = originals.ToArray();
 
-            return new Sequence(children);
+                return new Sequence(children);
+            }
+            catch (Exception ex)
+            {
+                Logging.WriteException(ex);
+                return originals.FirstOrDefault();
+            }
         }
 
         public void OnPulse()
         {
-            if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
-            {
-                Log("YAR Plugin Pulse from invalid state");
-                return;
-            }
-
-            ReplaceBotBehavior();
-
-            // in-game / character data 
-            _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
-            _bs.Coinage = 0;
             try
             {
-                if (ZetaDia.Me != null && ZetaDia.Me.IsValid)
-                    _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
-            }
-            catch
-            {
-                Log("Exception reading Coinage", 0);
-                _bs.Coinage = -1;
-            }
-
-            if (ZetaDia.IsInGame)
-            {
-                _bs.LastGame = DateTime.Now.Ticks;
-                _bs.IsInGame = true;
-            }
-            else
-            {
-                if (_bs.IsInGame)
+                if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
                 {
-                    Send("GameLeft", true);
-                    Send("NewMonsterPowerLevel", true); // Request Monsterpower level
+                    Log("YAR Plugin Pulse from invalid state");
+                    return;
                 }
-                _bs.IsInGame = false;
+
+                ReplaceBotBehavior();
+
+                // in-game / character data 
+                _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
+                _bs.Coinage = 0;
+                try
+                {
+                    if (ZetaDia.Me != null && ZetaDia.Me.IsValid)
+                        _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
+                }
+                catch
+                {
+                    Log("Exception reading Coinage", 0);
+                    _bs.Coinage = -1;
+                }
+
+                if (ZetaDia.IsInGame)
+                {
+                    _bs.LastGame = DateTime.Now.Ticks;
+                    _bs.IsInGame = true;
+                }
+                else
+                {
+                    if (_bs.IsInGame)
+                    {
+                        Send("GameLeft", true);
+                        Send("NewMonsterPowerLevel", true); // Request Monsterpower level
+                    }
+                    _bs.IsInGame = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logging.WriteException(ex);
             }
 
         }
