@@ -168,6 +168,7 @@ namespace YARPLUGIN
             }
 
             _bs = new BotStats();
+            _bs.LastPulse = DateTime.Now.Ticks;
 
             lmd = new Logging.LogMessageDelegate(Logging_OnLogMessage);
             Logging.OnLogMessage += lmd;
@@ -414,45 +415,43 @@ namespace YARPLUGIN
 
         public void OnPulse()
         {
-            using (ZetaDia.Memory.AcquireFrame())
+            if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
             {
-                if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
-                {
-                    Log("YAR Plugin Pulse from invalid state");
-                    return;
-                }
-
-                    ReplaceBotBehavior();
-
-                // in-game / character data 
-                _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
-                _bs.Coinage = 0;
-                try
-                {
-                    if (ZetaDia.Me != null && ZetaDia.Me.IsValid)
-                        _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
-                }
-                catch
-                {
-                    Log("Exception reading Coinage", 0);
-                    _bs.Coinage = -1;
-                }
-
-                if (ZetaDia.IsInGame)
-                {
-                    _bs.LastGame = DateTime.Now.Ticks;
-                    _bs.IsInGame = true;
-                }
-                else
-                {
-                    if (_bs.IsInGame)
-                    {
-                        Send("GameLeft", true);
-                        Send("NewMonsterPowerLevel", true); // Request Monsterpower level
-                    }
-                    _bs.IsInGame = false;
-                }
+                Log("YAR Plugin Pulse from invalid state");
+                return;
             }
+
+            ReplaceBotBehavior();
+
+            // in-game / character data 
+            _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
+            _bs.Coinage = 0;
+            try
+            {
+                if (ZetaDia.Me != null && ZetaDia.Me.IsValid)
+                    _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
+            }
+            catch
+            {
+                Log("Exception reading Coinage", 0);
+                _bs.Coinage = -1;
+            }
+
+            if (ZetaDia.IsInGame)
+            {
+                _bs.LastGame = DateTime.Now.Ticks;
+                _bs.IsInGame = true;
+            }
+            else
+            {
+                if (_bs.IsInGame)
+                {
+                    Send("GameLeft", true);
+                    Send("NewMonsterPowerLevel", true); // Request Monsterpower level
+                }
+                _bs.IsInGame = false;
+            }
+
         }
         #endregion
 
@@ -524,7 +523,7 @@ namespace YARPLUGIN
         private bool handlederror;
         private void ErrorHandling()
         {
-            if ( ErrorDialog.IsVisible)
+            if (ErrorDialog.IsVisible)
             { // Check if Demonbuddy found errordialog
                 if (!handlederror)
                 {
