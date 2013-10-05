@@ -1,4 +1,4 @@
-﻿// VERSION: 0.2.0.11
+﻿// VERSION: 0.2.0.12
 /* Changelog:
  * VERSION 0.2.0.11
  * Fixed Plugin Pulse pulseTimer, last Pulse time, and gold inactivity check, removed Trinity pause check code (DB does this now..), fixed DB termination crash closing
@@ -69,13 +69,14 @@ using Zeta.TreeSharp;
 using UIElement = Zeta.Internals.UIElement;
 using System.Windows.Threading;
 using System.Collections.Generic;
+using Action = Zeta.TreeSharp.Action;
 
 namespace YARPLUGIN
 {
     public class YARPLUGIN : IPlugin
     {
         // Plugin version
-        public Version Version { get { return new Version(0, 2, 0, 10); } }
+        public Version Version { get { return new Version(0, 2, 0, 12); } }
 
         private const bool _debug = true;
 
@@ -140,7 +141,7 @@ namespace YARPLUGIN
         private bool _allPluginsCompiled;
         private Thread _yarThread;
 
-        private BotStats _bs;
+        private BotStats _bs = new BotStats();
         private bool _pulseFix;
 
         public static void Log(string str)
@@ -153,8 +154,7 @@ namespace YARPLUGIN
         }
         public static void LogException(Exception ex)
         {
-            Logging.Write("[YetAnotherRelogger] Error: {0}", ex.Message);
-            if (_debug) Logging.Write("[YetAnotherRelogger] Error: {0}", ex.StackTrace);
+            Logging.Write("[YetAnotherRelogger] Error: {0}", ex);
         }
 
         #region Plugin Events
@@ -192,9 +192,9 @@ namespace YARPLUGIN
         Logging.LogMessageDelegate lmd;
         public void OnEnabled()
         {
-            Pulsator.OnPulse += Pulse_Main;
-            Pulsator.OnPulse += Pulse_MessageQueue;
-            Pulsator.OnPulse += Pulse_ScanLogWorker;
+            //Pulsator.OnPulse += Pulse_Main;
+            //Pulsator.OnPulse += Pulse_MessageQueue;
+            //Pulsator.OnPulse += Pulse_ScanLogWorker;
 
             if (_yarThread == null || (_yarThread != null && !_yarThread.IsAlive))
             {
@@ -207,9 +207,9 @@ namespace YARPLUGIN
 
         public void OnDisabled()
         {
-            Pulsator.OnPulse -= Pulse_Main;
-            Pulsator.OnPulse -= Pulse_MessageQueue;
-            Pulsator.OnPulse -= Pulse_ScanLogWorker;
+            //Pulsator.OnPulse -= Pulse_Main;
+            //Pulsator.OnPulse -= Pulse_MessageQueue;
+            //Pulsator.OnPulse -= Pulse_ScanLogWorker;
 
             Log("Disabled!");
 
@@ -234,7 +234,7 @@ namespace YARPLUGIN
                 return;
 
             // Handle errors and other strange situations
-            ErrorHandling();
+            //ErrorHandling();
 
             // YAR Health Check
             _pulseCheck = true;
@@ -255,70 +255,7 @@ namespace YARPLUGIN
             else
                 _bs.IsPaused = false;
 
-            if (!pulseTimer.IsRunning)
-            {
-                pulseTimer.Start();
-            }
 
-            if (pulseTimer.ElapsedMilliseconds <= 1000)
-            {
-                return;
-            }
-
-            if (pulseTimer.ElapsedMilliseconds > 1000)
-                pulseTimer.Restart();
-        }
-
-        public void OnPulse()
-        {
-            using (ZetaDia.Memory.AcquireFrame())
-            {
-                if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
-                {
-                    Log("YAR Plugin Pulse from invalid state");
-                    return;
-                }
-
-                // in-game / character data 
-                _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
-                _bs.Coinage = 0;
-                try
-                {
-                    if (ZetaDia.Me != null && ZetaDia.Me.IsValid)
-                        _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
-                }
-                catch
-                {
-                    Log("Exception reading Coinage", 0);
-                    _bs.Coinage = -1;
-                }
-
-                if (ZetaDia.IsInGame)
-                {
-                    _bs.LastGame = DateTime.Now.Ticks;
-                    _bs.IsInGame = true;
-                }
-                else
-                {
-                    if (_bs.IsInGame)
-                    {
-                        Send("GameLeft", true);
-                        Send("NewMonsterPowerLevel", true); // Request Monsterpower level
-                    }
-                    _bs.IsInGame = false;
-                }
-            }
-        }
-        #endregion
-
-        #region Logging Monitor
-        Queue<ReadOnlyCollection<Logging.LogMessage>> MessageQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
-        void Logging_OnLogMessage(ReadOnlyCollection<Logging.LogMessage> messages)
-        {
-            MessageQueue.Enqueue(messages);
-        }
-        void Pulse_MessageQueue(object sender, EventArgs e)
-        {
             Queue<ReadOnlyCollection<Logging.LogMessage>> localQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
             lock (MessageQueue)
                 while (MessageQueue.Any())
@@ -345,11 +282,7 @@ namespace YARPLUGIN
                 {
                     LogException(ex);
                 }
-        }
 
-        private Logging.LogMessage[] _logBuffer;
-        private void Pulse_ScanLogWorker(object sender, EventArgs e)
-        {
             // Keep Thread alive while log buffer is not empty
             while (_logBuffer != null)
             {
@@ -441,7 +374,97 @@ namespace YARPLUGIN
                     LogException(ex);
                 }
             }
+
+            if (!pulseTimer.IsRunning)
+            {
+                pulseTimer.Start();
+            }
+
+            if (pulseTimer.ElapsedMilliseconds <= 1000)
+            {
+                return;
+            }
+
+            if (pulseTimer.ElapsedMilliseconds > 1000)
+                pulseTimer.Restart();
+
         }
+
+
+        private static List<Composite> originalBotBehavior;
+        private void ReplaceBotBehavior()
+        {
+            if (originalBotBehavior == null)
+                originalBotBehavior = TreeHooks.Instance.Hooks["BotBehavior"];
+
+            if (DateTime.Now.Subtract(new DateTime(_bs.LastPulse)).TotalMilliseconds > 5000)
+            {
+                TreeHooks.Instance.ReplaceHook("BotBehavior", CreateBotBehavior(originalBotBehavior));
+                _bs.LastPulse = DateTime.Now.Ticks;
+            }
+        }
+
+        internal Composite CreateBotBehavior(List<Composite> originals)
+        {
+            originals.Insert(0, new Action(ret => Pulse_Main(null, null)));
+            Composite[] children = originals.ToArray();
+
+            return new Sequence(children);
+        }
+
+        public void OnPulse()
+        {
+            using (ZetaDia.Memory.AcquireFrame())
+            {
+                if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
+                {
+                    Log("YAR Plugin Pulse from invalid state");
+                    return;
+                }
+
+                    ReplaceBotBehavior();
+
+                // in-game / character data 
+                _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
+                _bs.Coinage = 0;
+                try
+                {
+                    if (ZetaDia.Me != null && ZetaDia.Me.IsValid)
+                        _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
+                }
+                catch
+                {
+                    Log("Exception reading Coinage", 0);
+                    _bs.Coinage = -1;
+                }
+
+                if (ZetaDia.IsInGame)
+                {
+                    _bs.LastGame = DateTime.Now.Ticks;
+                    _bs.IsInGame = true;
+                }
+                else
+                {
+                    if (_bs.IsInGame)
+                    {
+                        Send("GameLeft", true);
+                        Send("NewMonsterPowerLevel", true); // Request Monsterpower level
+                    }
+                    _bs.IsInGame = false;
+                }
+            }
+        }
+        #endregion
+
+        #region Logging Monitor
+        Queue<ReadOnlyCollection<Logging.LogMessage>> MessageQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
+        void Logging_OnLogMessage(ReadOnlyCollection<Logging.LogMessage> messages)
+        {
+            MessageQueue.Enqueue(messages);
+        }
+
+        private Logging.LogMessage[] _logBuffer;
+
 
         public bool FindStartDelay(string msg)
         {
@@ -501,7 +524,7 @@ namespace YARPLUGIN
         private bool handlederror;
         private void ErrorHandling()
         {
-            if (ErrorDialog.IsVisible)
+            if ( ErrorDialog.IsVisible)
             { // Check if Demonbuddy found errordialog
                 if (!handlederror)
                 {
@@ -609,6 +632,12 @@ namespace YARPLUGIN
                             // Failed to connect
                         }
                     }
+                }
+                catch (TimeoutException)
+                {
+                    // YAR is not running, disable the plugin
+                    Log("TimeoutException - Disabling YAR Plugin");
+                    PluginManager.Plugins.Where(p => p.Plugin.Name == this.Name).All(p => p.Enabled = false);
                 }
                 catch (Exception ex)
                 {
