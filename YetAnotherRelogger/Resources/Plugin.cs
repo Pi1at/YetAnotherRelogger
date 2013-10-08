@@ -687,9 +687,9 @@ namespace YARPLUGIN
             {
                 case "Restart":
                     Log("Restarting bot");
-                    BotMain.Stop();
-                    Thread.Sleep(1000);
-                    BotMain.Start();
+                    //BotMain.Stop();
+                    //Thread.Sleep(1000);
+                    //BotMain.Start();
                     Reset();
                     break;
                 case "LoadProfile":

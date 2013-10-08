@@ -154,7 +154,7 @@ namespace YetAnotherRelogger.Helpers.Stats
             }
             catch
             {
-                return null;
+                return new ProcUsage();
             }
         }
 
@@ -166,7 +166,7 @@ namespace YetAnotherRelogger.Helpers.Stats
         public Usage GetUsageById(int id)
         {
             ProcUsage p = GetById(id);
-            return p != null ? p.Usage : null;
+            return p.Usage;
         }
 
         private static UInt64 SubtractTimes(FILETIME a, FILETIME b)
