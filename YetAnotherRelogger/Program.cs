@@ -14,7 +14,7 @@ namespace YetAnotherRelogger
 {
     internal static class Program
     {
-        public const string VERSION = "0.2.0.20";
+        public const string VERSION = "0.2.0.21";
         public const int Sleeptime = 10;
 
         public static MainForm2 Mainform;

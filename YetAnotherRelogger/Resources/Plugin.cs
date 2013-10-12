@@ -144,6 +144,8 @@ namespace YARPLUGIN
         private BotStats _bs = new BotStats();
         private bool _pulseFix;
 
+        public bool IsEnabled { get { return PluginManager.Plugins.Any(p => p.Plugin.Name == this.Name && p.Enabled); } }
+
         public static void Log(string str)
         {
             Log(str, 0);
@@ -212,6 +214,8 @@ namespace YARPLUGIN
             //Pulsator.OnPulse -= Pulse_MessageQueue;
             //Pulsator.OnPulse -= Pulse_ScanLogWorker;
 
+            ResetBotBehavior();
+
             Log("Disabled!");
 
             // Pulsefix disabled plugin
@@ -227,6 +231,12 @@ namespace YARPLUGIN
                 Logging.OnLogMessage -= lmd;
         }
 
+        private static void ResetBotBehavior()
+        {
+            if (originalBotBehavior != null)
+                TreeHooks.Instance.ReplaceHook("BotBehavior", originalBotBehavior[0]);
+        }
+
         private static Stopwatch pulseTimer = new Stopwatch();
 
         private void Pulse_Main(object sender, EventArgs e)
@@ -236,8 +246,11 @@ namespace YARPLUGIN
                 if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
                     return;
 
+                if (!IsEnabled)
+                    ResetBotBehavior();
+
                 // Handle errors and other strange situations
-                //ErrorHandling();
+                ErrorHandling();
 
                 // YAR Health Check
                 _pulseCheck = true;
@@ -642,14 +655,14 @@ namespace YARPLUGIN
                                     break;
                                 }
 
-                                var temp = sr.ReadLine();
-                                if (temp == null)
+                                var responseText = sr.ReadLine();
+                                if (string.IsNullOrWhiteSpace(responseText))
                                 {
                                     Thread.Sleep(10);
                                     continue;
                                 }
 
-                                HandleResponse(temp);
+                                HandleResponse(responseText);
                                 success = true;
                             }
                         }
@@ -664,6 +677,7 @@ namespace YARPLUGIN
                     // YAR is not running, disable the plugin
                     Log("TimeoutException - Disabling YAR Plugin");
                     PluginManager.Plugins.Where(p => p.Plugin.Name == this.Name).All(p => p.Enabled = false);
+                    Thread.CurrentThread.Abort();
                 }
                 catch (Exception ex)
                 {
@@ -702,7 +716,7 @@ namespace YARPLUGIN
                         CharacterSettings.Instance.MonsterPowerLevel = powerlevel;
                     break;
                 case "ForceEnableAll":
-                    ForceEnableAllPlugins();
+                    //ForceEnableAllPlugins();
                     break;
                 case "ForceEnableYar":
                     ForceEnableYar();
