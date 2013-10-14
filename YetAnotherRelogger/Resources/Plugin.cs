@@ -234,7 +234,10 @@ namespace YARPLUGIN
         private static void ResetBotBehavior()
         {
             if (originalBotBehavior != null)
+            {
+                Log("Resetting BotBehavior TreeHook to Original");
                 TreeHooks.Instance.ReplaceHook("BotBehavior", originalBotBehavior[0]);
+            }
         }
 
         private static Stopwatch pulseTimer = new Stopwatch();
@@ -420,6 +423,7 @@ namespace YARPLUGIN
 
                 if (DateTime.Now.Subtract(new DateTime(_bs.LastPulse)).TotalMilliseconds > 5000)
                 {
+                    Log("Replacing BotBehavior TreeHook");
                     TreeHooks.Instance.ReplaceHook("BotBehavior", CreateBotBehavior(originalBotBehavior));
                     _bs.LastPulse = DateTime.Now.Ticks;
                 }
@@ -701,9 +705,12 @@ namespace YARPLUGIN
             {
                 case "Restart":
                     Log("Restarting bot");
-                    //BotMain.Stop();
-                    //Thread.Sleep(1000);
-                    //BotMain.Start();
+                    Application.Current.Dispatcher.BeginInvoke((System.Action)(() =>
+                    {
+                        BotMain.Stop();
+                        //Thread.Sleep(1000);
+                        BotMain.Start();
+                    }));
                     Reset();
                     break;
                 case "LoadProfile":

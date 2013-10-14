@@ -304,8 +304,11 @@ namespace YetAnotherRelogger.Helpers
                             Send("Roger!");
                             break;
                         case "AllCompiled":
-                            Send(b.Demonbuddy.ForceEnableAllPlugins ? "ForceEnableAll" : "ForceEnableYar");
-                            break;
+                            {
+                                Logger.Instance.Write(b, "Check Force Enable Plugins? {0}", b.Demonbuddy.ForceEnableAllPlugins);
+                                Send(b.Demonbuddy.ForceEnableAllPlugins ? "ForceEnableAll" : "ForceEnableYar");
+                                break;
+                            }
                         case "CrashTender":
                             if (Settings.Default.UseKickstart && File.Exists(msg))
                                 b.Demonbuddy.CrashTender(msg);

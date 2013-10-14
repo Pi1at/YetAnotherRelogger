@@ -92,6 +92,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         public bool ForceEnableAllPlugins { get; set; }
 
+        const int maxInits = 15;
 
         public bool IsInitialized
         {
@@ -108,17 +109,18 @@ namespace YetAnotherRelogger.Helpers.Bot
                     !IsRunning)
                 {
                     Parent.AntiIdle.FailedInitCount++;
-                    if (Parent.AntiIdle.FailedInitCount >= (Parent.AntiIdle.InitAttempts > 0 ? 1 : 3))
+
+                    if (Parent.AntiIdle.FailedInitCount >= (Parent.AntiIdle.InitAttempts > 0 ? 1 : maxInits))
                     {
                         Parent.AntiIdle.InitAttempts++;
-                        Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to initialize more than 3 times",
-                            Parent.Demonbuddy.Proc.Id);
+                        Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to initialize more than {1} times",
+                            Parent.Demonbuddy.Proc.Id, maxInits);
                         Parent.Standby();
                     }
                     else
                     {
-                        Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to initialize {1}/3",
-                            Parent.Demonbuddy.Proc.Id, Parent.AntiIdle.FailedInitCount);
+                        Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to initialize {1}/{2}",
+                            Parent.Demonbuddy.Proc.Id, Parent.AntiIdle.FailedInitCount, maxInits);
                         Parent.Demonbuddy.Stop(true);
                     }
                     return false;

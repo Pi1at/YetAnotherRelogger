@@ -252,12 +252,14 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (General.DateSubtract(_fixAttemptTime) > 420)
                 FixAttempts = 0;
 
+            Logger.Instance.Write("Fix Attempt++");
             FixAttempts++;
             _fixAttemptTime = DateTime.Now;
             if (FixAttempts > 3)
             {
                 //Parent.Stop();
                 Logger.Instance.Write("Too many fix attempts, restarting bot");
+                FixAttempts = 0;
                 Parent.Restart();
                 return false;
             }

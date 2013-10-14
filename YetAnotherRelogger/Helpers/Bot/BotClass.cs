@@ -238,6 +238,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         {
             Logger.Instance.Write(this, "Restarting...");
             Status = "Restarting";
+            AntiIdle.FixAttempts = 0;
             _demonbuddy.Stop();
             _diablo.Stop();
         }
