@@ -450,10 +450,9 @@ namespace YARPLUGIN
         {
             try
             {
-                originals.Insert(0, new Action(ret => Pulse_Main(null, null)));
-                Composite[] children = originals.ToArray();
-
-                return new Sequence(children);
+                return new Sequence(
+                    new Action(ret => Pulse_Main(null, null)),
+                    originals[0]);
             }
             catch (Exception ex)
             {
