@@ -1,4 +1,4 @@
-﻿// VERSION: 0.2.0.12
+﻿// VERSION: 0.2.0.13
 /* Changelog:
  * VERSION 0.2.0.11
  * Fixed Plugin Pulse pulseTimer, last Pulse time, and gold inactivity check, removed Trinity pause check code (DB does this now..), fixed DB termination crash closing
@@ -76,7 +76,7 @@ namespace YARPLUGIN
     public class YARPLUGIN : IPlugin
     {
         // Plugin version
-        public Version Version { get { return new Version(0, 2, 0, 12); } }
+        public Version Version { get { return new Version(0, 2, 0, 13); } }
 
         private const bool _debug = true;
 
@@ -171,18 +171,30 @@ namespace YARPLUGIN
 
             _bs = new BotStats();
             _bs.LastPulse = DateTime.Now.Ticks;
+            _bs.Pid = Process.GetCurrentProcess().Id;
 
             lmd = new Logging.LogMessageDelegate(Logging_OnLogMessage);
             Logging.OnLogMessage += lmd;
-            _bs.Pid = Process.GetCurrentProcess().Id;
 
             Reset();
 
             _yarThread = new Thread(YarWorker) { IsBackground = true };
             _yarThread.Start();
 
-            Send("Initialized");
+            Pulsator.OnPulse += Pulsator_OnPulse;
+
             Log("YAR Plugin Initialized");
+            Send("Initialized");
+        }
+
+        /// <summary>
+        /// Just to make sure our ticks are ALWAYS updated!
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Pulsator_OnPulse(object sender, EventArgs e)
+        {
+            _bs.LastPulse = DateTime.Now.Ticks;
         }
 
         public void OnShutdown()
@@ -459,6 +471,8 @@ namespace YARPLUGIN
                     Log("YAR Plugin Pulse from invalid state");
                     return;
                 }
+
+                Pulse_Main(null, null);
 
                 ReplaceBotBehavior();
 

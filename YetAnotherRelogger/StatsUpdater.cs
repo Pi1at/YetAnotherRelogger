@@ -297,7 +297,7 @@ namespace YetAnotherRelogger
 
         private void CreateChartStats(BotClass bot, Chart graph, ChartValueType valueType = ChartValueType.Auto)
         {
-            if (Program.Mainform != null && Program.Mainform.Handle != IntPtr.Zero && !Program.Mainform.IsDisposed && graph != null)
+            if (Program.Mainform != null && graph != null)
             {
                 try
                 {
