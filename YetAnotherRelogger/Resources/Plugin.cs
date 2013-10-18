@@ -116,7 +116,7 @@ namespace YARPLUGIN
 
         public class BotStats
         {
-            public int Pid;
+            public int Pid { get { return Process.GetCurrentProcess().Id; } }
             public long LastRun;
             public long LastPulse;
             public long PluginPulse;
@@ -162,6 +162,7 @@ namespace YARPLUGIN
         #region Plugin Events
         public void OnInitialize()
         {
+            Log("YAR Plugin Initialized with PID: {0}", _bs.Pid);
             // Force enable YAR
             foreach (var plugin in PluginManager.Plugins)
             {
@@ -171,7 +172,7 @@ namespace YARPLUGIN
 
             _bs = new BotStats();
             _bs.LastPulse = DateTime.Now.Ticks;
-            _bs.Pid = Process.GetCurrentProcess().Id;
+            //_bs.Pid = Process.GetCurrentProcess().Id;
 
             lmd = new Logging.LogMessageDelegate(Logging_OnLogMessage);
             Logging.OnLogMessage += lmd;
@@ -183,7 +184,6 @@ namespace YARPLUGIN
 
             Pulsator.OnPulse += Pulsator_OnPulse;
 
-            Log("YAR Plugin Initialized");
             Send("Initialized");
         }
 
@@ -207,6 +207,7 @@ namespace YARPLUGIN
         Logging.LogMessageDelegate lmd;
         public void OnEnabled()
         {
+            Log("YAR Plugin Enabled with PID: {0}", _bs.Pid);
             //Pulsator.OnPulse += Pulse_Main;
             //Pulsator.OnPulse += Pulse_MessageQueue;
             //Pulsator.OnPulse += Pulse_ScanLogWorker;
@@ -228,7 +229,7 @@ namespace YARPLUGIN
 
             ResetBotBehavior();
 
-            Log("Disabled!");
+            Log("YAR Plugin Disabled!");
 
             // Pulsefix disabled plugin
             if (_pulseFix)
