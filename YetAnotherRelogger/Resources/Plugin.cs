@@ -718,12 +718,12 @@ namespace YARPLUGIN
             {
                 case "Restart":
                     Log("Restarting bot");
-                    Application.Current.Dispatcher.BeginInvoke((System.Action)(() =>
-                    {
-                        BotMain.Stop();
-                        //Thread.Sleep(1000);
-                        BotMain.Start();
-                    }));
+                    //Application.Current.Dispatcher.BeginInvoke((System.Action)(() =>
+                    //{
+                    //    BotMain.Stop();
+                    //    //Thread.Sleep(1000);
+                    //    BotMain.Start();
+                    //}));
                     Reset();
                     break;
                 case "LoadProfile":
