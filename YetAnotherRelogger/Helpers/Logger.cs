@@ -133,9 +133,9 @@ namespace YetAnotherRelogger.Helpers
                 Program.Mainform.Invoke(new Action(() =>
                 {
                     RichTextBox rtb = Program.Mainform.richTextBox1;
-                    var font = new Font("Tahoma", 8, FontStyle.Regular);
-                    rtb.SelectionFont = font;
-                    rtb.SelectionColor = message.Color;
+                    //var font = new Font("Tahoma", 8, FontStyle.Regular);
+                    //rtb.SelectionFont = font;
+                    //rtb.SelectionColor = message.Color;
                     string text = string.Format("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp,
                         message.Message);
                     rtb.AppendText(text + Environment.NewLine);

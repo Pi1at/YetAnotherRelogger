@@ -119,7 +119,7 @@ namespace YetAnotherRelogger.Forms
                 try
                 {
                     BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
-                        (bool) dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+                        (bool)dataGridView1[e.ColumnIndex, e.RowIndex].Value;
                     BotSettings.Instance.Save();
                 }
                 catch
@@ -199,17 +199,17 @@ namespace YetAnotherRelogger.Forms
 
         private void btnStartAll_click(object sender, EventArgs e)
         {
-            lock (BotSettings.Instance)
-            {
+            //lock (BotSettings.Instance)
+            //{
                 ConnectionCheck.Reset();
                 // Start All
                 foreach (
                     DataGridViewRow row in
-                        dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool) row.Cells["isEnabled"].Value))
+                        dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool)row.Cells["isEnabled"].Value))
                 {
                     BotSettings.Instance.Bots[row.Index].Start(checkBoxForce.Checked);
                 }
-            }
+            //}
         }
 
         private void btnNew_Click(object sender, EventArgs e)
@@ -217,7 +217,7 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Open new bot wizard
-                var wm = new WizardMain {TopMost = true};
+                var wm = new WizardMain { TopMost = true };
                 wm.ShowDialog();
             }
         }
@@ -229,7 +229,7 @@ namespace YetAnotherRelogger.Forms
                 // Edit bot
                 if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
                     return;
-                var wm = new WizardMain(dataGridView1.CurrentRow.Index) {TopMost = true};
+                var wm = new WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
 
                 wm.ShowDialog();
             }
@@ -256,16 +256,13 @@ namespace YetAnotherRelogger.Forms
 
         private void btnStopAll_Click(object sender, EventArgs e)
         {
-            lock (BotSettings.Instance)
+            Relogger.Instance.Stop();
+            // Stop All
+            foreach (BotClass bot in BotSettings.Instance.Bots)
             {
-                Relogger.Instance.Stop();
-                // Stop All
-                foreach (BotClass bot in BotSettings.Instance.Bots)
-                {
-                    bot.Stop();
-                }
-                Relogger.Instance.Start();
+                bot.Stop();
             }
+            Relogger.Instance.Start();
         }
 
         private void btnRestartAllDb_Click(object sender, EventArgs e)
@@ -300,25 +297,28 @@ namespace YetAnotherRelogger.Forms
                     Relogger.Instance.Start();
                 }
             }
-            btnRestartAllDb.Enabled = true;
+
+            btnRestartAllDb.BeginInvoke(new System.Action(() => btnRestartAllDb.Enabled = true));
+            //Application.Current.Dispatcher.BeginInvoke(new System.Action(() => btnRestartAllDb.Enabled = true));
+            
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-// Start
+            // Start
             BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Start();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-// Stop
+            // Stop
             if (BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].IsStarted)
                 BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Stop();
         }
 
         private void statsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-// Bot Stats
+            // Bot Stats
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -342,7 +342,7 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Edit bot
-                var wm = new WizardMain(dataGridView1.CurrentRow.Index) {TopMost = true};
+                var wm = new WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
                 wm.ShowDialog();
             }
         }

@@ -135,34 +135,34 @@ namespace YetAnotherRelogger.Helpers
                     Debug.WriteLine("PipeConnection [{0}]: Connected:{1}", _stream.GetHashCode(), _stream.IsConnected);
                     while (_stream.IsConnected)
                     {
-                        string temp = _reader.ReadLine();
-                        if (temp == null)
+                        string dataLine = _reader.ReadLine();
+                        if (dataLine == null)
                         {
                             Thread.Sleep(Program.Sleeptime);
                             continue;
                         }
-                        if (temp.Equals("END"))
+                        if (dataLine.Equals("END"))
                         {
                             Debug.WriteLine("PipeConnection [{0}]: Duration:{1} XML:{2}", _stream.GetHashCode(),
                                 General.DateSubtract(duration, false), xml);
                             HandleXml(xml);
                         }
 
-                        if (temp.StartsWith("XML:"))
+                        if (dataLine.StartsWith("XML:"))
                         {
-                            temp = temp.Substring(4);
+                            dataLine = dataLine.Substring(4);
                             isXml = true;
                         }
 
                         if (isXml)
                         {
-                            xml += temp + "\n";
+                            xml += dataLine + "\n";
                         }
                         else
                         {
                             Debug.WriteLine("PipeConnection [{0}]: Duration:{1} Data:{2}", _stream.GetHashCode(),
-                                General.DateSubtract(duration, false), temp);
-                            HandleMsg(temp);
+                                General.DateSubtract(duration, false), dataLine);
+                            HandleMsg(dataLine);
                         }
                     }
                 }
@@ -347,7 +347,12 @@ namespace YetAnotherRelogger.Helpers
             {
                 try
                 {
+                    Debug.WriteLine("Replying: " + msg);
+                    msg = msg.Trim();
+                    if (!msg.EndsWith("\n"))
+                        msg += "\n";
                     _writer.WriteLine(msg);
+                    //_writer.Flush();
                 }
                 catch (Exception ex)
                 {

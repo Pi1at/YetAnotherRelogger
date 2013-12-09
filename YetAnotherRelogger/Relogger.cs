@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading;
 using YetAnotherRelogger.Helpers;
 using YetAnotherRelogger.Helpers.Bot;
+using YetAnotherRelogger.Helpers.Tools;
 using YetAnotherRelogger.Properties;
 
 namespace YetAnotherRelogger
@@ -145,11 +146,11 @@ namespace YetAnotherRelogger
                                 Logger.Instance.Write("Demonbuddy:{0}: Process is not running", bot.Demonbuddy.Proc.Id);
                                 bot.Demonbuddy.Start();
                             }
-                            //else if (bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) > 120)
-                            //{
-                            //    Logger.Instance.Write("We did not recieve any stats during 120 seconds!");
-                            //    bot.Restart();
-                            //}
+                            else if (bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) > 300)
+                            {
+                                Logger.Instance.Write("We did not recieve any stats during 300 seconds!");
+                                bot.Restart();
+                            }
                             else if (bot.AntiIdle.IsInitialized)
                             {
                                 if (bot.ProfileSchedule.IsDone)

@@ -189,9 +189,13 @@ namespace YetAnotherRelogger.Helpers.Bot
             RegistryClass.ChangeRegion(Parent.Diablo.Region); // change region
 
             if (UseIsBoxer)
+            {
                 IsBoxerStarter();
-            else if (Settings.Default.UseD3Starter)
-                ApocD3Starter();
+                if (Proc == null)
+                {
+                    return;
+                }
+            }
             else
             {
                 try
@@ -461,16 +465,17 @@ namespace YetAnotherRelogger.Helpers.Bot
             while (General.DateSubtract(timeout) < 20)
             {
                 Thread.Sleep(250);
-                Process p = Process.GetProcesses().FirstOrDefault(x => x.ProcessName.Equals(exeName) &&
-                                                                       // Find Diablo inside relogger
-                                                                       BotSettings.Instance.Bots.FirstOrDefault(
-                                                                           z =>
-                                                                               z.Diablo.Proc != null &&
-                                                                               !z.Diablo.Proc.HasExited &&
-                                                                               z.Diablo.Proc.Id == x.Id) == null &&
-                                                                       // Find Diablo in all processes
-                                                                       currProcesses.FirstOrDefault(y => y.Id == x.Id) ==
-                                                                       null);
+                Process p = Process.GetProcesses().FirstOrDefault(x => 
+                    x.ProcessName.Equals(exeName) &&
+                    // Find Diablo inside relogger
+                    BotSettings.Instance.Bots.FirstOrDefault(
+                        z =>
+                            z.Diablo.Proc != null &&
+                            !z.Diablo.Proc.HasExited &&
+                            z.Diablo.Proc.Id == x.Id) == null &&
+                    // Find Diablo in all processes
+                    currProcesses.FirstOrDefault(y => y.Id == x.Id) ==
+                    null);
 
                 if (p == null)
                     continue;

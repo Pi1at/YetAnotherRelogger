@@ -370,7 +370,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                             timeout = DateTime.Now;
                             return;
                         }
-                        if (General.DateSubtract(timeout) > 30)
+                        if (General.DateSubtract(timeout) > 60)
                         {
                             Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to start!", Proc.Id);
                             Parent.Restart();

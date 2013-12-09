@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -16,7 +17,7 @@ namespace YetAnotherRelogger.Helpers.Stats
         private FILETIME _lastSysIdle;
         private FILETIME _lastSysKernel;
         private FILETIME _lastSysUser;
-        private HashSet<ProcUsage> _procUsageList;
+        private HashSet<ProcUsage> _procUsageList = new HashSet<ProcUsage>();
         private bool glitchRecover;
 
         public CpuRamUsage()
@@ -36,29 +37,28 @@ namespace YetAnotherRelogger.Helpers.Stats
             return GetSystemTimes(out _lastSysIdle, out _lastSysKernel, out _lastSysUser);
         }
 
-        public bool Update()
+        public bool Update(int retryAttempt = 0)
         {
             try
             {
-                FILETIME sysIdle, sysKernel, sysUser;
-
                 if (!_initialized)
                 {
                     _initialized = Init();
                     return _initialized;
                 }
 
+                FILETIME sysIdle, sysKernel, sysUser;
+
                 // Check if we can get current system cpu times
                 if (!GetSystemTimes(out sysIdle, out sysKernel, out sysUser))
                     return false;
-
                 // Calculate tot system cpu time
                 ulong sysKernelDiff = SubtractTimes(sysKernel, _lastSysKernel);
                 ulong sysUserDiff = SubtractTimes(sysUser, _lastSysUser);
                 ulong sysIdleDiff = SubtractTimes(sysIdle, _lastSysIdle);
                 ulong sysTotal = sysKernelDiff + sysUserDiff;
 
-                if (!validDiff((long) sysKernelDiff) || !validDiff((long) sysUserDiff) || !validDiff((long) sysIdleDiff))
+                if (!validDiff((long)sysKernelDiff) || !validDiff((long)sysUserDiff) || !validDiff((long)sysIdleDiff))
                 {
                     //Debug.WriteLine("Stats: Negative Tick Difference");
                     //Debug.WriteLine("kernel: {0,-20} :: {1,-20} Diff:{2,-20} :: {3} miliseconds", ((UInt64)(sysKernel.dwHighDateTime << 32)) | (UInt64)sysKernel.dwLowDateTime, ((UInt64)(_lastSysKernel.dwHighDateTime << 32)) | (UInt64)_lastSysKernel.dwLowDateTime, sysKernelDiff, TimeSpan.FromTicks((long)sysKernelDiff).TotalMilliseconds);
@@ -70,11 +70,14 @@ namespace YetAnotherRelogger.Helpers.Stats
                     _lastSysUser = sysUser;
                     _lastSysIdle = sysIdle;
                     Thread.Sleep(100); // give windows time to recover
-                    return Update();
+                    if (retryAttempt < 3)
+                        return Update();
+                    return false;
                 }
 
+
                 // Calculate total Cpu usage
-                double totalUsage = sysTotal > 0 ? ((sysTotal - sysIdleDiff)*100d/sysTotal) : TotalCpuUsage;
+                double totalUsage = sysTotal > 0 ? ((sysTotal - sysIdleDiff) * 100d / sysTotal) : TotalCpuUsage;
                 TotalCpuUsage = totalUsage < 0 ? TotalCpuUsage : totalUsage;
 
                 var newList = new HashSet<ProcUsage>();
@@ -97,8 +100,8 @@ namespace YetAnotherRelogger.Helpers.Stats
                         else
                             procTotal = 0;
 
-                        double usage = glitchRecover ? oldCpuUsage : ((100.0*procTotal)/sysTotal);
-                            // Calculate process CPU Usage
+                        double usage = glitchRecover ? oldCpuUsage : ((100.0 * procTotal) / sysTotal);
+                        // Calculate process CPU Usage
                         // Add Process to list
                         newList.Add(new ProcUsage
                         {
@@ -124,14 +127,19 @@ namespace YetAnotherRelogger.Helpers.Stats
                 _lastSysIdle = sysIdle;
 
                 // unmark glitch recover
-                if (glitchRecover)
+                if (glitchRecover && retryAttempt < 3)
                 {
                     glitchRecover = false;
-                    Update(); // Update again
+                    Update(retryAttempt + 1); // Update again
                 }
 
                 // Update Process list
                 _procUsageList = newList;
+            }
+            catch (Win32Exception ex)
+            {
+                Logger.Instance.WriteGlobal(ex.ToString());
+                return false;
             }
             catch (Exception ex)
             {
@@ -148,9 +156,16 @@ namespace YetAnotherRelogger.Helpers.Stats
 
         public ProcUsage GetById(int id)
         {
+            if (!_procUsageList.Any())
+                return new ProcUsage();
+
             try
             {
-                return _procUsageList.FirstOrDefault(x => x.Process.Id == id);
+                var p = _procUsageList.FirstOrDefault(x => x.Process.Id == id);
+                if (p != null)
+                    return p;
+                else
+                    return new ProcUsage();
             }
             catch
             {
@@ -171,28 +186,29 @@ namespace YetAnotherRelogger.Helpers.Stats
 
         private static UInt64 SubtractTimes(FILETIME a, FILETIME b)
         {
-            ulong aInt = ((UInt64) (a.dwHighDateTime << 32)) | (UInt64) a.dwLowDateTime;
-            ulong bInt = ((UInt64) (b.dwHighDateTime << 32)) | (UInt64) b.dwLowDateTime;
+            ulong aInt = ((UInt64)(a.dwHighDateTime << 32)) | (UInt64)a.dwLowDateTime;
+            ulong bInt = ((UInt64)(b.dwHighDateTime << 32)) | (UInt64)b.dwLowDateTime;
             return aInt - bInt;
         }
 
         public class ProcUsage
         {
-            public TimeSpan LastProcTime;
-            public Process Process;
-            public Usage Usage;
+            public TimeSpan LastProcTime { get; set; }
+            public Process Process { get; set; }
+            public Usage Usage { get; set; }
 
             public ProcUsage()
             {
                 LastProcTime = TimeSpan.MinValue;
                 Process = new Process();
+                Usage = new Usage();
             }
         }
 
         public class Usage
         {
-            public double Cpu;
-            public long Memory;
+            public double Cpu { get; set; }
+            public long Memory { get; set; }
         }
     }
 }
