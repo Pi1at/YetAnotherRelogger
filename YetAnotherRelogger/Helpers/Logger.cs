@@ -96,7 +96,7 @@ namespace YetAnotherRelogger.Helpers
                 WriteGlobal(format, args);
                 return;
             }
-            var message = new LogMessage {Message = string.Format("<{0}> {1}", bot.Name, string.Format(format, args))};
+            var message = new LogMessage { Message = string.Format("<{0}> {1}", bot.Name, string.Format(format, args)) };
             instance.AddBuffer(message);
             addToRTB(message);
         }
@@ -108,7 +108,7 @@ namespace YetAnotherRelogger.Helpers
         /// <param name="args"></param>
         public void WriteGlobal(string format, params object[] args)
         {
-            var message = new LogMessage {Message = string.Format("{0}", string.Format(format, args))};
+            var message = new LogMessage { Message = string.Format("{0}", string.Format(format, args)) };
             instance.AddBuffer(message);
             addToRTB(message);
         }
@@ -130,19 +130,23 @@ namespace YetAnotherRelogger.Helpers
 
             try
             {
-                Program.Mainform.Invoke(new Action(() =>
+                if (Program.Mainform.InvokeRequired && !Program.Mainform.IsDisposed)
                 {
-                    RichTextBox rtb = Program.Mainform.richTextBox1;
-                    //var font = new Font("Tahoma", 8, FontStyle.Regular);
-                    //rtb.SelectionFont = font;
-                    //rtb.SelectionColor = message.Color;
-                    string text = string.Format("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp,
-                        message.Message);
-                    rtb.AppendText(text + Environment.NewLine);
-                }));
+                    Program.Mainform.Invoke(new Action(() =>
+                       {
+                           RichTextBox rtb = Program.Mainform.richTextBox1;
+                           //var font = new Font("Tahoma", 8, FontStyle.Regular);
+                           //rtb.SelectionFont = font;
+                           //rtb.SelectionColor = message.Color;
+                           string text = string.Format("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp,
+                               message.Message);
+                           rtb.AppendText(text + Environment.NewLine);
+                       }));
+                }
             }
-            catch
+            catch (Exception ex)
             {
+                Logger.Instance.Write("Exception in addToRTB: {0}", ex);
                 // Failed! do nothing
             }
         }

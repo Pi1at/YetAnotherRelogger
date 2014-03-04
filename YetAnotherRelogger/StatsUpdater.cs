@@ -226,13 +226,16 @@ namespace YetAnotherRelogger
                             graph.Series[serie].LegendText = legend;
 
                         while (graph.Series[serie].Points.Count < limit)
+                        {
                             graph.Series[serie].Points.Add(0);
+                        }
 
                         graph.Series[serie].Points.Add(value);
 
                         while (graph.Series[serie].Points.Count > limit)
+                        {
                             graph.Series[serie].Points.RemoveAt(0);
-
+                        }
                         if (autoscale)
                         {
                             graph.ChartAreas[0].AxisY.Minimum = Double.NaN;

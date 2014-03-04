@@ -118,12 +118,17 @@ namespace YetAnotherRelogger.Forms
             {
                 try
                 {
-                    BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
-                        (bool)dataGridView1[e.ColumnIndex, e.RowIndex].Value;
-                    BotSettings.Instance.Save();
+                    if (BotSettings.Instance.Bots.Count <= e.RowIndex)
+                    {
+                        BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
+                               (bool)dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+
+                        BotSettings.Instance.Save();
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.Instance.Write("Exception in dataGridView1_CellValueChanged: {0}", ex);
                 }
             }
         }
@@ -201,14 +206,14 @@ namespace YetAnotherRelogger.Forms
         {
             //lock (BotSettings.Instance)
             //{
-                ConnectionCheck.Reset();
-                // Start All
-                foreach (
-                    DataGridViewRow row in
-                        dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool)row.Cells["isEnabled"].Value))
-                {
-                    BotSettings.Instance.Bots[row.Index].Start(checkBoxForce.Checked);
-                }
+            ConnectionCheck.Reset();
+            // Start All
+            foreach (
+                DataGridViewRow row in
+                    dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool)row.Cells["isEnabled"].Value))
+            {
+                BotSettings.Instance.Bots[row.Index].Start(checkBoxForce.Checked);
+            }
             //}
         }
 
@@ -300,7 +305,7 @@ namespace YetAnotherRelogger.Forms
 
             btnRestartAllDb.BeginInvoke(new System.Action(() => btnRestartAllDb.Enabled = true));
             //Application.Current.Dispatcher.BeginInvoke(new System.Action(() => btnRestartAllDb.Enabled = true));
-            
+
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)

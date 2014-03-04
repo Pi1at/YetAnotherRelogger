@@ -81,6 +81,9 @@ namespace YetAnotherRelogger
             {
                 try
                 {
+                    if (_isStopped)
+                        return;
+
                     // Paused
                     if (Program.Pause)
                     {

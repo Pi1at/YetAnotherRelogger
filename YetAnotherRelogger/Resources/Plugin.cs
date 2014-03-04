@@ -47,38 +47,35 @@
  * Initial realease
  */
 using System;
-using System.Collections.ObjectModel;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
+using System.IO.Pipes;
 using System.Linq;
 using System.Reflection;
-using System.Windows;
-using System.Threading;
-using System.Diagnostics;
-using System.IO.Pipes;
-using System.IO;
-using System.Xml.Serialization;
 using System.Text.RegularExpressions;
-
-using Zeta;
+using System.Threading;
+using System.Windows;
+using System.Xml.Serialization;
+using Zeta.Bot;
+using Zeta.Bot.Settings;
 using Zeta.Common;
 using Zeta.Common.Plugins;
-using Zeta.CommonBot;
-using Zeta.CommonBot.Profile;
-using Zeta.CommonBot.Settings;
+using Zeta.Game;
 using Zeta.TreeSharp;
-using UIElement = Zeta.Internals.UIElement;
-using System.Windows.Threading;
-using System.Collections.Generic;
 using Action = Zeta.TreeSharp.Action;
+using UIElement = Zeta.Game.Internals.UIElement;
 
 namespace YARPLUGIN
 {
     public class YARPLUGIN : IPlugin
     {
         // Plugin version
-        public Version Version { get { return new Version(0, 2, 0, 13); } }
+        public Version Version { get { return new Version(0, 2, 1, 0); } }
 
         private const bool _debug = true;
+        private static readonly log4net.ILog DBLog = Zeta.Common.Logger.GetLoggerInstanceForType();
 
         // Compatibility
         private static readonly Regex[] ReCompatibility =
@@ -149,7 +146,8 @@ namespace YARPLUGIN
 
         private BotStats _bs = new BotStats();
         private bool _pulseFix;
-        Logging.LogMessageDelegate lmd;
+        // TODO: fixme
+        //Logging.LogMessageDelegate lmd;
 
         public bool IsEnabled { get { return PluginManager.Plugins.Any(p => p.Plugin.Name == this.Name && p.Enabled); } }
 
@@ -157,13 +155,19 @@ namespace YARPLUGIN
         {
             Log(str, 0);
         }
+        public static void Log(Exception ex)
+        {
+            Log(ex.ToString(), 0);
+        }
         public static void Log(string str, params object[] args)
         {
-            Logging.Write("[YetAnotherRelogger] " + str, args);
+            DBLog.InfoFormat("[YetAnotherRelogger] " + str, args);
+            //Logging.Write("[YetAnotherRelogger] " + str, args);
         }
         public static void LogException(Exception ex)
         {
-            Logging.Write("[YetAnotherRelogger] Error: {0}", ex);
+            Log(ex.ToString());
+            //Logging.Write("[YetAnotherRelogger] Error: {0}", ex);
         }
 
         #region Plugin Events
@@ -185,8 +189,9 @@ namespace YARPLUGIN
             _bs.LastPulse = DateTime.Now.Ticks;
             //_bs.Pid = Process.GetCurrentProcess().Id;
 
-            lmd = new Logging.LogMessageDelegate(Logging_OnLogMessage);
-            Logging.OnLogMessage += lmd;
+            // TODO: fixme
+            //lmd = new Logging.LogMessageDelegate(Logging_OnLogMessage);
+            //Logging.OnLogMessage += lmd;
 
             Reset();
 
@@ -228,13 +233,15 @@ namespace YARPLUGIN
         {
             _bs.LastPulse = DateTime.Now.Ticks;
 
-            StartYarWorker();
+            if (IsEnabled)
+                StartYarWorker();
         }
 
         public void OnShutdown()
         {
             _yarThread.Abort();
-            Logging.OnLogMessage -= new Logging.LogMessageDelegate(Logging_OnLogMessage);
+            // TODO: fixme
+            //Logging.OnLogMessage -= new Logging.LogMessageDelegate(Logging_OnLogMessage);
         }
 
 
@@ -256,11 +263,22 @@ namespace YARPLUGIN
                 _pulseFix = false;
                 return; // Stop here to prevent Thread abort
             }
-            // user disabled plugin abort Thread
-            _yarThread.Abort();
-
-            if (lmd != null)
-                Logging.OnLogMessage -= lmd;
+            try
+            {
+                if (_yarThread.IsAlive)
+                {
+                    // user disabled plugin abort Thread
+                    _yarThread.Abort();
+                }
+            }
+            catch (ThreadAbortException) { }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+            }
+            // TODO: fixme
+            //if (lmd != null)
+            //    Logging.OnLogMessage -= lmd;
         }
 
         private static void ResetBotBehavior()
@@ -306,7 +324,8 @@ namespace YARPLUGIN
                 else
                     _bs.IsPaused = false;
 
-
+                // TODO: fixme
+                /*
                 Queue<ReadOnlyCollection<Logging.LogMessage>> localQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
                 lock (MessageQueue)
                     while (MessageQueue.Any())
@@ -340,12 +359,13 @@ namespace YARPLUGIN
                     try
                     {
                         var duration = DateTime.Now;
-                        Logging.LogMessage[] buffer;
+                        //Logging.LogMessage[] buffer;
                         // Lock buffer and copy to local variable for scanning
                         lock (_logBuffer)
                         {
-                            buffer = new Logging.LogMessage[_logBuffer.Length + 1]; // set log new local log buffer size
-                            _logBuffer.CopyTo(buffer, 0); // copy to local
+                            //buffer = new Logging.LogMessage[_logBuffer.Length + 1]; // set log new local log buffer size
+                            // TODO: fixme
+                            //_logBuffer.CopyTo(buffer, 0); // copy to local
                             _logBuffer = null; // clear buffer
                         }
                         var count = 0; // Scan counter
@@ -417,14 +437,15 @@ namespace YARPLUGIN
                             }
                             if (breakloop) break; // Check if we need to break out of loop
                         }
-
-                        if (count > 1) Logging.WriteDiagnostic("[YetAnotherRelogger] Scanned {0} log items in {1}ms", count, DateTime.Now.Subtract(duration).TotalMilliseconds);
+                        //if (count > 1) Logging.WriteDiagnostic("[YetAnotherRelogger] Scanned {0} log items in {1}ms", count, DateTime.Now.Subtract(duration).TotalMilliseconds);
                     }
                     catch (Exception ex)
                     {
                         LogException(ex);
                     }
+
                 }
+                */
 
                 if (!pulseTimer.IsRunning)
                 {
@@ -462,7 +483,7 @@ namespace YARPLUGIN
             }
             catch (Exception ex)
             {
-                Logging.WriteException(ex);
+                //Logging.WriteException(ex);
             }
         }
 
@@ -476,7 +497,7 @@ namespace YARPLUGIN
             }
             catch (Exception ex)
             {
-                Logging.WriteException(ex);
+                Log(ex);
                 return originals.FirstOrDefault();
             }
         }
@@ -526,13 +547,16 @@ namespace YARPLUGIN
             }
             catch (Exception ex)
             {
-                Logging.WriteException(ex);
+                Log(ex);
+                //Logging.WriteException(ex);
             }
 
         }
         #endregion
 
         #region Logging Monitor
+        // TODO: fixme
+        /*
         Queue<ReadOnlyCollection<Logging.LogMessage>> MessageQueue = new Queue<ReadOnlyCollection<Logging.LogMessage>>();
         void Logging_OnLogMessage(ReadOnlyCollection<Logging.LogMessage> messages)
         {
@@ -540,7 +564,7 @@ namespace YARPLUGIN
         }
 
         private Logging.LogMessage[] _logBuffer;
-
+        */
 
         public bool FindStartDelay(string msg)
         {
@@ -744,12 +768,17 @@ namespace YARPLUGIN
                         }
                     }
                 }
+                catch (ThreadAbortException) { }
                 catch (TimeoutException)
                 {
-                    // YAR is not running, disable the plugin
-                    Log("TimeoutException - Disabling YAR Plugin");
-                    PluginManager.Plugins.Where(p => p.Plugin.Name == this.Name).All(p => p.Enabled = false);
-                    _yarThread.Abort();
+                    if (this.IsEnabled)
+                    {
+                        // YAR is not running, disable the plugin
+                        //Log("TimeoutException - Disabling YAR Plugin");
+
+                        PluginManager.Plugins.Where(p => p.Plugin.Name == this.Name).All(p => p.Enabled = false);
+                        _yarThread.Abort();
+                    }
                 }
                 catch (Exception ex)
                 {
