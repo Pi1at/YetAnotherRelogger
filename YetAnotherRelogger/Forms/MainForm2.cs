@@ -118,7 +118,7 @@ namespace YetAnotherRelogger.Forms
             {
                 try
                 {
-                    if (BotSettings.Instance.Bots.Count <= e.RowIndex)
+                    if (e.RowIndex > 0 && e.RowIndex <= BotSettings.Instance.Bots.Count)
                     {
                         BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
                                (bool)dataGridView1[e.ColumnIndex, e.RowIndex].Value;
