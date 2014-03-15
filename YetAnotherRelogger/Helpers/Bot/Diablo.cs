@@ -13,12 +13,18 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class DiabloClass
     {
-        [XmlIgnore] public Rectangle AutoPos;
-        [XmlIgnore] public IntPtr MainWindowHandle;
-        [XmlIgnore] public Process Proc;
-        [XmlIgnore] private bool _isStopped;
-        [XmlIgnore] private DateTime _lastRepsonse;
-        [XmlIgnore] private DateTime _timeStartTime;
+        [XmlIgnore]
+        public Rectangle AutoPos;
+        [XmlIgnore]
+        public IntPtr MainWindowHandle;
+        [XmlIgnore]
+        public Process Proc;
+        [XmlIgnore]
+        private bool _isStopped;
+        [XmlIgnore]
+        private DateTime _lastRepsonse;
+        [XmlIgnore]
+        private DateTime _timeStartTime;
 
         public DiabloClass()
         {
@@ -52,6 +58,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         // Isboxer
         public bool UseIsBoxer { get; set; }
+        public bool ReusedWindow { get; set; }
         public string DisplaySlot { get; set; }
         public string CharacterSet { get; set; }
 
@@ -226,7 +233,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     ProcessorAffinity = AllProcessors; // set it to all ones
                     CpuCount = Environment.ProcessorCount;
                 }
-                Proc.ProcessorAffinity = (IntPtr) ProcessorAffinity;
+                Proc.ProcessorAffinity = (IntPtr)ProcessorAffinity;
             }
 
 
@@ -235,6 +242,8 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             // Wait for d3 to fully load
             int state = (Settings.Default.UseD3Starter || UseIsBoxer ? 0 : 2);
+            if (ReusedWindow)
+                state = 2;
             IntPtr handle = IntPtr.Zero;
             bool timedout = false;
             LimitStartTime(true); // reset startup time
@@ -344,7 +353,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             {
                 Logger.Instance.Write("Demonbuddy start delay, waiting {0} seconds",
                     Settings.Default.DemonbuddyStartDelay);
-                Thread.Sleep((int) Settings.Default.DemonbuddyStartDelay*1000);
+                Thread.Sleep((int)Settings.Default.DemonbuddyStartDelay * 1000);
             }
         }
 
@@ -357,7 +366,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             }
             if (reset)
                 _timeStartTime = DateTime.Now;
-            else if (General.DateSubtract(_timeStartTime) > (int) Settings.Default.DiabloStartTimeLimit)
+            else if (General.DateSubtract(_timeStartTime) > (int)Settings.Default.DiabloStartTimeLimit)
             {
                 Logger.Instance.Write("Diablo:{0}: Starting diablo timed out!", Proc.Id);
                 Parent.Restart();
@@ -434,19 +443,40 @@ namespace YetAnotherRelogger.Helpers.Bot
                 return;
             }
 
-            var isboxer = new Process
+            Process isboxer = null;
+            // Find running ISBoxer
+            foreach (var proc in Process.GetProcesses())
             {
-                StartInfo =
+                string windowTitle = string.Format("is{0} {1} - {2}", DisplaySlot, DisplaySlot, CharacterSet);
+
+                if (proc.MainWindowTitle == windowTitle)
                 {
-                    FileName = Settings.Default.ISBoxerPath,
-                    WorkingDirectory = Path.GetDirectoryName(Settings.Default.ISBoxerPath),
-                    Arguments = string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot),
+                    Proc = proc;
+                    ReusedWindow = true;
+                    Logger.Instance.Write("Re-using ISBoxer Created Game Window {0} with PID {1}", Proc.MainWindowTitle, Proc.Id);
+                    return;
                 }
-            };
-            Logger.Instance.Write(Parent, "Starting InnerSpace: {0}", Settings.Default.ISBoxerPath);
-            Logger.Instance.Write(Parent, "With arguments: {0}", isboxer.StartInfo.Arguments);
-            //isboxer.StartInfo = UserAccount.ImpersonateStartInfo(isboxer.StartInfo, Parent);
-            isboxer.Start();
+            }
+
+
+            if (Proc == null)
+            {
+                ReusedWindow = false;
+
+                isboxer = new Process
+                {
+                    StartInfo =
+                    {
+                        FileName = Settings.Default.ISBoxerPath,
+                        WorkingDirectory = Path.GetDirectoryName(Settings.Default.ISBoxerPath),
+                        Arguments = string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot),
+                    }
+                };
+                Logger.Instance.Write(Parent, "Starting InnerSpace: {0}", Settings.Default.ISBoxerPath);
+                Logger.Instance.Write(Parent, "With arguments: {0}", isboxer.StartInfo.Arguments);
+                //isboxer.StartInfo = UserAccount.ImpersonateStartInfo(isboxer.StartInfo, Parent);
+                isboxer.Start();
+            }
 
 
             // Find diablo process
@@ -465,17 +495,16 @@ namespace YetAnotherRelogger.Helpers.Bot
             while (General.DateSubtract(timeout) < 20)
             {
                 Thread.Sleep(250);
-                Process p = Process.GetProcesses().FirstOrDefault(x => 
+                Process p = Process.GetProcesses().FirstOrDefault(x =>
                     x.ProcessName.Equals(exeName) &&
-                    // Find Diablo inside relogger
+                        // Find Diablo inside relogger
                     BotSettings.Instance.Bots.FirstOrDefault(
                         z =>
                             z.Diablo.Proc != null &&
                             !z.Diablo.Proc.HasExited &&
                             z.Diablo.Proc.Id == x.Id) == null &&
-                    // Find Diablo in all processes
-                    currProcesses.FirstOrDefault(y => y.Id == x.Id) ==
-                    null);
+                        // Find Diablo in all processes
+                    currProcesses.FirstOrDefault(y => y.Id == x.Id) == null);
 
                 if (p == null)
                     continue;

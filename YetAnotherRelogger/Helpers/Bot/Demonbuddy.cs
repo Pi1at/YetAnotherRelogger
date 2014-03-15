@@ -338,7 +338,6 @@ namespace YetAnotherRelogger.Helpers.Bot
                 if (!PluginVersionCheck.Check(plugin))
                     PluginVersionCheck.Install(plugin);
 
-
                 DateTime timeout;
                 try // Try to start Demonbuddy
                 {
