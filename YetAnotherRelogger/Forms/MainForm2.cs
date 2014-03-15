@@ -34,6 +34,19 @@ namespace YetAnotherRelogger.Forms
 
         private void MainForm2_Load(object sender, EventArgs e)
         {
+            // Set window location
+            if (Settings.Default.WindowLocation != null && Settings.Default.WindowLocation != Point.Empty)
+            {
+                this.Location = Settings.Default.WindowLocation;
+            }
+
+            // Set window size
+            if (Settings.Default.WindowSize != null)
+            {
+                this.Size = Settings.Default.WindowSize;
+            }
+            splitContainer1.SplitterDistance = Settings.Default.SplitterDistance;
+
             Text = string.Format("R-YAR [{0}] BETA", Program.VERSION);
 
             Logger.Instance.WriteGlobal("rrrix's Yet Another Relogger fork Version {0}", Program.VERSION);
@@ -100,6 +113,8 @@ namespace YetAnotherRelogger.Forms
                 ToggleIcon();
                 ShowNotification("Yet Another Relogger", "Is still running");
             }
+
+            SaveWindowState();
         }
 
         private void MainForm2_Resize(object sender, EventArgs e)
@@ -110,6 +125,27 @@ namespace YetAnotherRelogger.Forms
                 ShowNotification("Yet Another Relogger", "Is still running");
                 Hide();
             }
+            SaveWindowState();
+        }
+
+        private void SaveWindowState()
+        {
+            // Copy window location to app settings
+            Settings.Default.WindowLocation = this.Location;
+            Settings.Default.SplitterDistance = splitContainer1.SplitterDistance;
+
+            // Copy window size to app settings
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                Settings.Default.WindowSize = this.Size;
+            }
+            else
+            {
+                Settings.Default.WindowSize = this.RestoreBounds.Size;
+            }
+
+            // Save settings
+            Settings.Default.Save();
         }
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
