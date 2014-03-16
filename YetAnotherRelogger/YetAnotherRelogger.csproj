@@ -145,6 +145,7 @@
     <Compile Include="Helpers\Attributes\NoCopy.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\DiabloClone.cs" />
+    <Compile Include="Helpers\Enums\GameDifficulty.cs" />
     <Compile Include="Helpers\Enums\Loglevel.cs" />
     <Compile Include="Helpers\Enums\MonsterPower.cs" />
     <Compile Include="Helpers\Hotkeys\ActionContainer.cs" />
