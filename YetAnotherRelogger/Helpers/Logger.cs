@@ -49,7 +49,7 @@ namespace YetAnotherRelogger.Helpers
 
         private void Initialize()
         {
-            string filename = string.Format("{0:yyyy-MM-dd HH.mm}", DateTime.Now);
+            string filename = string.Format("{0:yyyy-MM-dd HH.mm}", DateTime.UtcNow);
             _logfile = string.Format(@"{0}\Logs\{1}.txt", Path.GetDirectoryName(Application.ExecutablePath), filename);
             Debug.WriteLine(_logfile);
 
@@ -78,7 +78,7 @@ namespace YetAnotherRelogger.Helpers
                 message.Message = string.Format("<{0}> {1}", Relogger.Instance.CurrentBot.Name,
                     string.Format(format, args));
             else
-                message.Message = string.Format("[{0}] {1}", DateTime.Now, string.Format(format, args));
+                message.Message = string.Format("[{0}] {1}", DateTime.UtcNow, string.Format(format, args));
             instance.AddBuffer(message);
             addToRTB(message);
         }
@@ -203,14 +203,14 @@ namespace YetAnotherRelogger.Helpers
 
         public LogMessage(Color color, Loglevel loglevel, string message, params object[] args)
         {
-            TimeStamp = DateTime.Now;
+            TimeStamp = DateTime.UtcNow;
             Loglevel = Loglevel.Normal;
         }
 
         public LogMessage()
         {
             Color = Color.Black;
-            TimeStamp = DateTime.Now;
+            TimeStamp = DateTime.UtcNow;
             Loglevel = Loglevel.Normal;
         }
 

@@ -110,14 +110,14 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             if (Proc.Responding)
             {
-                _lastRepsonse = DateTime.Now;
+                _lastRepsonse = DateTime.UtcNow;
                 Parent.Status = "Monitoring";
             }
             else
                 Parent.Status = string.Format("Diablo is unresponsive ({0} secs)",
-                    DateTime.Now.Subtract(_lastRepsonse).TotalSeconds);
+                    DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds);
 
-            if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 120)
+            if (DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 120)
             {
                 Logger.Instance.Write("Diablo:{0}: Is unresponsive for more than 120 seconds", Proc.Id);
                 Logger.Instance.Write("Diablo:{0}: Killing process", Proc.Id);
@@ -168,24 +168,24 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             Parent.Status = "Prepare Diablo"; // Update Status
 
-            General.AgentKiller(); // Kill all Agent.exe processes
+            //General.AgentKiller(); // Kill all Agent.exe processes
 
             // Prepare D3 for launch
-            string agentDBPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
-                                 @"\Battle.net\Agent\agent.db";
-            if (File.Exists(agentDBPath))
-            {
-                Logger.Instance.Write("Deleting: {0}", agentDBPath);
-                try
-                {
-                    File.Delete(agentDBPath);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Instance.Write("Failed to delete! Exception: {0}", ex.Message);
-                    DebugHelper.Exception(ex);
-                }
-            }
+            //string agentDBPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
+            //                     @"\Battle.net\Agent\agent.db";
+            //if (File.Exists(agentDBPath))
+            //{
+            //    Logger.Instance.Write("Deleting: {0}", agentDBPath);
+            //    try
+            //    {
+            //        File.Delete(agentDBPath);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Logger.Instance.Write("Failed to delete! Exception: {0}", ex.Message);
+            //        DebugHelper.Exception(ex);
+            //    }
+            //}
 
             // Copy D3Prefs
             if (!string.IsNullOrEmpty(Parent.D3PrefsLocation))
@@ -203,7 +203,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     return;
                 }
             }
-            else
+            else if (Proc == null || (Proc != null && Proc.HasExited))
             {
                 try
                 {
@@ -306,12 +306,12 @@ namespace YetAnotherRelogger.Helpers.Bot
             // Continue after launching stuff
             Logger.Instance.Write("Diablo:{0}: Waiting for process to become ready", Proc.Id);
 
-            DateTime timeout = DateTime.Now;
+            DateTime timeout = DateTime.UtcNow;
             while (true)
             {
                 if (Program.Pause)
                 {
-                    timeout = DateTime.Now;
+                    timeout = DateTime.UtcNow;
                     return;
                 }
                 if (General.DateSubtract(timeout) > 30 || Proc.HasExited)
@@ -336,7 +336,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (!IsRunning)
                 return;
 
-            _lastRepsonse = DateTime.Now;
+            _lastRepsonse = DateTime.UtcNow;
 
             Thread.Sleep(1500);
             if (NoFrame)
@@ -361,11 +361,11 @@ namespace YetAnotherRelogger.Helpers.Bot
         {
             if (Program.Pause)
             {
-                _timeStartTime = DateTime.Now;
+                _timeStartTime = DateTime.UtcNow;
                 return false;
             }
             if (reset)
-                _timeStartTime = DateTime.Now;
+                _timeStartTime = DateTime.UtcNow;
             else if (General.DateSubtract(_timeStartTime) > (int)Settings.Default.DiabloStartTimeLimit)
             {
                 Logger.Instance.Write("Diablo:{0}: Starting diablo timed out!", Proc.Id);
@@ -459,7 +459,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             }
 
 
-            if (Proc == null)
+            if (Proc == null || (Proc != null && Proc.HasExited))
             {
                 ReusedWindow = false;
 
@@ -491,7 +491,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             // Create snapshot from all running processes
             Process[] currProcesses = Process.GetProcesses();
-            DateTime timeout = DateTime.Now;
+            DateTime timeout = DateTime.UtcNow;
             while (General.DateSubtract(timeout) < 20)
             {
                 Thread.Sleep(250);

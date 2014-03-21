@@ -19,14 +19,14 @@ namespace YetAnotherRelogger.Forms.Wizard
         private void DiabloOptions_Load(object sender, EventArgs e)
         {
             VisibleChanged += DiabloOptions_VisibleChanged;
-            textBox2.KeyPress += NumericCheck;
-            textBox9.KeyPress += NumericCheck;
-            textBox10.KeyPress += NumericCheck;
-            textBox11.KeyPress += NumericCheck;
-            textBox12.KeyPress += NumericCheck;
-            comboBox3.SelectedIndex = 2;
-            comboBox1.SelectedIndex = 0;
-            comboBox2.SelectedIndex = 1;
+            positionX.KeyPress += NumericCheck;
+            positionY.KeyPress += NumericCheck;
+            width.KeyPress += NumericCheck;
+            height.KeyPress += NumericCheck;
+            displaySlot.KeyPress += NumericCheck;
+            processorAffinity.SelectedIndex = 2;
+            language.SelectedIndex = 0;
+            region.SelectedIndex = 1;
         }
 
         private void NumericCheck(object sender, KeyPressEventArgs e)
@@ -65,7 +65,7 @@ namespace YetAnotherRelogger.Forms.Wizard
                 Title = "Browse to Diablo III.exe"
             };
             if (ofd.ShowDialog() == DialogResult.OK)
-                textBox1.Text = ofd.FileName;
+                diablo3Path.Text = ofd.FileName;
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
@@ -74,14 +74,14 @@ namespace YetAnotherRelogger.Forms.Wizard
                 label14.Enabled =
                     label15.Enabled =
                         label16.Enabled =
-                            textBox2.Enabled =
-                                textBox9.Enabled = textBox10.Enabled = textBox11.Enabled = checkBox3.Checked;
+                            positionX.Enabled =
+                                positionY.Enabled = width.Enabled = height.Enabled = manualPositionAndSize.Checked;
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            label11.Enabled = label17.Enabled = textBox12.Enabled = textBox13.Enabled = checkBox2.Checked;
-            if (checkBox2.Checked &&
+            label11.Enabled = label17.Enabled = displaySlot.Enabled = characterSet.Enabled = useInnerSpace.Checked;
+            if (useInnerSpace.Checked &&
                 (string.IsNullOrEmpty(Settings.Default.ISBoxerPath) || !File.Exists(Settings.Default.ISBoxerPath)))
             {
                 // Locate Inner space
@@ -104,10 +104,10 @@ namespace YetAnotherRelogger.Forms.Wizard
 
         public bool ValidateInput()
         {
-            return (WM.ValidateTextbox(textBox3) &
-                    WM.ValidateTextbox(textBox1) &
-                    WM.ValidateMaskedTextbox(maskedTextBox1) &
-                    (!checkBox2.Checked || (WM.ValidateTextbox(textBox12) & WM.ValidateTextbox(textBox13)))
+            return (WM.ValidateTextbox(username) &
+                    WM.ValidateTextbox(diablo3Path) &
+                    WM.ValidateMaskedTextbox(password) &
+                    (!useInnerSpace.Checked || (WM.ValidateTextbox(displaySlot) & WM.ValidateTextbox(characterSet)))
                 );
         }
 

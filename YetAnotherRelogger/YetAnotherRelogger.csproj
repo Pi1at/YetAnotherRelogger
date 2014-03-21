@@ -143,6 +143,7 @@
       <DependentUpon>SetAffinity.cs</DependentUpon>
     </Compile>
     <Compile Include="Helpers\Attributes\NoCopy.cs" />
+    <Compile Include="Helpers\DataGridViewExtensions.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\DiabloClone.cs" />
     <Compile Include="Helpers\Enums\Loglevel.cs" />

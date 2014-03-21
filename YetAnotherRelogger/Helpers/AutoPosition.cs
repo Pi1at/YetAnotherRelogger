@@ -63,7 +63,7 @@ namespace YetAnotherRelogger.Helpers
 
                 foreach (BotClass bot in bots)
                 {
-                    DateTime time = DateTime.Now;
+                    DateTime time = DateTime.UtcNow;
                     ScreensClass screen = workingScreens[sc]; // set current screen 
 
                     // Calculate demonbuddy position
@@ -112,7 +112,7 @@ namespace YetAnotherRelogger.Helpers
                     }
 
                     // calculate sleeptime
-                    var sleep = (int) (Program.Sleeptime - DateTime.Now.Subtract(time).TotalMilliseconds);
+                    var sleep = (int) (Program.Sleeptime - DateTime.UtcNow.Subtract(time).TotalMilliseconds);
                     if (sleep > 0)
                         Thread.Sleep(sleep);
                 }

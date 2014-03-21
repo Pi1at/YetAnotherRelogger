@@ -29,7 +29,7 @@ namespace YetAnotherRelogger.Helpers
                 // Check internet every 60 seconds
                 if (General.DateSubtract(_lastcheck) > 30)
                 {
-                    _lastcheck = DateTime.Now;
+                    _lastcheck = DateTime.UtcNow;
                     if (!CheckValidConnection(true))
                     {
                         _laststate = false;
@@ -218,7 +218,7 @@ namespace YetAnotherRelogger.Helpers
                 // Check internet every 60 seconds
                 if (General.DateSubtract(_lastpingcheck) > 30)
                 {
-                    _lastpingcheck = DateTime.Now;
+                    _lastpingcheck = DateTime.UtcNow;
                     if (!PingCheck(true))
                     {
                         Logger.Instance.Write("Waiting 30 seconds and check again!");

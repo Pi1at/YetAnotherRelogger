@@ -23,7 +23,7 @@ namespace YetAnotherRelogger.Helpers.Stats
 
             public double Hours
             {
-                get { return DateTime.Now.Subtract(StartTime).TotalSeconds/3600; }
+                get { return DateTime.UtcNow.Subtract(StartTime).TotalSeconds/3600; }
             }
 
             public double GoldPerHour
@@ -57,13 +57,13 @@ namespace YetAnotherRelogger.Helpers.Stats
                     {
                         DebugHelper.Write(bot, "New start coinage: {0:N0}", "GoldPerHour", coinage);
                         StartCoinage = coinage;
-                        StartTime = DateTime.Now;
+                        StartTime = DateTime.UtcNow;
                     }
                     else
                     {
                         if (LastGain > 0)
-                            LastGainTime = DateTime.Now;
-                        else if (DateTime.Now.Subtract(LastGainTime).TotalMinutes > 15)
+                            LastGainTime = DateTime.UtcNow;
+                        else if (DateTime.UtcNow.Subtract(LastGainTime).TotalMinutes > 15)
                         {
                             DebugHelper.Write(bot, "Reset! No gold collected for 15 mins", "GoldPerHour");
                             Reset();
@@ -77,8 +77,8 @@ namespace YetAnotherRelogger.Helpers.Stats
 
             public void Reset()
             {
-                StartTime = DateTime.Now;
-                LastGainTime = DateTime.Now;
+                StartTime = DateTime.UtcNow;
+                LastGainTime = DateTime.UtcNow;
                 LastCoinage = 0;
                 LastGain = 0;
                 TotalGain = 0;

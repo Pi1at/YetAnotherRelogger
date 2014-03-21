@@ -128,7 +128,7 @@ namespace YetAnotherRelogger.Helpers
             {
                 bool isXml = false;
                 string xml = string.Empty;
-                DateTime duration = DateTime.Now;
+                DateTime duration = DateTime.UtcNow;
                 Connections++;
                 try
                 {
@@ -202,7 +202,7 @@ namespace YetAnotherRelogger.Helpers
 
                             bot.AntiIdle.UpdateCoinage(stats.Coinage);
                             bot.AntiIdle.Stats = stats;
-                            bot.AntiIdle.LastStats = DateTime.Now;
+                            bot.AntiIdle.LastStats = DateTime.UtcNow;
                             Send(bot.AntiIdle.Reply());
                             return;
                         }
@@ -246,17 +246,19 @@ namespace YetAnotherRelogger.Helpers
                         return;
                     }
 
+                    long nowTicks = DateTime.UtcNow.Ticks;
+
                     switch (cmd)
                     {
                         case "Initialized":
                             b.AntiIdle.Stats = new BotStats
                             {
-                                LastGame = DateTime.Now.Ticks,
-                                LastPulse = DateTime.Now.Ticks,
-                                PluginPulse = DateTime.Now.Ticks,
-                                LastRun = DateTime.Now.Ticks
+                                LastGame = nowTicks,
+                                LastPulse = nowTicks,
+                                PluginPulse = nowTicks,
+                                LastRun = nowTicks
                             };
-                            b.AntiIdle.LastStats = DateTime.Now;
+                            b.AntiIdle.LastStats = DateTime.UtcNow;
                             b.AntiIdle.State = IdleState.CheckIdle;
                             b.AntiIdle.IsInitialized = true;
                             b.AntiIdle.InitAttempts = 0;
@@ -280,7 +282,7 @@ namespace YetAnotherRelogger.Helpers
                                 Send("Roger!");
                             break;
                         case "UserStop":
-                            b.Status = string.Format("User Stop: {0:d-m H:M:s}", DateTime.Now);
+                            b.Status = string.Format("User Stop: {0:d-m H:M:s}", DateTime.UtcNow);
                             b.AntiIdle.State = IdleState.UserStop;
                             Logger.Instance.Write(b, "Demonbuddy stopped by user");
                             Send("Roger!");
@@ -293,7 +295,7 @@ namespace YetAnotherRelogger.Helpers
                             break;
                             // Giles Compatibility
                         case "ThirdpartyStop":
-                            b.Status = string.Format("Thirdparty Stop: {0:d-m H:M:s}", DateTime.Now);
+                            b.Status = string.Format("Thirdparty Stop: {0:d-m H:M:s}", DateTime.UtcNow);
                             b.AntiIdle.State = IdleState.UserStop;
                             Logger.Instance.Write(b, "Demonbuddy stopped by Thirdparty");
                             Send("Roger!");

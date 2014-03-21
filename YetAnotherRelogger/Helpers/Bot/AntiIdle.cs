@@ -100,7 +100,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                             Logger.Instance.Write(Parent,
                                 "Demonbuddy:{0}: has not gained any gold in {1} seconds, limit NONE",
                                 Parent.Demonbuddy.Proc.Id, (int) General.DateSubtract(LastCoinageIncrease));
-                        LastCoinageBugReported = DateTime.Now;
+                        LastCoinageBugReported = DateTime.UtcNow;
                     }
                 }
 
@@ -116,7 +116,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     Logger.Instance.Write(Parent, "Demonbuddy:{0}: has not gained any gold in {1} seconds, trying reset",
                         Parent.Demonbuddy.Proc.Id,
                         (int) General.DateSubtract(LastCoinageIncrease));
-                    LastCoinageReset = DateTime.Now;
+                    LastCoinageReset = DateTime.UtcNow;
                     return "Restart";
                 }
 
@@ -127,8 +127,8 @@ namespace YetAnotherRelogger.Helpers.Bot
         // When program is paused, we don't want this to run on and on
         public void ResetCoinage()
         {
-            LastCoinageIncrease = DateTime.Now;
-            LastCoinageBugReported = DateTime.Now;
+            LastCoinageIncrease = DateTime.UtcNow;
+            LastCoinageBugReported = DateTime.UtcNow;
             LastCoinage = 0;
             LastCoinageReset = DateTime.MinValue;
         }
@@ -152,13 +152,13 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (NewCoinage < LastCoinage)
             {
                 // We either repaired, or went shopping, all is well
-                LastCoinageIncrease = DateTime.Now;
+                LastCoinageIncrease = DateTime.UtcNow;
             }
             else if (NewCoinage > LastCoinage)
             {
                 // We got more monies, all is well
-                LastCoinageIncrease = DateTime.Now;
-                LastCoinageBugReported = DateTime.Now;
+                LastCoinageIncrease = DateTime.UtcNow;
+                LastCoinageBugReported = DateTime.UtcNow;
             }
             // Otherwise we are stuck on the same gold, and that's not profitable.
             // Yes, the if above could be: NewCoinage != LastCoinage, but I wanted
@@ -191,14 +191,14 @@ namespace YetAnotherRelogger.Helpers.Bot
                         }
                         Logger.Instance.Write(Parent, "Demonbuddy:{0}: Delayed start failed! ({1} seconds overtime)",
                             Parent.Demonbuddy.Proc.Id, General.DateSubtract(StartDelay));
-                        TimeFailedStartDelay = DateTime.Now;
+                        TimeFailedStartDelay = DateTime.UtcNow;
                         FailedStartDelay++;
                         return "Restart";
                     }
                     break;
                 case IdleState.CheckIdle:
                 {
-                    _lastIdleAction = DateTime.Now; // Update Last Idle action time
+                    _lastIdleAction = DateTime.UtcNow; // Update Last Idle action time
                     string idleAction = IdleAction;
                     if (idleAction != "Roger!")
                         Logger.Instance.Write("Idle action: {0}", idleAction);
@@ -254,7 +254,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             Logger.Instance.Write("Fix Attempt++");
             FixAttempts++;
-            _fixAttemptTime = DateTime.Now;
+            _fixAttemptTime = DateTime.UtcNow;
             if (FixAttempts > 3)
             {
                 //Parent.Stop();
@@ -276,7 +276,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (all)
             {
                 IsInitialized = false;
-                InitTime = DateTime.Now;
+                InitTime = DateTime.UtcNow;
                 State = IdleState.Initialize;
                 Failed = 0;
                 FailedStartDelay = 0;

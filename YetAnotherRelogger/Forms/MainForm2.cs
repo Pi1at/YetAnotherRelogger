@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using YetAnotherRelogger.Forms.SettingsTree;
@@ -47,9 +48,15 @@ namespace YetAnotherRelogger.Forms
             }
             splitContainer1.SplitterDistance = Settings.Default.SplitterDistance;
 
-            Text = string.Format("R-YAR [{0}] BETA", Program.VERSION);
+            Text = string.Format("R-YAR [{0}] BETA", Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
-            Logger.Instance.WriteGlobal("rrrix's Yet Another Relogger fork Version {0}", Program.VERSION);
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            string version = fvi.FileVersion;
+
+            Logger.Instance.WriteGlobal("rrrix's Yet Another Relogger fork Version {0}", version);
+
+
             // Check if we are run as admin
             if (!Program.IsRunAsAdmin)
                 Logger.Instance.WriteGlobal("WE DON'T HAVE ADMIN RIGHTS!!");
@@ -69,6 +76,7 @@ namespace YetAnotherRelogger.Forms
             Resize += MainForm2_Resize;
 
             // Set stuff for list of bots
+            dataGridView1.DoubleBuffered(true);
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.MultiSelect = false;
             dataGridView1.MouseUp += dataGridView1_MouseUp;
