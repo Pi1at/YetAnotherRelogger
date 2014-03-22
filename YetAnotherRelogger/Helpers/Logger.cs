@@ -13,6 +13,8 @@ namespace YetAnotherRelogger.Helpers
     {
         #region singleton
 
+        private static Object bufferLock = 0;
+
         private static readonly Logger instance = new Logger();
 
         static Logger()
@@ -21,8 +23,11 @@ namespace YetAnotherRelogger.Helpers
 
         private Logger()
         {
-            Buffer = new List<LogMessage>();
-            Initialize();
+            lock (bufferLock)
+            {
+                Buffer = new List<LogMessage>();
+                Initialize();
+            }
         }
 
         public static Logger Instance
@@ -153,27 +158,33 @@ namespace YetAnotherRelogger.Helpers
 
         private void AddBuffer(LogMessage logmessage)
         {
-            Buffer.Add(logmessage);
-            if (Buffer.Count > 3)
-                ClearBuffer();
+            lock (bufferLock)
+            {
+                Buffer.Add(logmessage);
+                if (Buffer.Count > 3)
+                    ClearBuffer();
+            }
         }
 
         public void ClearBuffer()
         {
-            if (!_canLog)
-                return;
-            _canLog = false;
-
-            // Write buffer to file
-            using (var writer = new StreamWriter(_logfile, true))
+            lock (bufferLock)
             {
-                foreach (LogMessage message in Buffer)
+                if (!_canLog)
+                    return;
+                _canLog = false;
+
+                // Write buffer to file
+                using (var writer = new StreamWriter(_logfile, true))
                 {
-                    writer.WriteLine("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp, message.Message);
+                    foreach (LogMessage message in Buffer)
+                    {
+                        writer.WriteLine("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp, message.Message);
+                    }
                 }
+                Buffer.Clear();
+                _canLog = true;
             }
-            Buffer.Clear();
-            _canLog = true;
         }
 
         /// <summary>

@@ -962,7 +962,7 @@ namespace YARPLUGIN
             BotMain.Stop(false, "YetAnotherRelogger -> Load new profile");
             if (ZetaDia.IsInGame)
             {
-                ZetaDia.Service.Party.LeaveGame();
+                ZetaDia.Service.Party.LeaveGame(true);
                 while (ZetaDia.IsInGame)
                     Thread.Sleep(1000);
             }
