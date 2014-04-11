@@ -30,29 +30,55 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.checkboxGoldTimer = new System.Windows.Forms.CheckBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
+            this.goldTimerMaxDuration = new System.Windows.Forms.NumericUpDown();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.numericUpDown1 = new System.Windows.Forms.NumericUpDown();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.goldTimerMaxDuration)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.checkBox2);
-            this.groupBox1.Controls.Add(this.checkBox1);
+            this.groupBox1.Controls.Add(this.checkboxGoldTimer);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.label1);
-            this.groupBox1.Controls.Add(this.numericUpDown1);
+            this.groupBox1.Controls.Add(this.goldTimerMaxDuration);
             this.groupBox1.Location = new System.Drawing.Point(3, 3);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(449, 211);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "AntiIdle";
+            // 
+            // checkBox2
+            // 
+            this.checkBox2.AutoSize = true;
+            this.checkBox2.Checked = global::YetAnotherRelogger.Properties.Settings.Default.GoldInfoLogging;
+            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "GoldInfoLogging", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkBox2.Location = new System.Drawing.Point(6, 42);
+            this.checkBox2.Name = "checkBox2";
+            this.checkBox2.Size = new System.Drawing.Size(151, 17);
+            this.checkBox2.TabIndex = 4;
+            this.checkBox2.Text = "Log info every 30 seconds";
+            this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // checkboxGoldTimer
+            // 
+            this.checkboxGoldTimer.AutoSize = true;
+            this.checkboxGoldTimer.Checked = global::YetAnotherRelogger.Properties.Settings.Default.UseGoldTimer;
+            this.checkboxGoldTimer.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkboxGoldTimer.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "UseGoldTimer", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.checkboxGoldTimer.Location = new System.Drawing.Point(6, 19);
+            this.checkboxGoldTimer.Name = "checkboxGoldTimer";
+            this.checkboxGoldTimer.Size = new System.Drawing.Size(93, 17);
+            this.checkboxGoldTimer.TabIndex = 3;
+            this.checkboxGoldTimer.Text = "Use gold timer";
+            this.toolTip1.SetToolTip(this.checkboxGoldTimer, "If gold does not change in this time, AntiIdle actions will be taken.");
+            this.checkboxGoldTimer.UseVisualStyleBackColor = true;
             // 
             // label2
             // 
@@ -73,56 +99,30 @@
             this.label1.Text = "Gold timer";
             this.toolTip1.SetToolTip(this.label1, "If gold does not change in this time, AntiIdle actions will be taken.");
             // 
-            // checkBox2
+            // goldTimerMaxDuration
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Checked = global::YetAnotherRelogger.Properties.Settings.Default.GoldInfoLogging;
-            this.checkBox2.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "GoldInfoLogging", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox2.Location = new System.Drawing.Point(6, 42);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(151, 17);
-            this.checkBox2.TabIndex = 4;
-            this.checkBox2.Text = "Log info every 30 seconds";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Checked = global::YetAnotherRelogger.Properties.Settings.Default.UseGoldTimer;
-            this.checkBox1.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBox1.DataBindings.Add(new System.Windows.Forms.Binding("Checked", global::YetAnotherRelogger.Properties.Settings.Default, "UseGoldTimer", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.checkBox1.Location = new System.Drawing.Point(6, 19);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(93, 17);
-            this.checkBox1.TabIndex = 3;
-            this.checkBox1.Text = "Use gold timer";
-            this.toolTip1.SetToolTip(this.checkBox1, "If gold does not change in this time, AntiIdle actions will be taken.");
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // numericUpDown1
-            // 
-            this.numericUpDown1.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::YetAnotherRelogger.Properties.Settings.Default, "GoldTimer", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.numericUpDown1.Increment = new decimal(new int[] {
+            this.goldTimerMaxDuration.DataBindings.Add(new System.Windows.Forms.Binding("Value", global::YetAnotherRelogger.Properties.Settings.Default, "GoldTimer", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.goldTimerMaxDuration.Increment = new decimal(new int[] {
             30,
             0,
             0,
             0});
-            this.numericUpDown1.Location = new System.Drawing.Point(66, 63);
-            this.numericUpDown1.Maximum = new decimal(new int[] {
+            this.goldTimerMaxDuration.Location = new System.Drawing.Point(66, 63);
+            this.goldTimerMaxDuration.Maximum = new decimal(new int[] {
             600,
             0,
             0,
             0});
-            this.numericUpDown1.Minimum = new decimal(new int[] {
+            this.goldTimerMaxDuration.Minimum = new decimal(new int[] {
             30,
             0,
             0,
             0});
-            this.numericUpDown1.Name = "numericUpDown1";
-            this.numericUpDown1.Size = new System.Drawing.Size(60, 20);
-            this.numericUpDown1.TabIndex = 0;
-            this.toolTip1.SetToolTip(this.numericUpDown1, "If gold does not change in this time, AntiIdle actions will be taken.");
-            this.numericUpDown1.Value = global::YetAnotherRelogger.Properties.Settings.Default.GoldTimer;
+            this.goldTimerMaxDuration.Name = "goldTimerMaxDuration";
+            this.goldTimerMaxDuration.Size = new System.Drawing.Size(60, 20);
+            this.goldTimerMaxDuration.TabIndex = 0;
+            this.toolTip1.SetToolTip(this.goldTimerMaxDuration, "If gold does not change in this time, AntiIdle actions will be taken.");
+            this.goldTimerMaxDuration.Value = global::YetAnotherRelogger.Properties.Settings.Default.GoldTimer;
             // 
             // AntiIdle
             // 
@@ -133,7 +133,7 @@
             this.Size = new System.Drawing.Size(503, 411);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.goldTimerMaxDuration)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -143,9 +143,9 @@
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown numericUpDown1;
+        private System.Windows.Forms.NumericUpDown goldTimerMaxDuration;
         private System.Windows.Forms.ToolTip toolTip1;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkboxGoldTimer;
         private System.Windows.Forms.CheckBox checkBox2;
 
     }

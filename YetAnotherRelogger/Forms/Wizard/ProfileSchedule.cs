@@ -4,7 +4,6 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using YetAnotherRelogger.Helpers.Bot;
-using YetAnotherRelogger.Helpers.Enums;
 using YetAnotherRelogger.Helpers.Tools;
 
 namespace YetAnotherRelogger.Forms.Wizard
@@ -18,16 +17,10 @@ namespace YetAnotherRelogger.Forms.Wizard
             WM = parent;
             InitializeComponent();
 
-            var col = new DataGridViewComboBoxColumn
-            {
-                Name = "Monster Power",
-                DataSource = Enum.GetValues(typeof (MonsterPower)),
-                ValueType = typeof (MonsterPower),
-            };
-            dataGridView1.Columns.Add(col);
-
             dataGridView1.CellClick += dataGridView1_CellClick;
             dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
+
+            this.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         }
 
         public BindingList<Profile> Profiles { get; set; }
@@ -36,12 +29,6 @@ namespace YetAnotherRelogger.Forms.Wizard
         {
             if (e.RowIndex < 0)
                 return;
-
-            if (dataGridView1.Columns[e.ColumnIndex].Name.Equals("Monster Power"))
-            {
-                Profiles[e.RowIndex].MonsterPowerLevel =
-                    (MonsterPower) dataGridView1.Rows[e.RowIndex].Cells["Monster Power"].Value;
-            }
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -58,7 +45,6 @@ namespace YetAnotherRelogger.Forms.Wizard
                         Name = Path.GetFileName(ofd.FileName),
                         Runs = 0,
                         Minutes = 0,
-                        MonsterPowerLevel = MonsterPower.Disabled
                     };
                     dataGridView1.DataSource = null;
                     Profiles.Add(p);
@@ -139,14 +125,6 @@ namespace YetAnotherRelogger.Forms.Wizard
             dataGridView1.Refresh();
             dataGridView1.ReadOnly = false;
             dataGridView1.Columns["isDone"].Visible = false;
-            dataGridView1.Columns["MonsterPowerLevel"].Visible = false;
-
-            // MonsterPowerLevel
-            for (int i = 0; i < Profiles.Count; i++)
-            {
-                MonsterPower pl = Profiles[i].MonsterPowerLevel;
-                dataGridView1.Rows[i].Cells["Monster Power"].Value = pl;
-            }
         }
     }
 }

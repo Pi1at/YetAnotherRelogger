@@ -11,6 +11,7 @@ namespace YetAnotherRelogger.Forms.Wizard
         {
             WM = parent;
             InitializeComponent();
+            this.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         }
 
         private void DemonbuddyOptions_Load(object sender, EventArgs e)

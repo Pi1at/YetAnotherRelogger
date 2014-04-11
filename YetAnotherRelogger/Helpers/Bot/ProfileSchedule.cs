@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
-using YetAnotherRelogger.Helpers.Enums;
 using YetAnotherRelogger.Helpers.Tools;
 
 namespace YetAnotherRelogger.Helpers.Bot
@@ -104,14 +103,13 @@ namespace YetAnotherRelogger.Helpers.Bot
     {
         public Profile()
         {
-            MonsterPowerLevel = MonsterPower.Disabled;
+
         }
 
         public string Name { get; set; }
         public string Location { get; set; }
         public int Runs { get; set; }
         public int Minutes { get; set; }
-        public MonsterPower MonsterPowerLevel { get; set; }
 
         [XmlIgnore]
         public bool IsDone { get; set; }

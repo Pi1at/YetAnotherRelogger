@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -90,6 +91,32 @@ namespace YetAnotherRelogger
                         Thread.Sleep(1000);
                         continue;
                     }
+
+                    new Thread(() =>
+                    {
+                        try
+                        {
+                            List<Process> BlizzardErrorProcs =
+                                (from p in Process.GetProcessesByName("BlizzardError.exe")
+                                 select p).ToList();
+                            if (BlizzardErrorProcs.Any())
+                            {
+                                foreach (var p in BlizzardErrorProcs)
+                                {
+                                    Logger.Instance.Write("Killing BlizzardError.exe with PID {0}", p.Id);
+                                    p.Kill();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Instance.Write("Exception killing BlizzardError.exe: " + ex.ToString());
+                        }
+                    })
+                    {
+                        IsBackground = true
+                    }.Start();
+
                     // Check / validate internet connection
                     if (!ConnectionCheck.IsConnected || !ConnectionCheck.ValidConnection)
                     {
@@ -137,12 +164,19 @@ namespace YetAnotherRelogger
                             {
                                 if (bot.Diablo.Proc != null)
                                     Logger.Instance.Write("Diablo:{0}: Process is not running", bot.Diablo.Proc.Id);
+                                //if (bot.Demonbuddy.IsRunning && bot.Demonbuddy.Proc != null)
+                                //{
+                                //    Logger.Instance.Write("Demonbuddy:{0}: Closing db", bot.Demonbuddy.Proc.Id);
+                                //    bot.Demonbuddy.Stop();
+                                //}
                                 if (bot.Demonbuddy.IsRunning && bot.Demonbuddy.Proc != null)
                                 {
-                                    Logger.Instance.Write("Demonbuddy:{0}: Closing db", bot.Demonbuddy.Proc.Id);
-                                    bot.Demonbuddy.Stop();
+                                    Logger.Instance.Write("Demonbuddy:{0}: Waiting for Demonbuddy to self close", bot.Demonbuddy.Proc.Id);
                                 }
-                                StartBoth(bot);
+                                else
+                                {
+                                    StartBoth(bot);
+                                }
                             }
                             else if (!bot.Demonbuddy.IsRunning)
                             {

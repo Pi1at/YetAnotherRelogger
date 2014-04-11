@@ -212,7 +212,6 @@ namespace YARPLUGIN
             Log("YAR Plugin Enabled with PID: {0}", _bs.Pid);
 
             StartYarWorker();
-            Send("NewMonsterPowerLevel", true); // Request Monsterpower level
             Reset();
         }
 
@@ -508,7 +507,6 @@ namespace YARPLUGIN
                     if (_bs.IsInGame)
                     {
                         Send("GameLeft", true);
-                        Send("NewMonsterPowerLevel", true); // Request Monsterpower level
                     }
                     _bs.IsInGame = false;
                 }
@@ -761,12 +759,6 @@ namespace YARPLUGIN
                     break;
                 case "LoadProfile":
                     LoadProfile(data);
-                    break;
-                case "MonsterPower":
-                    var powerlevel = Convert.ToInt32(data.Trim());
-                    Log("Recieved MonsterPowerLevel: {0}", powerlevel);
-                    if (powerlevel >= 0)
-                        CharacterSettings.Instance.MonsterPowerLevel = powerlevel;
                     break;
                 case "ForceEnableAll":
                     ForceEnableAllPlugins();
