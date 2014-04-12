@@ -90,7 +90,7 @@
             this.tabPage6 = new System.Windows.Forms.TabPage();
             this.CommConnections = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnClose = new System.Windows.Forms.Button();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -128,7 +128,7 @@
             this.tabPage6.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.CommConnections)).BeginInit();
             this.tabPage3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.contextMenuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -564,7 +564,7 @@
             // 
             // tabPage3
             // 
-            this.tabPage3.Controls.Add(this.pictureBox2);
+            this.tabPage3.Controls.Add(this.pictureBoxDonate);
             this.tabPage3.Controls.Add(this.pictureBox1);
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
             this.tabPage3.Name = "tabPage3";
@@ -574,17 +574,17 @@
             this.tabPage3.Text = "About";
             this.tabPage3.UseVisualStyleBackColor = true;
             // 
-            // pictureBox2
+            // pictureBoxDonate
             // 
-            this.pictureBox2.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.pictureBox2.Image = global::YetAnotherRelogger.Properties.Resources.btn_donateCC_LG;
-            this.pictureBox2.Location = new System.Drawing.Point(518, 335);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(147, 47);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.pictureBox2.TabIndex = 1;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.pictureBoxDonate.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.pictureBoxDonate.Image = global::YetAnotherRelogger.Properties.Resources.btn_donateCC_LG;
+            this.pictureBoxDonate.Location = new System.Drawing.Point(518, 335);
+            this.pictureBoxDonate.Name = "pictureBoxDonate";
+            this.pictureBoxDonate.Size = new System.Drawing.Size(147, 47);
+            this.pictureBoxDonate.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
+            this.pictureBoxDonate.TabIndex = 1;
+            this.pictureBoxDonate.TabStop = false;
+            this.pictureBoxDonate.Click += new System.EventHandler(this.pictureBoxDonate_Click);
             // 
             // pictureBox1
             // 
@@ -757,7 +757,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.CommConnections)).EndInit();
             this.tabPage3.ResumeLayout(false);
             this.tabPage3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBoxDonate)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.contextMenuStrip1.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -785,7 +785,7 @@
         private System.Windows.Forms.TreeView treeView1;
         private System.Windows.Forms.ToolStripMenuItem forceStartToolStripMenuItem;
         private System.Windows.Forms.Panel SettingsPanel;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.PictureBox pictureBoxDonate;
         public System.Windows.Forms.Label labelStats;
         private System.Windows.Forms.TabPage tabPage4;
         private System.Windows.Forms.TabControl tabControl2;

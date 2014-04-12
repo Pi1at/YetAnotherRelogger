@@ -457,7 +457,7 @@ namespace YetAnotherRelogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool UseGoldTimer {
             get {
                 return ((bool)(this["UseGoldTimer"]));
@@ -673,7 +673,7 @@ namespace YetAnotherRelogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        [global::System.Configuration.DefaultSettingValueAttribute("900")]
         public decimal GoldTimer {
             get {
                 return ((decimal)(this["GoldTimer"]));
