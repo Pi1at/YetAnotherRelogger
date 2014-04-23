@@ -94,7 +94,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             }
             private set
             {
-                _standbyTime = DateTime.Now;
+                _standbyTime = DateTime.UtcNow;
                 _isStandby = value;
             }
         }

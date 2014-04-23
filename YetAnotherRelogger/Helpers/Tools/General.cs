@@ -115,7 +115,7 @@ namespace YetAnotherRelogger.Helpers.Tools
         /// <returns>Seconds / Miliseconds from current date time</returns>
         public static double DateSubtract(DateTime date, bool seconds = true)
         {
-            return (seconds ? DateTime.Now.Subtract(date).TotalSeconds : DateTime.Now.Subtract(date).TotalMilliseconds);
+            return (seconds ? DateTime.UtcNow.Subtract(date).TotalSeconds : DateTime.UtcNow.Subtract(date).TotalMilliseconds);
         }
 
         /// <summary>
@@ -127,7 +127,7 @@ namespace YetAnotherRelogger.Helpers.Tools
         public static double DateSubtract(long ticks, bool seconds = true)
         {
             var date = new DateTime(ticks);
-            return (seconds ? DateTime.Now.Subtract(date).TotalSeconds : DateTime.Now.Subtract(date).TotalMilliseconds);
+            return (seconds ? DateTime.UtcNow.Subtract(date).TotalSeconds : DateTime.UtcNow.Subtract(date).TotalMilliseconds);
         }
 
 

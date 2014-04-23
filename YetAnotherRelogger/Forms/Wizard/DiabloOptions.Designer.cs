@@ -43,34 +43,34 @@
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.comboBox2 = new System.Windows.Forms.ComboBox();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.region = new System.Windows.Forms.ComboBox();
+            this.language = new System.Windows.Forms.ComboBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.diablo3Path = new System.Windows.Forms.TextBox();
             this.button2 = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.maskedTextBox1 = new System.Windows.Forms.MaskedTextBox();
+            this.password = new System.Windows.Forms.MaskedTextBox();
             this.label4 = new System.Windows.Forms.Label();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.username = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label17 = new System.Windows.Forms.Label();
             this.label11 = new System.Windows.Forms.Label();
-            this.textBox13 = new System.Windows.Forms.TextBox();
-            this.textBox12 = new System.Windows.Forms.TextBox();
-            this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.characterSet = new System.Windows.Forms.TextBox();
+            this.displaySlot = new System.Windows.Forms.TextBox();
+            this.useInnerSpace = new System.Windows.Forms.CheckBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.button4 = new System.Windows.Forms.Button();
             this.label12 = new System.Windows.Forms.Label();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
+            this.processorAffinity = new System.Windows.Forms.ComboBox();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
-            this.checkBox4 = new System.Windows.Forms.CheckBox();
-            this.checkBox3 = new System.Windows.Forms.CheckBox();
-            this.textBox11 = new System.Windows.Forms.TextBox();
-            this.textBox10 = new System.Windows.Forms.TextBox();
-            this.textBox9 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.removeWindowFrame = new System.Windows.Forms.CheckBox();
+            this.manualPositionAndSize = new System.Windows.Forms.CheckBox();
+            this.height = new System.Windows.Forms.TextBox();
+            this.width = new System.Windows.Forms.TextBox();
+            this.positionY = new System.Windows.Forms.TextBox();
+            this.positionX = new System.Windows.Forms.TextBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
@@ -230,16 +230,16 @@
             // groupBox2
             // 
             this.groupBox2.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox2.Controls.Add(this.comboBox2);
-            this.groupBox2.Controls.Add(this.comboBox1);
+            this.groupBox2.Controls.Add(this.region);
+            this.groupBox2.Controls.Add(this.language);
             this.groupBox2.Controls.Add(this.label10);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.textBox1);
+            this.groupBox2.Controls.Add(this.diablo3Path);
             this.groupBox2.Controls.Add(this.button2);
             this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.maskedTextBox1);
+            this.groupBox2.Controls.Add(this.password);
             this.groupBox2.Controls.Add(this.label4);
-            this.groupBox2.Controls.Add(this.textBox3);
+            this.groupBox2.Controls.Add(this.username);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Location = new System.Drawing.Point(3, 8);
             this.groupBox2.Name = "groupBox2";
@@ -248,24 +248,24 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Battle.net account info";
             // 
-            // comboBox2
+            // region
             // 
-            this.comboBox2.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox2.FormattingEnabled = true;
-            this.comboBox2.Items.AddRange(new object[] {
+            this.region.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.region.FormattingEnabled = true;
+            this.region.Items.AddRange(new object[] {
             "Europe",
             "America",
             "Asia"});
-            this.comboBox2.Location = new System.Drawing.Point(89, 123);
-            this.comboBox2.Name = "comboBox2";
-            this.comboBox2.Size = new System.Drawing.Size(188, 21);
-            this.comboBox2.TabIndex = 10;
+            this.region.Location = new System.Drawing.Point(89, 123);
+            this.region.Name = "region";
+            this.region.Size = new System.Drawing.Size(188, 21);
+            this.region.TabIndex = 10;
             // 
-            // comboBox1
+            // language
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
+            this.language.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.language.FormattingEnabled = true;
+            this.language.Items.AddRange(new object[] {
             "English (US)",
             "English (Brittain)",
             "German",
@@ -280,10 +280,10 @@
             "Portuguese (Portugal)",
             "Portuguese (Brazil)",
             "French"});
-            this.comboBox1.Location = new System.Drawing.Point(89, 97);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(188, 21);
-            this.comboBox1.TabIndex = 9;
+            this.language.Location = new System.Drawing.Point(89, 97);
+            this.language.Name = "language";
+            this.language.Size = new System.Drawing.Size(188, 21);
+            this.language.TabIndex = 9;
             // 
             // label10
             // 
@@ -303,13 +303,13 @@
             this.label2.TabIndex = 7;
             this.label2.Text = "Language :";
             // 
-            // textBox1
+            // diablo3Path
             // 
-            this.textBox1.Location = new System.Drawing.Point(89, 71);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(159, 20);
-            this.textBox1.TabIndex = 3;
-            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            this.diablo3Path.Location = new System.Drawing.Point(89, 71);
+            this.diablo3Path.Name = "diablo3Path";
+            this.diablo3Path.Size = new System.Drawing.Size(159, 20);
+            this.diablo3Path.TabIndex = 3;
+            this.diablo3Path.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             // 
             // button2
             // 
@@ -330,13 +330,13 @@
             this.label1.TabIndex = 4;
             this.label1.Text = "Diablo III.exe :";
             // 
-            // maskedTextBox1
+            // password
             // 
-            this.maskedTextBox1.Location = new System.Drawing.Point(89, 45);
-            this.maskedTextBox1.Name = "maskedTextBox1";
-            this.maskedTextBox1.PasswordChar = '•';
-            this.maskedTextBox1.Size = new System.Drawing.Size(188, 20);
-            this.maskedTextBox1.TabIndex = 2;
+            this.password.Location = new System.Drawing.Point(89, 45);
+            this.password.Name = "password";
+            this.password.PasswordChar = '•';
+            this.password.Size = new System.Drawing.Size(188, 20);
+            this.password.TabIndex = 2;
             // 
             // label4
             // 
@@ -347,12 +347,12 @@
             this.label4.TabIndex = 2;
             this.label4.Text = "Password :";
             // 
-            // textBox3
+            // username
             // 
-            this.textBox3.Location = new System.Drawing.Point(89, 19);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(188, 20);
-            this.textBox3.TabIndex = 1;
+            this.username.Location = new System.Drawing.Point(89, 19);
+            this.username.Name = "username";
+            this.username.Size = new System.Drawing.Size(188, 20);
+            this.username.TabIndex = 1;
             // 
             // label3
             // 
@@ -368,9 +368,9 @@
             this.groupBox1.BackColor = System.Drawing.Color.Transparent;
             this.groupBox1.Controls.Add(this.label17);
             this.groupBox1.Controls.Add(this.label11);
-            this.groupBox1.Controls.Add(this.textBox13);
-            this.groupBox1.Controls.Add(this.textBox12);
-            this.groupBox1.Controls.Add(this.checkBox2);
+            this.groupBox1.Controls.Add(this.characterSet);
+            this.groupBox1.Controls.Add(this.displaySlot);
+            this.groupBox1.Controls.Add(this.useInnerSpace);
             this.groupBox1.Location = new System.Drawing.Point(3, 167);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(283, 99);
@@ -398,39 +398,39 @@
             this.label11.TabIndex = 3;
             this.label11.Text = "Character set:";
             // 
-            // textBox13
+            // characterSet
             // 
-            this.textBox13.Enabled = false;
-            this.textBox13.Location = new System.Drawing.Point(89, 40);
-            this.textBox13.Name = "textBox13";
-            this.textBox13.Size = new System.Drawing.Size(188, 20);
-            this.textBox13.TabIndex = 2;
+            this.characterSet.Enabled = false;
+            this.characterSet.Location = new System.Drawing.Point(89, 40);
+            this.characterSet.Name = "characterSet";
+            this.characterSet.Size = new System.Drawing.Size(188, 20);
+            this.characterSet.TabIndex = 2;
             // 
-            // textBox12
+            // displaySlot
             // 
-            this.textBox12.Enabled = false;
-            this.textBox12.Location = new System.Drawing.Point(89, 66);
-            this.textBox12.Name = "textBox12";
-            this.textBox12.Size = new System.Drawing.Size(188, 20);
-            this.textBox12.TabIndex = 1;
+            this.displaySlot.Enabled = false;
+            this.displaySlot.Location = new System.Drawing.Point(89, 66);
+            this.displaySlot.Name = "displaySlot";
+            this.displaySlot.Size = new System.Drawing.Size(188, 20);
+            this.displaySlot.TabIndex = 1;
             // 
-            // checkBox2
+            // useInnerSpace
             // 
-            this.checkBox2.AutoSize = true;
-            this.checkBox2.Location = new System.Drawing.Point(9, 17);
-            this.checkBox2.Name = "checkBox2";
-            this.checkBox2.Size = new System.Drawing.Size(103, 17);
-            this.checkBox2.TabIndex = 0;
-            this.checkBox2.Text = "Use InnerSpace";
-            this.checkBox2.UseVisualStyleBackColor = true;
-            this.checkBox2.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
+            this.useInnerSpace.AutoSize = true;
+            this.useInnerSpace.Location = new System.Drawing.Point(9, 17);
+            this.useInnerSpace.Name = "useInnerSpace";
+            this.useInnerSpace.Size = new System.Drawing.Size(103, 17);
+            this.useInnerSpace.TabIndex = 0;
+            this.useInnerSpace.Text = "Use InnerSpace";
+            this.useInnerSpace.UseVisualStyleBackColor = true;
+            this.useInnerSpace.CheckedChanged += new System.EventHandler(this.checkBox2_CheckedChanged);
             // 
             // groupBox4
             // 
             this.groupBox4.BackColor = System.Drawing.Color.Transparent;
             this.groupBox4.Controls.Add(this.button4);
             this.groupBox4.Controls.Add(this.label12);
-            this.groupBox4.Controls.Add(this.comboBox3);
+            this.groupBox4.Controls.Add(this.processorAffinity);
             this.groupBox4.Location = new System.Drawing.Point(431, 126);
             this.groupBox4.Name = "groupBox4";
             this.groupBox4.Size = new System.Drawing.Size(283, 51);
@@ -457,30 +457,30 @@
             this.label12.TabIndex = 1;
             this.label12.Text = "Priority:";
             // 
-            // comboBox3
+            // processorAffinity
             // 
-            this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.Items.AddRange(new object[] {
+            this.processorAffinity.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.processorAffinity.FormattingEnabled = true;
+            this.processorAffinity.Items.AddRange(new object[] {
             "High",
             "AboveNormal",
             "Normal",
             "BelowNormal",
             "Low"});
-            this.comboBox3.Location = new System.Drawing.Point(91, 19);
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(105, 21);
-            this.comboBox3.TabIndex = 0;
+            this.processorAffinity.Location = new System.Drawing.Point(91, 19);
+            this.processorAffinity.Name = "processorAffinity";
+            this.processorAffinity.Size = new System.Drawing.Size(105, 21);
+            this.processorAffinity.TabIndex = 0;
             // 
             // groupBox5
             // 
             this.groupBox5.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox5.Controls.Add(this.checkBox4);
-            this.groupBox5.Controls.Add(this.checkBox3);
-            this.groupBox5.Controls.Add(this.textBox11);
-            this.groupBox5.Controls.Add(this.textBox10);
-            this.groupBox5.Controls.Add(this.textBox9);
-            this.groupBox5.Controls.Add(this.textBox2);
+            this.groupBox5.Controls.Add(this.removeWindowFrame);
+            this.groupBox5.Controls.Add(this.manualPositionAndSize);
+            this.groupBox5.Controls.Add(this.height);
+            this.groupBox5.Controls.Add(this.width);
+            this.groupBox5.Controls.Add(this.positionY);
+            this.groupBox5.Controls.Add(this.positionX);
             this.groupBox5.Controls.Add(this.label16);
             this.groupBox5.Controls.Add(this.label15);
             this.groupBox5.Controls.Add(this.label14);
@@ -492,62 +492,62 @@
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Position";
             // 
-            // checkBox4
+            // removeWindowFrame
             // 
-            this.checkBox4.AutoSize = true;
-            this.checkBox4.Location = new System.Drawing.Point(14, 81);
-            this.checkBox4.Name = "checkBox4";
-            this.checkBox4.Size = new System.Drawing.Size(134, 17);
-            this.checkBox4.TabIndex = 10;
-            this.checkBox4.Text = "Remove window frame";
-            this.checkBox4.UseVisualStyleBackColor = true;
+            this.removeWindowFrame.AutoSize = true;
+            this.removeWindowFrame.Location = new System.Drawing.Point(14, 81);
+            this.removeWindowFrame.Name = "removeWindowFrame";
+            this.removeWindowFrame.Size = new System.Drawing.Size(134, 17);
+            this.removeWindowFrame.TabIndex = 10;
+            this.removeWindowFrame.Text = "Remove window frame";
+            this.removeWindowFrame.UseVisualStyleBackColor = true;
             // 
-            // checkBox3
+            // manualPositionAndSize
             // 
-            this.checkBox3.AutoSize = true;
-            this.checkBox3.Location = new System.Drawing.Point(14, 18);
-            this.checkBox3.Name = "checkBox3";
-            this.checkBox3.Size = new System.Drawing.Size(130, 17);
-            this.checkBox3.TabIndex = 9;
-            this.checkBox3.Text = "Manual position && size";
-            this.checkBox3.UseVisualStyleBackColor = true;
-            this.checkBox3.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
+            this.manualPositionAndSize.AutoSize = true;
+            this.manualPositionAndSize.Location = new System.Drawing.Point(14, 18);
+            this.manualPositionAndSize.Name = "manualPositionAndSize";
+            this.manualPositionAndSize.Size = new System.Drawing.Size(130, 17);
+            this.manualPositionAndSize.TabIndex = 9;
+            this.manualPositionAndSize.Text = "Manual position && size";
+            this.manualPositionAndSize.UseVisualStyleBackColor = true;
+            this.manualPositionAndSize.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
             // 
-            // textBox11
+            // height
             // 
-            this.textBox11.Enabled = false;
-            this.textBox11.Location = new System.Drawing.Point(168, 60);
-            this.textBox11.Name = "textBox11";
-            this.textBox11.Size = new System.Drawing.Size(55, 20);
-            this.textBox11.TabIndex = 7;
-            this.textBox11.Text = "200";
+            this.height.Enabled = false;
+            this.height.Location = new System.Drawing.Point(168, 60);
+            this.height.Name = "height";
+            this.height.Size = new System.Drawing.Size(55, 20);
+            this.height.TabIndex = 7;
+            this.height.Text = "200";
             // 
-            // textBox10
+            // width
             // 
-            this.textBox10.Enabled = false;
-            this.textBox10.Location = new System.Drawing.Point(168, 36);
-            this.textBox10.Name = "textBox10";
-            this.textBox10.Size = new System.Drawing.Size(55, 20);
-            this.textBox10.TabIndex = 6;
-            this.textBox10.Text = "320";
+            this.width.Enabled = false;
+            this.width.Location = new System.Drawing.Point(168, 36);
+            this.width.Name = "width";
+            this.width.Size = new System.Drawing.Size(55, 20);
+            this.width.TabIndex = 6;
+            this.width.Text = "320";
             // 
-            // textBox9
+            // positionY
             // 
-            this.textBox9.Enabled = false;
-            this.textBox9.Location = new System.Drawing.Point(45, 60);
-            this.textBox9.Name = "textBox9";
-            this.textBox9.Size = new System.Drawing.Size(55, 20);
-            this.textBox9.TabIndex = 5;
-            this.textBox9.Text = "0";
+            this.positionY.Enabled = false;
+            this.positionY.Location = new System.Drawing.Point(45, 60);
+            this.positionY.Name = "positionY";
+            this.positionY.Size = new System.Drawing.Size(55, 20);
+            this.positionY.TabIndex = 5;
+            this.positionY.Text = "0";
             // 
-            // textBox2
+            // positionX
             // 
-            this.textBox2.Enabled = false;
-            this.textBox2.Location = new System.Drawing.Point(45, 36);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(55, 20);
-            this.textBox2.TabIndex = 4;
-            this.textBox2.Text = "0";
+            this.positionX.Enabled = false;
+            this.positionX.Location = new System.Drawing.Point(45, 36);
+            this.positionX.Name = "positionX";
+            this.positionX.Size = new System.Drawing.Size(55, 20);
+            this.positionX.TabIndex = 4;
+            this.positionX.Text = "0";
             // 
             // label16
             // 
@@ -634,38 +634,38 @@
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.CheckBox checkBox1;
         public System.Windows.Forms.GroupBox groupBox2;
-        public System.Windows.Forms.MaskedTextBox maskedTextBox1;
+        public System.Windows.Forms.MaskedTextBox password;
         private System.Windows.Forms.Label label4;
-        public System.Windows.Forms.TextBox textBox3;
+        public System.Windows.Forms.TextBox username;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label1;
-        public System.Windows.Forms.TextBox textBox1;
+        public System.Windows.Forms.TextBox diablo3Path;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
-        public System.Windows.Forms.ComboBox comboBox2;
-        public System.Windows.Forms.ComboBox comboBox1;
+        public System.Windows.Forms.ComboBox region;
+        public System.Windows.Forms.ComboBox language;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label2;
         public System.Windows.Forms.GroupBox groupBox1;
         public System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Label label12;
-        public System.Windows.Forms.ComboBox comboBox3;
+        public System.Windows.Forms.ComboBox processorAffinity;
         private System.Windows.Forms.GroupBox groupBox5;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label13;
-        public System.Windows.Forms.TextBox textBox11;
-        public System.Windows.Forms.TextBox textBox10;
-        public System.Windows.Forms.TextBox textBox9;
-        public System.Windows.Forms.TextBox textBox2;
-        public System.Windows.Forms.CheckBox checkBox3;
+        public System.Windows.Forms.TextBox height;
+        public System.Windows.Forms.TextBox width;
+        public System.Windows.Forms.TextBox positionY;
+        public System.Windows.Forms.TextBox positionX;
+        public System.Windows.Forms.CheckBox manualPositionAndSize;
         private System.Windows.Forms.Label label17;
         private System.Windows.Forms.Label label11;
-        public System.Windows.Forms.TextBox textBox13;
-        public System.Windows.Forms.TextBox textBox12;
-        public System.Windows.Forms.CheckBox checkBox2;
+        public System.Windows.Forms.TextBox characterSet;
+        public System.Windows.Forms.TextBox displaySlot;
+        public System.Windows.Forms.CheckBox useInnerSpace;
         private System.Windows.Forms.Button button4;
-        public System.Windows.Forms.CheckBox checkBox4;
+        public System.Windows.Forms.CheckBox removeWindowFrame;
     }
 }

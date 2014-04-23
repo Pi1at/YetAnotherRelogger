@@ -82,7 +82,7 @@ namespace YetAnotherRelogger
                         ChartStats chartStats = bot.ChartStats;
                         // Update bot uptime
                         bot.RunningTime = bot.IsRunning
-                            ? DateTime.Now.Subtract(bot.StartTime).ToString(@"hh\hmm\mss\s")
+                            ? DateTime.UtcNow.Subtract(bot.StartTime).ToString(@"hh\hmm\mss\s")
                             : "";
 
                         // Update bot specific Chart stats

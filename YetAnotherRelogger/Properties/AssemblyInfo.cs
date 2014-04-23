@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using System.Resources;
 using System.Runtime.InteropServices;
-using YetAnotherRelogger;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
@@ -37,6 +36,5 @@ using YetAnotherRelogger;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion(Program.VERSION)]
-[assembly: AssemblyFileVersion(Program.VERSION)]
+[assembly: AssemblyVersion("1.0.*")]
 [assembly: NeutralResourcesLanguage("en")]

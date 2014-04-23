@@ -103,7 +103,7 @@ namespace YetAnotherRelogger
                         if (Program.Pause)
                             break;
 
-                        DateTime time = DateTime.Now; // set current time to calculate sleep time at end of loop
+                        DateTime time = DateTime.UtcNow; // set current time to calculate sleep time at end of loop
                         CurrentBot = bot;
                         //Debug.WriteLine(bot.Name + ":" + ":" + bot.IsRunning);
                         //Debug.WriteLine("State=" + bot.AntiIdle.State);
@@ -123,7 +123,7 @@ namespace YetAnotherRelogger
                             Logger.Instance.Write("We are scheduled to start");
                             bot.Week.NextSchedule(false);
                             bot.IsRunning = true;
-                            bot.StartTime = DateTime.Now;
+                            bot.StartTime = DateTime.UtcNow;
                             StartBoth(bot);
                         }
                         else if (!bot.IsStandby && bot.IsRunning)
@@ -166,10 +166,10 @@ namespace YetAnotherRelogger
                         else
                         {
                             //Logger.Instance.Write("Bot Standby={0} Running={1} D3Running={2} DBRunning={3}", bot.IsStandby, bot.IsRunning, bot.Diablo.IsRunning, bot.Demonbuddy.IsRunning);
-                            bot.StartTime = DateTime.Now;
+                            bot.StartTime = DateTime.UtcNow;
                         }
                         // calculate sleeptime
-                        var sleep = (int)(Program.Sleeptime - DateTime.Now.Subtract(time).TotalMilliseconds);
+                        var sleep = (int)(Program.Sleeptime - DateTime.UtcNow.Subtract(time).TotalMilliseconds);
                         if (sleep > 0)
                             Thread.Sleep(sleep);
                     }

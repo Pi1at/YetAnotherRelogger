@@ -192,7 +192,7 @@ namespace YARPLUGIN
             }
 
             _bs = new BotStats();
-            _bs.LastPulse = DateTime.Now.Ticks;
+            _bs.LastPulse = DateTime.UtcNow.Ticks;
 
             Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
             loggingHierarchy.Root.AddAppender(YARAppender);
@@ -222,7 +222,7 @@ namespace YARPLUGIN
             if (_yarThread == null || (_yarThread != null && !_yarThread.IsAlive))
             {
                 Log("Starting YAR Thread");
-                _yarThread = new Thread(YarWorker) { IsBackground = true };
+                _yarThread = new Thread(YarWorker) { Name = "YARWorker", IsBackground = true };
                 _yarThread.Start();
             }
         }
@@ -234,7 +234,7 @@ namespace YARPLUGIN
         /// <param name="e"></param>
         void Pulsator_OnPulse(object sender, EventArgs e)
         {
-            _bs.LastPulse = DateTime.Now.Ticks;
+            _bs.LastPulse = DateTime.UtcNow.Ticks;
 
             if (IsEnabled)
                 StartYarWorker();
@@ -305,9 +305,9 @@ namespace YARPLUGIN
 
                 // YAR Health Check
                 _pulseCheck = true;
-                _bs.LastPulse = DateTime.Now.Ticks;
+                _bs.LastPulse = DateTime.UtcNow.Ticks;
 
-                _bs.PluginPulse = DateTime.Now.Ticks;
+                _bs.PluginPulse = DateTime.UtcNow.Ticks;
                 _bs.IsRunning = BotMain.IsRunning;
 
                 if (BotMain.IsPaused || BotMain.IsPausedForStateExecution)
@@ -317,7 +317,7 @@ namespace YARPLUGIN
                 else if (BotMain.IsRunning)
                 {
                     _bs.IsPaused = false;
-                    _bs.LastRun = DateTime.Now.Ticks;
+                    _bs.LastRun = DateTime.UtcNow.Ticks;
                 }
                 else
                     _bs.IsPaused = false;
@@ -346,7 +346,7 @@ namespace YARPLUGIN
                 {
                     try
                     {
-                        var duration = DateTime.Now;
+                        var duration = DateTime.UtcNow;
                         LoggingEvent[] buffer;
                         // Lock buffer and copy to local variable for scanning
                         lock (_logBuffer)
@@ -406,7 +406,7 @@ namespace YARPLUGIN
                                 Send("ThirdpartyStop");
                             if (breakloop) break; // Check if we need to break out of loop
                         }
-                        // if (count > 1) Log("Scanned {0} log items in {1}ms", count, DateTime.Now.Subtract(duration).TotalMilliseconds);
+                        // if (count > 1) Log("Scanned {0} log items in {1}ms", count, DateTime.UtcNow.Subtract(duration).TotalMilliseconds);
                     }
                     catch (Exception ex)
                     {
@@ -442,11 +442,11 @@ namespace YARPLUGIN
                 if (originalBotBehavior == null)
                     originalBotBehavior = TreeHooks.Instance.Hooks["BotBehavior"];
 
-                if (DateTime.Now.Subtract(new DateTime(_bs.LastPulse)).TotalMilliseconds > 5000)
+                if (DateTime.UtcNow.Subtract(new DateTime(_bs.LastPulse)).TotalMilliseconds > 5000)
                 {
                     Log("Replacing BotBehavior TreeHook");
                     TreeHooks.Instance.ReplaceHook("BotBehavior", CreateBotBehavior(originalBotBehavior));
-                    _bs.LastPulse = DateTime.Now.Ticks;
+                    _bs.LastPulse = DateTime.UtcNow.Ticks;
                 }
             }
             catch (Exception ex)
@@ -500,7 +500,7 @@ namespace YARPLUGIN
 
                 if (ZetaDia.IsInGame)
                 {
-                    _bs.LastGame = DateTime.Now.Ticks;
+                    _bs.LastGame = DateTime.UtcNow.Ticks;
                     _bs.IsInGame = true;
                 }
                 else
@@ -528,7 +528,7 @@ namespace YARPLUGIN
             var m = waitingBeforeGame.Match(msg);
             if (m.Success)
             {
-                Send("StartDelay " + DateTime.Now.AddSeconds(double.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture)).Ticks);
+                Send("StartDelay " + DateTime.UtcNow.AddSeconds(double.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture)).Ticks);
                 return true;
             }
             return false;
@@ -611,8 +611,8 @@ namespace YARPLUGIN
         // Detect if we are booted to login screen or character selection screen
         private void bootTo()
         {
-            var timeout = DateTime.Now;
-            while (DateTime.Now.Subtract(timeout).TotalSeconds <= 15)
+            var timeout = DateTime.UtcNow;
+            while (DateTime.UtcNow.Subtract(timeout).TotalSeconds <= 15)
             {
                 BotMain.PauseFor(TimeSpan.FromMilliseconds(600));
                 if (UIElementTester.isValid(_UIElement.startresume_button))
@@ -663,7 +663,7 @@ namespace YARPLUGIN
 
                             streamWriter.WriteLine(data);
 
-                            var connectionTime = DateTime.Now;
+                            var connectionTime = DateTime.UtcNow;
 
                             if (!client.IsConnected)
                             {
@@ -672,7 +672,7 @@ namespace YARPLUGIN
 
                             while (!success && client.IsConnected)
                             {
-                                if (DateTime.Now.Subtract(connectionTime).TotalSeconds > 3)
+                                if (DateTime.UtcNow.Subtract(connectionTime).TotalSeconds > 3)
                                 {
                                     client.Close();
                                     break;
@@ -841,12 +841,12 @@ namespace YARPLUGIN
                 {
                     Log("Force enable: \"{0}\"", plugin.Plugin.Name);
                     plugin.Enabled = true;
-                    limit = DateTime.Now;
+                    limit = DateTime.UtcNow;
                     while ((test = PluginManager.Plugins.FirstOrDefault(x => x.Plugin.Name.Equals(plugin.Plugin.Name))) != null && !test.Enabled)
                     {
-                        if (DateTime.Now.Subtract(limit).TotalSeconds > 5)
+                        if (DateTime.UtcNow.Subtract(limit).TotalSeconds > 5)
                         {
-                            Log("Failed to enable: Timeout ({0} seconds) \"{1}\"", DateTime.Now.Subtract(limit).TotalSeconds, plugin.Plugin.Name);
+                            Log("Failed to enable: Timeout ({0} seconds) \"{1}\"", DateTime.UtcNow.Subtract(limit).TotalSeconds, plugin.Plugin.Name);
                             break;
                         }
                         Thread.Sleep(100);
@@ -875,10 +875,10 @@ namespace YARPLUGIN
                 Log("PulseFix: Plugin is already enabled -> Disable it for now");
                 _pulseFix = true; // Prevent our thread from begin aborted
                 plugin.Enabled = false;
-                timeout = DateTime.Now;
+                timeout = DateTime.UtcNow;
                 while (plugin.Enabled)
                 {
-                    if (DateTime.Now.Subtract(timeout).TotalSeconds > 10)
+                    if (DateTime.UtcNow.Subtract(timeout).TotalSeconds > 10)
                     {
                         Log("PulseFix: Failed to disable plugin");
                         Application.Current.Shutdown(0);
@@ -924,10 +924,10 @@ namespace YARPLUGIN
             // Check if we get a pulse within 10 seconds
             Log("PulseFix: Waiting for first pulse");
             _pulseCheck = false;
-            timeout = DateTime.Now;
+            timeout = DateTime.UtcNow;
             while (!_pulseCheck)
             {
-                if (DateTime.Now.Subtract(timeout).TotalSeconds > 10)
+                if (DateTime.UtcNow.Subtract(timeout).TotalSeconds > 10)
                 {
                     Log("PulseFix: Failed to recieve a pulse within 10 seconds");
                     SafeCloseProcess();
@@ -946,15 +946,15 @@ namespace YARPLUGIN
         }
         bool IsGameRunning()
         {
-            return ZetaDia.Memory.Process.HasExited && !Process.GetProcesses().Any(p => p.ProcessName.StartsWith("BlizzardError") && DateTime.Now.Subtract(p.StartTime).TotalSeconds <= 30);
+            return ZetaDia.Memory.Process.HasExited && !Process.GetProcesses().Any(p => p.ProcessName.StartsWith("BlizzardError") && DateTime.UtcNow.Subtract(p.StartTime).TotalSeconds <= 30);
         }
         #endregion
 
         void Reset()
         {
-            _bs.LastPulse = DateTime.Now.Ticks;
-            _bs.LastRun = DateTime.Now.Ticks;
-            _bs.LastGame = DateTime.Now.Ticks;
+            _bs.LastPulse = DateTime.UtcNow.Ticks;
+            _bs.LastRun = DateTime.UtcNow.Ticks;
+            _bs.LastGame = DateTime.UtcNow.Ticks;
         }
 
         private void LoadProfile(string profile)
@@ -962,7 +962,7 @@ namespace YARPLUGIN
             BotMain.Stop(false, "YetAnotherRelogger -> Load new profile");
             if (ZetaDia.IsInGame)
             {
-                ZetaDia.Service.Party.LeaveGame();
+                ZetaDia.Service.Party.LeaveGame(true);
                 while (ZetaDia.IsInGame)
                     Thread.Sleep(1000);
             }
