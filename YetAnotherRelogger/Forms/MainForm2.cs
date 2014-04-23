@@ -33,20 +33,34 @@ namespace YetAnotherRelogger.Forms
             treeView1.NodeMouseClick += treeView1_NodeMouseClick;
         }
 
+
         private void MainForm2_Load(object sender, EventArgs e)
         {
-            // Set window location
-            if (Settings.Default.WindowLocation != null && Settings.Default.WindowLocation != Point.Empty)
+            Point screenMaxSize = new Point(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height);
+            if (!CommandLineArgs.SafeMode)
             {
-                this.Location = Settings.Default.WindowLocation;
-            }
+                // Set window location
+                if (Settings.Default.WindowLocation != null && Settings.Default.WindowLocation != Point.Empty)
+                {
 
-            // Set window size
-            if (Settings.Default.WindowSize != null)
-            {
-                this.Size = Settings.Default.WindowSize;
+                    if (Settings.Default.WindowLocation.X < screenMaxSize.X && Settings.Default.WindowLocation.Y < screenMaxSize.Y &&
+                        Settings.Default.WindowLocation.Y > 0 && Settings.Default.WindowLocation.Y > 0)
+                    {
+                        this.Location = Settings.Default.WindowLocation;
+                    }
+                }
+
+                // Set window size
+                if (Settings.Default.WindowSize != null &&
+                    Settings.Default.WindowSize.Width > 0 &&
+                    Settings.Default.WindowSize.Height > 0 &&
+                    Settings.Default.WindowSize.Width < screenMaxSize.X &&
+                    Settings.Default.WindowSize.Height < screenMaxSize.Y)
+                {
+                    this.Size = Settings.Default.WindowSize;
+                }
+                splitContainer1.SplitterDistance = Settings.Default.SplitterDistance;
             }
-            splitContainer1.SplitterDistance = Settings.Default.SplitterDistance;
 
             Text = string.Format("R-YAR [{0}] BETA", Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
@@ -435,9 +449,9 @@ namespace YetAnotherRelogger.Forms
             base.WndProc(ref message);
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void pictureBoxDonate_Click(object sender, EventArgs e)
         {
-            Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9NF2Q47KYGNJL");
+            Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=K7KUXHUE9XUR4&lc=US&item_name=rrrix%20Demonbuddy%20development&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted");
         }
 
         private void btnClone_Click(object sender, EventArgs e)
@@ -454,20 +468,31 @@ namespace YetAnotherRelogger.Forms
         {
             lock (BotSettings.Instance)
             {
-                // Clone bot
-                if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
-                    return;
+                try
+                {
+                    // Clone bot
+                    if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                        return;
 
-                int idx = dataGridView1.CurrentRow.Index;
+                    int idx = dataGridView1.CurrentRow.Index;
 
-                BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
-                BotSettings.Instance.Save();
-                // Load settings
-                BotSettings.Instance.Load();
-                Settings.Default.Reload();
+                    int nextIdx = BotSettings.Instance.Clone(idx);
+                    BotSettings.Instance.Save();
 
-                Program.Mainform.UpdateGridView();
-                dataGridView1.Rows[idx].Selected = true;
+                    //dataGridView1.Rows.Insert(nextIdx, BotSettings.Instance.Bots[idx + 1]);
+
+                    // Load settings
+                    //BotSettings.Instance.Load();
+                    //Settings.Default.Reload();
+
+                    UpdateGridView();
+                    dataGridView1.Rows[nextIdx].Selected = false;
+                    dataGridView1.Rows[nextIdx].Selected = true;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.Write("Error cloning bot: {0}", ex.ToString());
+                }
             }
         }
 

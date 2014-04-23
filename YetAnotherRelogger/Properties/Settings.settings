@@ -111,7 +111,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="UseGoldTimer" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="StartWithWindows" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -165,7 +165,7 @@
       <Value Profile="(Default)">C:\Program Files (x86)\InnerSpace\InnerSpace.exe</Value>
     </Setting>
     <Setting Name="GoldTimer" Type="System.Decimal" Scope="User">
-      <Value Profile="(Default)">300</Value>
+      <Value Profile="(Default)">900</Value>
     </Setting>
     <Setting Name="WindowLocation" Type="System.Drawing.Point" Scope="User">
       <Value Profile="(Default)">0, 0</Value>

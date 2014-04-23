@@ -67,11 +67,17 @@ namespace YetAnotherRelogger.Helpers
             }
         }
 
-        public void Clone(int index)
+        /// <summary>
+        /// Clones a Bot. Returns the index of the clone.
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public int Clone(int index)
         {
             var original = (BotClass) Bots[index].Clone();
             int nextIndex = index + 1;
             Bots.Insert(nextIndex, original);
+            return nextIndex;
         }
     }
 
