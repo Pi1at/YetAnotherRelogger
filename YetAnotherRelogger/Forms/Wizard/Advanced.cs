@@ -11,6 +11,7 @@ namespace YetAnotherRelogger.Forms.Wizard
         {
             InitializeComponent();
             WM = parent;
+            this.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         }
 
         private void Advanced_Load(object sender, EventArgs e)

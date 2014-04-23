@@ -12,6 +12,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             WM = parent;
             InitializeComponent();
             VisibleChanged += Heroes_VisibleChanged;
+            this.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         }
 
         private void Heroes_VisibleChanged(object sender, EventArgs e)

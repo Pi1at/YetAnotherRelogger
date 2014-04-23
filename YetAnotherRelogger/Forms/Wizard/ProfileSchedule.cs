@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
@@ -28,6 +28,8 @@ namespace YetAnotherRelogger.Forms.Wizard
 
             dataGridView1.CellClick += dataGridView1_CellClick;
             dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
+
+            this.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         }
 
         public BindingList<Profile> Profiles { get; set; }
