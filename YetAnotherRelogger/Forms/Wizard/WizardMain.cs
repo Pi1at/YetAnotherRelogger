@@ -64,6 +64,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             Controls.Add(_ucAdvanced);
             _ucDiablo.Visible =
                 _ucWeekSchedule.Visible = _ucProfileSchedule.Visible = _ucHeroes.Visible = _ucAdvanced.Visible = false;
+
             FinishCount = Controls.Count - 1; // Get Finish count
 
             AffinityDiablo = new SetAffinity();
@@ -108,16 +109,16 @@ namespace YetAnotherRelogger.Forms.Wizard
             _ucDemonbuddy.textBox11.Text = bot.Demonbuddy.H.ToString();
 
             // Diablo
-            _ucDiablo.textBox3.Text = bot.Diablo.Username;
-            _ucDiablo.maskedTextBox1.Text = bot.Diablo.Password;
-            _ucDiablo.textBox1.Text = bot.Diablo.Location;
-            _ucDiablo.comboBox1.SelectedItem = bot.Diablo.Language;
-            _ucDiablo.comboBox2.SelectedItem = bot.Diablo.Region;
+            _ucDiablo.username.Text = bot.Diablo.Username;
+            _ucDiablo.password.Text = bot.Diablo.Password;
+            _ucDiablo.diablo3Path.Text = bot.Diablo.Location;
+            _ucDiablo.language.SelectedItem = bot.Diablo.Language;
+            _ucDiablo.region.SelectedItem = bot.Diablo.Region;
             _ucDiablo.checkBox1.Checked = bot.Diablo.UseAuthenticator;
-            _ucDiablo.checkBox2.Checked = bot.Diablo.UseIsBoxer;
-            _ucDiablo.textBox13.Text = bot.Diablo.CharacterSet;
-            _ucDiablo.textBox12.Text = bot.Diablo.DisplaySlot;
-            _ucDiablo.checkBox4.Checked = bot.Diablo.NoFrame;
+            _ucDiablo.useInnerSpace.Checked = bot.Diablo.UseIsBoxer;
+            _ucDiablo.characterSet.Text = bot.Diablo.CharacterSet;
+            _ucDiablo.displaySlot.Text = bot.Diablo.DisplaySlot;
+            _ucDiablo.removeWindowFrame.Checked = bot.Diablo.NoFrame;
 
             // Affinity Diablo
             if (bot.Diablo.CpuCount != Environment.ProcessorCount)
@@ -161,14 +162,14 @@ namespace YetAnotherRelogger.Forms.Wizard
             //d.Serial = string.Format("{0}-{1}-{2}-{3}", ucDiablo.textBox4.Text, ucDiablo.textBox5.Text, ucDiablo.textBox7.Text, ucDiablo.textBox6.Text);
             //ucDiablo.textBox8.Text = bot.diablo.RestoreCode;
 
-            _ucDiablo.comboBox3.SelectedIndex = bot.Diablo.Priority;
+            _ucDiablo.processorAffinity.SelectedIndex = bot.Diablo.Priority;
 
             // Diablo manual position
-            _ucDiablo.checkBox3.Checked = bot.Diablo.ManualPosSize;
-            _ucDiablo.textBox2.Text = bot.Diablo.X.ToString();
-            _ucDiablo.textBox9.Text = bot.Diablo.Y.ToString();
-            _ucDiablo.textBox10.Text = bot.Diablo.W.ToString();
-            _ucDiablo.textBox11.Text = bot.Diablo.H.ToString();
+            _ucDiablo.manualPositionAndSize.Checked = bot.Diablo.ManualPosSize;
+            _ucDiablo.positionX.Text = bot.Diablo.X.ToString();
+            _ucDiablo.positionY.Text = bot.Diablo.Y.ToString();
+            _ucDiablo.width.Text = bot.Diablo.W.ToString();
+            _ucDiablo.height.Text = bot.Diablo.H.ToString();
 
             // Profile Schedule
             _ucProfileSchedule.Profiles = bot.ProfileSchedule.Profiles;
@@ -234,20 +235,20 @@ namespace YetAnotherRelogger.Forms.Wizard
                 db.H = result;
 
                 // Diablo
-                d.Username = _ucDiablo.textBox3.Text;
-                d.Password = _ucDiablo.maskedTextBox1.Text;
-                d.Location = _ucDiablo.textBox1.Text;
-                d.Language = _ucDiablo.comboBox1.SelectedItem.ToString();
-                d.Region = _ucDiablo.comboBox2.SelectedItem.ToString();
+                d.Username = _ucDiablo.username.Text;
+                d.Password = _ucDiablo.password.Text;
+                d.Location = _ucDiablo.diablo3Path.Text;
+                d.Language = _ucDiablo.language.SelectedItem.ToString();
+                d.Region = _ucDiablo.region.SelectedItem.ToString();
                 d.UseAuthenticator = _ucDiablo.checkBox1.Checked;
                 d.Serial = string.Format("{0}-{1}-{2}-{3}", _ucDiablo.textBox4.Text, _ucDiablo.textBox5.Text,
                     _ucDiablo.textBox7.Text, _ucDiablo.textBox6.Text);
                 d.RestoreCode = _ucDiablo.textBox8.Text;
-                d.Priority = _ucDiablo.comboBox3.SelectedIndex;
-                d.UseIsBoxer = _ucDiablo.checkBox2.Checked;
-                d.CharacterSet = _ucDiablo.textBox13.Text;
-                d.DisplaySlot = _ucDiablo.textBox12.Text;
-                d.NoFrame = _ucDiablo.checkBox4.Checked;
+                d.Priority = _ucDiablo.processorAffinity.SelectedIndex;
+                d.UseIsBoxer = _ucDiablo.useInnerSpace.Checked;
+                d.CharacterSet = _ucDiablo.characterSet.Text;
+                d.DisplaySlot = _ucDiablo.displaySlot.Text;
+                d.NoFrame = _ucDiablo.removeWindowFrame.Checked;
 
                 // Affinity Diablo
                 if (d.CpuCount != Environment.ProcessorCount)
@@ -303,15 +304,18 @@ namespace YetAnotherRelogger.Forms.Wizard
                 if (AffinityDemonbuddy != null)
                     AffinityDemonbuddy.Dispose();
 
-                d.ManualPosSize = _ucDiablo.checkBox3.Checked;
-                int.TryParse(_ucDiablo.textBox2.Text, out result);
-                d.X = result;
-                int.TryParse(_ucDiablo.textBox9.Text, out result);
-                d.Y = result;
-                int.TryParse(_ucDiablo.textBox10.Text, out result);
-                d.W = result;
-                int.TryParse(_ucDiablo.textBox11.Text, out result);
-                d.H = result;
+                d.ManualPosSize = _ucDiablo.manualPositionAndSize.Checked;
+                if (d.ManualPosSize)
+                {
+                    int.TryParse(_ucDiablo.positionX.Text, out result);
+                    d.X = result;
+                    int.TryParse(_ucDiablo.positionY.Text, out result);
+                    d.Y = result;
+                    int.TryParse(_ucDiablo.width.Text, out result);
+                    d.W = result;
+                    int.TryParse(_ucDiablo.height.Text, out result);
+                    d.H = result;
+                }
 
                 w.GenerateNewSchedule();
                 w.Shuffle = _ucWeekSchedule.checkBox1.Checked;
@@ -371,9 +375,9 @@ namespace YetAnotherRelogger.Forms.Wizard
             }
 
             if (_stepCount > _mainCount)
-                button2.Enabled = true;
+                buttonBack.Enabled = true;
             if (_stepCount == FinishCount)
-                button1.Text = "Save!";
+                buttonNext.Text = "Save!";
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -384,9 +388,9 @@ namespace YetAnotherRelogger.Forms.Wizard
             _stepCount--;
             Controls[_stepCount].Visible = true; // Show new
             if (_stepCount == _mainCount)
-                button2.Enabled = false;
+                buttonBack.Enabled = false;
             if (_stepCount < FinishCount)
-                button1.Text = "Next ->";
+                buttonNext.Text = "Next ->";
         }
 
         private void button3_Click(object sender, EventArgs e)

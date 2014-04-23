@@ -83,7 +83,7 @@ namespace YetAnotherRelogger.Helpers
             {
                 if (_authCookie == null)
                     return false;
-                return _authCookie.Expires >= DateTime.Now;
+                return _authCookie.Expires >= DateTime.UtcNow;
             }
         }
 

@@ -17,7 +17,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         public void Reset()
         {
-            LastGame = PluginPulse = LastPulse = LastRun = DateTime.Now.Ticks;
+            LastGame = PluginPulse = LastPulse = LastRun = DateTime.UtcNow.Ticks;
             IsPaused = IsRunning = IsInGame = false;
             Coinage = 0;
         }

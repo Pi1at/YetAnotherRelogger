@@ -13,12 +13,18 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class DiabloClass
     {
-        [XmlIgnore] public Rectangle AutoPos;
-        [XmlIgnore] public IntPtr MainWindowHandle;
-        [XmlIgnore] public Process Proc;
-        [XmlIgnore] private bool _isStopped;
-        [XmlIgnore] private DateTime _lastRepsonse;
-        [XmlIgnore] private DateTime _timeStartTime;
+        [XmlIgnore]
+        public Rectangle AutoPos;
+        [XmlIgnore]
+        public IntPtr MainWindowHandle;
+        [XmlIgnore]
+        public Process Proc;
+        [XmlIgnore]
+        private bool _isStopped;
+        [XmlIgnore]
+        private DateTime _lastRepsonse;
+        [XmlIgnore]
+        private DateTime _timeStartTime;
 
         public DiabloClass()
         {
@@ -52,6 +58,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         // Isboxer
         public bool UseIsBoxer { get; set; }
+        public bool ReusedWindow { get; set; }
         public string DisplaySlot { get; set; }
         public string CharacterSet { get; set; }
 
@@ -103,14 +110,14 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             if (Proc.Responding)
             {
-                _lastRepsonse = DateTime.Now;
+                _lastRepsonse = DateTime.UtcNow;
                 Parent.Status = "Monitoring";
             }
             else
                 Parent.Status = string.Format("Diablo is unresponsive ({0} secs)",
-                    DateTime.Now.Subtract(_lastRepsonse).TotalSeconds);
+                    DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds);
 
-            if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 120)
+            if (DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 120)
             {
                 Logger.Instance.Write("Diablo:{0}: Is unresponsive for more than 120 seconds", Proc.Id);
                 Logger.Instance.Write("Diablo:{0}: Killing process", Proc.Id);
@@ -161,24 +168,24 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             Parent.Status = "Prepare Diablo"; // Update Status
 
-            General.AgentKiller(); // Kill all Agent.exe processes
+            //General.AgentKiller(); // Kill all Agent.exe processes
 
             // Prepare D3 for launch
-            string agentDBPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
-                                 @"\Battle.net\Agent\agent.db";
-            if (File.Exists(agentDBPath))
-            {
-                Logger.Instance.Write("Deleting: {0}", agentDBPath);
-                try
-                {
-                    File.Delete(agentDBPath);
-                }
-                catch (Exception ex)
-                {
-                    Logger.Instance.Write("Failed to delete! Exception: {0}", ex.Message);
-                    DebugHelper.Exception(ex);
-                }
-            }
+            //string agentDBPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
+            //                     @"\Battle.net\Agent\agent.db";
+            //if (File.Exists(agentDBPath))
+            //{
+            //    Logger.Instance.Write("Deleting: {0}", agentDBPath);
+            //    try
+            //    {
+            //        File.Delete(agentDBPath);
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        Logger.Instance.Write("Failed to delete! Exception: {0}", ex.Message);
+            //        DebugHelper.Exception(ex);
+            //    }
+            //}
 
             // Copy D3Prefs
             if (!string.IsNullOrEmpty(Parent.D3PrefsLocation))
@@ -189,10 +196,14 @@ namespace YetAnotherRelogger.Helpers.Bot
             RegistryClass.ChangeRegion(Parent.Diablo.Region); // change region
 
             if (UseIsBoxer)
+            {
                 IsBoxerStarter();
-            else if (Settings.Default.UseD3Starter)
-                ApocD3Starter();
-            else
+                if (Proc == null)
+                {
+                    return;
+                }
+            }
+            else if (Proc == null || (Proc != null && Proc.HasExited))
             {
                 try
                 {
@@ -222,7 +233,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     ProcessorAffinity = AllProcessors; // set it to all ones
                     CpuCount = Environment.ProcessorCount;
                 }
-                Proc.ProcessorAffinity = (IntPtr) ProcessorAffinity;
+                Proc.ProcessorAffinity = (IntPtr)ProcessorAffinity;
             }
 
 
@@ -231,6 +242,8 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             // Wait for d3 to fully load
             int state = (Settings.Default.UseD3Starter || UseIsBoxer ? 0 : 2);
+            if (ReusedWindow)
+                state = 2;
             IntPtr handle = IntPtr.Zero;
             bool timedout = false;
             LimitStartTime(true); // reset startup time
@@ -293,12 +306,12 @@ namespace YetAnotherRelogger.Helpers.Bot
             // Continue after launching stuff
             Logger.Instance.Write("Diablo:{0}: Waiting for process to become ready", Proc.Id);
 
-            DateTime timeout = DateTime.Now;
+            DateTime timeout = DateTime.UtcNow;
             while (true)
             {
                 if (Program.Pause)
                 {
-                    timeout = DateTime.Now;
+                    timeout = DateTime.UtcNow;
                     return;
                 }
                 if (General.DateSubtract(timeout) > 30 || Proc.HasExited)
@@ -323,7 +336,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (!IsRunning)
                 return;
 
-            _lastRepsonse = DateTime.Now;
+            _lastRepsonse = DateTime.UtcNow;
 
             Thread.Sleep(1500);
             if (NoFrame)
@@ -340,7 +353,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             {
                 Logger.Instance.Write("Demonbuddy start delay, waiting {0} seconds",
                     Settings.Default.DemonbuddyStartDelay);
-                Thread.Sleep((int) Settings.Default.DemonbuddyStartDelay*1000);
+                Thread.Sleep((int)Settings.Default.DemonbuddyStartDelay * 1000);
             }
         }
 
@@ -348,12 +361,12 @@ namespace YetAnotherRelogger.Helpers.Bot
         {
             if (Program.Pause)
             {
-                _timeStartTime = DateTime.Now;
+                _timeStartTime = DateTime.UtcNow;
                 return false;
             }
             if (reset)
-                _timeStartTime = DateTime.Now;
-            else if (General.DateSubtract(_timeStartTime) > (int) Settings.Default.DiabloStartTimeLimit)
+                _timeStartTime = DateTime.UtcNow;
+            else if (General.DateSubtract(_timeStartTime) > (int)Settings.Default.DiabloStartTimeLimit)
             {
                 Logger.Instance.Write("Diablo:{0}: Starting diablo timed out!", Proc.Id);
                 Parent.Restart();
@@ -430,19 +443,40 @@ namespace YetAnotherRelogger.Helpers.Bot
                 return;
             }
 
-            var isboxer = new Process
+            Process isboxer = null;
+            // Find running ISBoxer
+            foreach (var proc in Process.GetProcesses())
             {
-                StartInfo =
+                string windowTitle = string.Format("is{0} {1} - {2}", DisplaySlot, DisplaySlot, CharacterSet);
+
+                if (proc.MainWindowTitle == windowTitle)
                 {
-                    FileName = Settings.Default.ISBoxerPath,
-                    WorkingDirectory = Path.GetDirectoryName(Settings.Default.ISBoxerPath),
-                    Arguments = string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot),
+                    Proc = proc;
+                    ReusedWindow = true;
+                    Logger.Instance.Write("Re-using ISBoxer Created Game Window {0} with PID {1}", Proc.MainWindowTitle, Proc.Id);
+                    return;
                 }
-            };
-            Logger.Instance.Write(Parent, "Starting InnerSpace: {0}", Settings.Default.ISBoxerPath);
-            Logger.Instance.Write(Parent, "With arguments: {0}", isboxer.StartInfo.Arguments);
-            //isboxer.StartInfo = UserAccount.ImpersonateStartInfo(isboxer.StartInfo, Parent);
-            isboxer.Start();
+            }
+
+
+            if (Proc == null || (Proc != null && Proc.HasExited))
+            {
+                ReusedWindow = false;
+
+                isboxer = new Process
+                {
+                    StartInfo =
+                    {
+                        FileName = Settings.Default.ISBoxerPath,
+                        WorkingDirectory = Path.GetDirectoryName(Settings.Default.ISBoxerPath),
+                        Arguments = string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot),
+                    }
+                };
+                Logger.Instance.Write(Parent, "Starting InnerSpace: {0}", Settings.Default.ISBoxerPath);
+                Logger.Instance.Write(Parent, "With arguments: {0}", isboxer.StartInfo.Arguments);
+                //isboxer.StartInfo = UserAccount.ImpersonateStartInfo(isboxer.StartInfo, Parent);
+                isboxer.Start();
+            }
 
 
             // Find diablo process
@@ -457,20 +491,20 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             // Create snapshot from all running processes
             Process[] currProcesses = Process.GetProcesses();
-            DateTime timeout = DateTime.Now;
+            DateTime timeout = DateTime.UtcNow;
             while (General.DateSubtract(timeout) < 20)
             {
                 Thread.Sleep(250);
-                Process p = Process.GetProcesses().FirstOrDefault(x => x.ProcessName.Equals(exeName) &&
-                                                                       // Find Diablo inside relogger
-                                                                       BotSettings.Instance.Bots.FirstOrDefault(
-                                                                           z =>
-                                                                               z.Diablo.Proc != null &&
-                                                                               !z.Diablo.Proc.HasExited &&
-                                                                               z.Diablo.Proc.Id == x.Id) == null &&
-                                                                       // Find Diablo in all processes
-                                                                       currProcesses.FirstOrDefault(y => y.Id == x.Id) ==
-                                                                       null);
+                Process p = Process.GetProcesses().FirstOrDefault(x =>
+                    x.ProcessName.Equals(exeName) &&
+                        // Find Diablo inside relogger
+                    BotSettings.Instance.Bots.FirstOrDefault(
+                        z =>
+                            z.Diablo.Proc != null &&
+                            !z.Diablo.Proc.HasExited &&
+                            z.Diablo.Proc.Id == x.Id) == null &&
+                        // Find Diablo in all processes
+                    currProcesses.FirstOrDefault(y => y.Id == x.Id) == null);
 
                 if (p == null)
                     continue;

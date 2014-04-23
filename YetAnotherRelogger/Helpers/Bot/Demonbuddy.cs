@@ -229,12 +229,12 @@ namespace YetAnotherRelogger.Helpers.Bot
                 return;
 
             if (Proc.Responding)
-                _lastRepsonse = DateTime.Now;
+                _lastRepsonse = DateTime.UtcNow;
 
-            if (DateTime.Now.Subtract(Proc.StartTime).TotalMilliseconds < (90*1000))
+            if (DateTime.UtcNow.Subtract(Proc.StartTime).TotalMilliseconds < (90*1000))
                 return;
 
-            if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 90)
+            if (DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 120 seconds", Proc.Id);
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Killing process", Proc.Id);
@@ -249,7 +249,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 }
             }
             
-            else if (DateTime.Now.Subtract(_lastRepsonse).TotalSeconds > 90)
+            else if (DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 90 seconds", Proc.Id);
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Closing process", Proc.Id);
@@ -338,7 +338,6 @@ namespace YetAnotherRelogger.Helpers.Bot
                 if (!PluginVersionCheck.Check(plugin))
                     PluginVersionCheck.Install(plugin);
 
-
                 DateTime timeout;
                 try // Try to start Demonbuddy
                 {
@@ -362,15 +361,15 @@ namespace YetAnotherRelogger.Helpers.Bot
 
                     Logger.Instance.Write(Parent, "Demonbuddy:{0}: Waiting for process to become ready", Proc.Id);
 
-                    timeout = DateTime.Now;
+                    timeout = DateTime.UtcNow;
                     while (true)
                     {
                         if (Program.Pause)
                         {
-                            timeout = DateTime.Now;
+                            timeout = DateTime.UtcNow;
                             return;
                         }
-                        if (General.DateSubtract(timeout) > 30)
+                        if (General.DateSubtract(timeout) > 60)
                         {
                             Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to start!", Proc.Id);
                             Parent.Restart();
@@ -397,7 +396,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     Parent.Stop();
                 }
 
-                timeout = DateTime.Now;
+                timeout = DateTime.UtcNow;
                 while (!FindMainWindow())
                 {
                     if (General.DateSubtract(timeout) > 30)

@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
 using YetAnotherRelogger.Forms.SettingsTree;
@@ -32,11 +33,44 @@ namespace YetAnotherRelogger.Forms
             treeView1.NodeMouseClick += treeView1_NodeMouseClick;
         }
 
+
         private void MainForm2_Load(object sender, EventArgs e)
         {
-            Text = string.Format("R-YAR [{0}] BETA", Program.VERSION);
+            Point screenMaxSize = new Point(SystemInformation.VirtualScreen.Width, SystemInformation.VirtualScreen.Height);
+            if (!CommandLineArgs.SafeMode)
+            {
+                // Set window location
+                if (Settings.Default.WindowLocation != null && Settings.Default.WindowLocation != Point.Empty)
+                {
 
-            Logger.Instance.WriteGlobal("rrrix's Yet Another Relogger fork Version {0}", Program.VERSION);
+                    if (Settings.Default.WindowLocation.X < screenMaxSize.X && Settings.Default.WindowLocation.Y < screenMaxSize.Y &&
+                        Settings.Default.WindowLocation.Y > 0 && Settings.Default.WindowLocation.Y > 0)
+                    {
+                        this.Location = Settings.Default.WindowLocation;
+                    }
+                }
+
+                // Set window size
+                if (Settings.Default.WindowSize != null &&
+                    Settings.Default.WindowSize.Width > 0 &&
+                    Settings.Default.WindowSize.Height > 0 &&
+                    Settings.Default.WindowSize.Width < screenMaxSize.X &&
+                    Settings.Default.WindowSize.Height < screenMaxSize.Y)
+                {
+                    this.Size = Settings.Default.WindowSize;
+                }
+                splitContainer1.SplitterDistance = Settings.Default.SplitterDistance;
+            }
+
+            Text = string.Format("R-YAR [{0}] BETA", Assembly.GetExecutingAssembly().GetName().Version.ToString());
+
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+            string version = fvi.FileVersion;
+
+            Logger.Instance.WriteGlobal("rrrix's Yet Another Relogger fork Version {0}", version);
+
+
             // Check if we are run as admin
             if (!Program.IsRunAsAdmin)
                 Logger.Instance.WriteGlobal("WE DON'T HAVE ADMIN RIGHTS!!");
@@ -56,6 +90,7 @@ namespace YetAnotherRelogger.Forms
             Resize += MainForm2_Resize;
 
             // Set stuff for list of bots
+            dataGridView1.DoubleBuffered(true);
             dataGridView1.AllowUserToAddRows = false;
             dataGridView1.MultiSelect = false;
             dataGridView1.MouseUp += dataGridView1_MouseUp;
@@ -100,6 +135,8 @@ namespace YetAnotherRelogger.Forms
                 ToggleIcon();
                 ShowNotification("Yet Another Relogger", "Is still running");
             }
+
+            SaveWindowState();
         }
 
         private void MainForm2_Resize(object sender, EventArgs e)
@@ -110,6 +147,27 @@ namespace YetAnotherRelogger.Forms
                 ShowNotification("Yet Another Relogger", "Is still running");
                 Hide();
             }
+            SaveWindowState();
+        }
+
+        private void SaveWindowState()
+        {
+            // Copy window location to app settings
+            Settings.Default.WindowLocation = this.Location;
+            Settings.Default.SplitterDistance = splitContainer1.SplitterDistance;
+
+            // Copy window size to app settings
+            if (this.WindowState == FormWindowState.Normal)
+            {
+                Settings.Default.WindowSize = this.Size;
+            }
+            else
+            {
+                Settings.Default.WindowSize = this.RestoreBounds.Size;
+            }
+
+            // Save settings
+            Settings.Default.Save();
         }
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -118,12 +176,17 @@ namespace YetAnotherRelogger.Forms
             {
                 try
                 {
-                    BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
-                        (bool) dataGridView1[e.ColumnIndex, e.RowIndex].Value;
-                    BotSettings.Instance.Save();
+                    if (e.RowIndex > 0 && e.RowIndex <= BotSettings.Instance.Bots.Count)
+                    {
+                        BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
+                               (bool)dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+
+                        BotSettings.Instance.Save();
+                    }
                 }
-                catch
+                catch (Exception ex)
                 {
+                    Logger.Instance.Write("Exception in dataGridView1_CellValueChanged: {0}", ex);
                 }
             }
         }
@@ -199,17 +262,17 @@ namespace YetAnotherRelogger.Forms
 
         private void btnStartAll_click(object sender, EventArgs e)
         {
-            lock (BotSettings.Instance)
+            //lock (BotSettings.Instance)
+            //{
+            ConnectionCheck.Reset();
+            // Start All
+            foreach (
+                DataGridViewRow row in
+                    dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool)row.Cells["isEnabled"].Value))
             {
-                ConnectionCheck.Reset();
-                // Start All
-                foreach (
-                    DataGridViewRow row in
-                        dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool) row.Cells["isEnabled"].Value))
-                {
-                    BotSettings.Instance.Bots[row.Index].Start(checkBoxForce.Checked);
-                }
+                BotSettings.Instance.Bots[row.Index].Start(checkBoxForce.Checked);
             }
+            //}
         }
 
         private void btnNew_Click(object sender, EventArgs e)
@@ -217,7 +280,7 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Open new bot wizard
-                var wm = new WizardMain {TopMost = true};
+                var wm = new WizardMain { TopMost = true };
                 wm.ShowDialog();
             }
         }
@@ -229,7 +292,7 @@ namespace YetAnotherRelogger.Forms
                 // Edit bot
                 if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
                     return;
-                var wm = new WizardMain(dataGridView1.CurrentRow.Index) {TopMost = true};
+                var wm = new WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
 
                 wm.ShowDialog();
             }
@@ -256,16 +319,13 @@ namespace YetAnotherRelogger.Forms
 
         private void btnStopAll_Click(object sender, EventArgs e)
         {
-            lock (BotSettings.Instance)
+            Relogger.Instance.Stop();
+            // Stop All
+            foreach (BotClass bot in BotSettings.Instance.Bots)
             {
-                Relogger.Instance.Stop();
-                // Stop All
-                foreach (BotClass bot in BotSettings.Instance.Bots)
-                {
-                    bot.Stop();
-                }
-                Relogger.Instance.Start();
+                bot.Stop();
             }
+            Relogger.Instance.Start();
         }
 
         private void btnRestartAllDb_Click(object sender, EventArgs e)
@@ -300,25 +360,28 @@ namespace YetAnotherRelogger.Forms
                     Relogger.Instance.Start();
                 }
             }
-            btnRestartAllDb.Enabled = true;
+
+            btnRestartAllDb.BeginInvoke(new System.Action(() => btnRestartAllDb.Enabled = true));
+            //Application.Current.Dispatcher.BeginInvoke(new System.Action(() => btnRestartAllDb.Enabled = true));
+
         }
 
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
-// Start
+            // Start
             BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Start();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-// Stop
+            // Stop
             if (BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].IsStarted)
                 BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Stop();
         }
 
         private void statsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-// Bot Stats
+            // Bot Stats
         }
 
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -342,7 +405,7 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Edit bot
-                var wm = new WizardMain(dataGridView1.CurrentRow.Index) {TopMost = true};
+                var wm = new WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
                 wm.ShowDialog();
             }
         }
@@ -386,9 +449,9 @@ namespace YetAnotherRelogger.Forms
             base.WndProc(ref message);
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void pictureBoxDonate_Click(object sender, EventArgs e)
         {
-            Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9NF2Q47KYGNJL");
+            Process.Start("https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=K7KUXHUE9XUR4&lc=US&item_name=rrrix%20Demonbuddy%20development&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted");
         }
 
         private void btnClone_Click(object sender, EventArgs e)
@@ -405,20 +468,31 @@ namespace YetAnotherRelogger.Forms
         {
             lock (BotSettings.Instance)
             {
-                // Clone bot
-                if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
-                    return;
+                try
+                {
+                    // Clone bot
+                    if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                        return;
 
-                int idx = dataGridView1.CurrentRow.Index;
+                    int idx = dataGridView1.CurrentRow.Index;
 
-                BotSettings.Instance.Clone(dataGridView1.CurrentRow.Index);
-                BotSettings.Instance.Save();
-                // Load settings
-                BotSettings.Instance.Load();
-                Settings.Default.Reload();
+                    int nextIdx = BotSettings.Instance.Clone(idx);
+                    BotSettings.Instance.Save();
 
-                Program.Mainform.UpdateGridView();
-                dataGridView1.Rows[idx].Selected = true;
+                    //dataGridView1.Rows.Insert(nextIdx, BotSettings.Instance.Bots[idx + 1]);
+
+                    // Load settings
+                    //BotSettings.Instance.Load();
+                    //Settings.Default.Reload();
+
+                    UpdateGridView();
+                    dataGridView1.Rows[nextIdx].Selected = false;
+                    dataGridView1.Rows[nextIdx].Selected = true;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Instance.Write("Error cloning bot: {0}", ex.ToString());
+                }
             }
         }
 

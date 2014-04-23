@@ -128,41 +128,41 @@ namespace YetAnotherRelogger.Helpers
             {
                 bool isXml = false;
                 string xml = string.Empty;
-                DateTime duration = DateTime.Now;
+                DateTime duration = DateTime.UtcNow;
                 Connections++;
                 try
                 {
                     Debug.WriteLine("PipeConnection [{0}]: Connected:{1}", _stream.GetHashCode(), _stream.IsConnected);
                     while (_stream.IsConnected)
                     {
-                        string temp = _reader.ReadLine();
-                        if (temp == null)
+                        string dataLine = _reader.ReadLine();
+                        if (dataLine == null)
                         {
                             Thread.Sleep(Program.Sleeptime);
                             continue;
                         }
-                        if (temp.Equals("END"))
+                        if (dataLine.Equals("END"))
                         {
                             Debug.WriteLine("PipeConnection [{0}]: Duration:{1} XML:{2}", _stream.GetHashCode(),
                                 General.DateSubtract(duration, false), xml);
                             HandleXml(xml);
                         }
 
-                        if (temp.StartsWith("XML:"))
+                        if (dataLine.StartsWith("XML:"))
                         {
-                            temp = temp.Substring(4);
+                            dataLine = dataLine.Substring(4);
                             isXml = true;
                         }
 
                         if (isXml)
                         {
-                            xml += temp + "\n";
+                            xml += dataLine + "\n";
                         }
                         else
                         {
                             Debug.WriteLine("PipeConnection [{0}]: Duration:{1} Data:{2}", _stream.GetHashCode(),
-                                General.DateSubtract(duration, false), temp);
-                            HandleMsg(temp);
+                                General.DateSubtract(duration, false), dataLine);
+                            HandleMsg(dataLine);
                         }
                     }
                 }
@@ -202,7 +202,7 @@ namespace YetAnotherRelogger.Helpers
 
                             bot.AntiIdle.UpdateCoinage(stats.Coinage);
                             bot.AntiIdle.Stats = stats;
-                            bot.AntiIdle.LastStats = DateTime.Now;
+                            bot.AntiIdle.LastStats = DateTime.UtcNow;
                             Send(bot.AntiIdle.Reply());
                             return;
                         }
@@ -246,17 +246,19 @@ namespace YetAnotherRelogger.Helpers
                         return;
                     }
 
+                    long nowTicks = DateTime.UtcNow.Ticks;
+
                     switch (cmd)
                     {
                         case "Initialized":
                             b.AntiIdle.Stats = new BotStats
                             {
-                                LastGame = DateTime.Now.Ticks,
-                                LastPulse = DateTime.Now.Ticks,
-                                PluginPulse = DateTime.Now.Ticks,
-                                LastRun = DateTime.Now.Ticks
+                                LastGame = nowTicks,
+                                LastPulse = nowTicks,
+                                PluginPulse = nowTicks,
+                                LastRun = nowTicks
                             };
-                            b.AntiIdle.LastStats = DateTime.Now;
+                            b.AntiIdle.LastStats = DateTime.UtcNow;
                             b.AntiIdle.State = IdleState.CheckIdle;
                             b.AntiIdle.IsInitialized = true;
                             b.AntiIdle.InitAttempts = 0;
@@ -280,7 +282,7 @@ namespace YetAnotherRelogger.Helpers
                                 Send("Roger!");
                             break;
                         case "UserStop":
-                            b.Status = string.Format("User Stop: {0:d-m H:M:s}", DateTime.Now);
+                            b.Status = string.Format("User Stop: {0:d-m H:M:s}", DateTime.UtcNow);
                             b.AntiIdle.State = IdleState.UserStop;
                             Logger.Instance.Write(b, "Demonbuddy stopped by user");
                             Send("Roger!");
@@ -293,7 +295,7 @@ namespace YetAnotherRelogger.Helpers
                             break;
                             // Giles Compatibility
                         case "ThirdpartyStop":
-                            b.Status = string.Format("Thirdparty Stop: {0:d-m H:M:s}", DateTime.Now);
+                            b.Status = string.Format("Thirdparty Stop: {0:d-m H:M:s}", DateTime.UtcNow);
                             b.AntiIdle.State = IdleState.UserStop;
                             Logger.Instance.Write(b, "Demonbuddy stopped by Thirdparty");
                             Send("Roger!");
@@ -320,11 +322,6 @@ namespace YetAnotherRelogger.Helpers
                             ConnectionCheck.CheckValidConnection(true);
                             Send("Roger!");
                             break;
-                        case "NewMonsterPowerLevel":
-                            Logger.Instance.Write(b, "Sending MonsterPowerLevel: {0}",
-                                b.ProfileSchedule.Current.MonsterPowerLevel);
-                            Send("MonsterPower " + (int) b.ProfileSchedule.Current.MonsterPowerLevel);
-                            break;
                         case "D3Exit":
                             Send("Shutdown");
                             break;
@@ -347,7 +344,12 @@ namespace YetAnotherRelogger.Helpers
             {
                 try
                 {
+                    Debug.WriteLine("Replying: " + msg);
+                    msg = msg.Trim();
+                    if (!msg.EndsWith("\n"))
+                        msg += "\n";
                     _writer.WriteLine(msg);
+                    //_writer.Flush();
                 }
                 catch (Exception ex)
                 {

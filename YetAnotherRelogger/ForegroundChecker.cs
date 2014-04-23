@@ -60,7 +60,7 @@ namespace YetAnotherRelogger
                         _lastDemonbuddy = _lastDiablo = IntPtr.Zero;
                         foreach (BotClass bot in bots)
                         {
-                            DateTime time = DateTime.Now;
+                            DateTime time = DateTime.UtcNow;
                             if (!bot.IsStarted || !bot.IsRunning || !bot.Diablo.IsRunning || !bot.Demonbuddy.IsRunning)
                                 continue;
                             if (bot.Diablo.Proc.MainWindowHandle != hwnd)
@@ -75,7 +75,7 @@ namespace YetAnotherRelogger
                             // Bring demonbuddy to front
                             WinAPI.ShowWindow(_lastDemonbuddy, WinAPI.WindowShowStyle.ShowNormal);
                             WinAPI.SetForegroundWindow(_lastDemonbuddy);
-                            DateTime timeout = DateTime.Now;
+                            DateTime timeout = DateTime.UtcNow;
                             while (WinAPI.GetForegroundWindow() != _lastDemonbuddy)
                             {
                                 if (General.DateSubtract(timeout, false) > 500)
@@ -111,7 +111,7 @@ namespace YetAnotherRelogger
                             }
 
                             // calculate sleeptime
-                            var sleep = (int) (Program.Sleeptime - DateTime.Now.Subtract(time).TotalMilliseconds);
+                            var sleep = (int) (Program.Sleeptime - DateTime.UtcNow.Subtract(time).TotalMilliseconds);
                             if (sleep > 0)
                                 Thread.Sleep(sleep);
                         }

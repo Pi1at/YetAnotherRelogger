@@ -19,6 +19,7 @@ namespace YetAnotherRelogger.Forms.Wizard
         {
             WM = parent;
             InitializeComponent();
+            this.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         }
 
         public static ClickBox[] getSchedule

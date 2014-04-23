@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -62,7 +62,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     listcount = Profiles.Count();
                 }
                 Count = 0; // Reset run counter
-                StartTime = DateTime.Now; // Reset Start time
+                StartTime = DateTime.UtcNow; // Reset Start time
                 IEnumerable<Profile> filtered =
                     from x in Profiles.Where(x => !x.IsDone).Select((item, index) => new {item, index})
                     where x.index%2 == rnd.Next(0, listcount - 1)
@@ -90,7 +90,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 maxminutes = (maxminutes > 59 ? 59 : maxminutes);
 
                 if ((Current.Runs > 0 && Count >= Current.Runs + _addRuns) ||
-                    (Current.Minutes > 0 && DateTime.Now.Subtract(StartTime).TotalMinutes > maxminutes))
+                    (Current.Minutes > 0 && DateTime.UtcNow.Subtract(StartTime).TotalMinutes > maxminutes))
                 {
                     Current.IsDone = true;
                     return true;
@@ -104,14 +104,14 @@ namespace YetAnotherRelogger.Helpers.Bot
     {
         public Profile()
         {
-            MonsterPowerLevel = MonsterPower.Disabled;
+            MonsterPowerLevel = GameDifficulty.Normal;
         }
 
         public string Name { get; set; }
         public string Location { get; set; }
         public int Runs { get; set; }
         public int Minutes { get; set; }
-        public MonsterPower MonsterPowerLevel { get; set; }
+        public GameDifficulty MonsterPowerLevel { get; set; }
 
         [XmlIgnore]
         public bool IsDone { get; set; }

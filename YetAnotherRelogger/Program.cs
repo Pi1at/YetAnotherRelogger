@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Principal;
@@ -14,7 +13,7 @@ namespace YetAnotherRelogger
 {
     internal static class Program
     {
-        public const string VERSION = "0.2.0.25";
+        //public const string VERSION = "0.2.3.0";
         public const int Sleeptime = 10;
 
         public static MainForm2 Mainform;
@@ -55,13 +54,14 @@ namespace YetAnotherRelogger
                 // Load settings
                 BotSettings.Instance.Load();
                 Settings.Default.Reload();
+                Settings.Default.Upgrade();
 
                 if (Settings.Default.AutoPosScreens == null ||
                     (Settings.Default.AutoPosScreens != null && Settings.Default.AutoPosScreens.Count == 0))
                     AutoPosition.UpdateScreens();
-                if (Settings.Default.D3StarterPath.Equals(string.Empty) || Settings.Default.D3StarterPath.Equals(""))
-                    Settings.Default.D3StarterPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
-                        "ThirdParty\\D3Starter.exe");
+                //if (Settings.Default.D3StarterPath.Equals(string.Empty) || Settings.Default.D3StarterPath.Equals(""))
+                //    Settings.Default.D3StarterPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
+                //        "ThirdParty\\D3Starter.exe");
 
                 // Start background threads
                 Relogger.Instance.Start();

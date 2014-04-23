@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using YetAnotherRelogger.Helpers;
 using YetAnotherRelogger.Helpers.Bot;
+using YetAnotherRelogger.Helpers.Tools;
 using YetAnotherRelogger.Properties;
 
 namespace YetAnotherRelogger
@@ -80,12 +82,41 @@ namespace YetAnotherRelogger
             {
                 try
                 {
+                    if (_isStopped)
+                        return;
+
                     // Paused
                     if (Program.Pause)
                     {
                         Thread.Sleep(1000);
                         continue;
                     }
+
+                    new Thread(() =>
+                    {
+                        try
+                        {
+                            List<Process> BlizzardErrorProcs =
+                                (from p in Process.GetProcessesByName("BlizzardError.exe")
+                                 select p).ToList();
+                            if (BlizzardErrorProcs.Any())
+                            {
+                                foreach (var p in BlizzardErrorProcs)
+                                {
+                                    Logger.Instance.Write("Killing BlizzardError.exe with PID {0}", p.Id);
+                                    p.Kill();
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Instance.Write("Exception killing BlizzardError.exe: " + ex.ToString());
+                        }
+                    })
+                    {
+                        IsBackground = true
+                    }.Start();
+
                     // Check / validate internet connection
                     if (!ConnectionCheck.IsConnected || !ConnectionCheck.ValidConnection)
                     {
@@ -99,7 +130,7 @@ namespace YetAnotherRelogger
                         if (Program.Pause)
                             break;
 
-                        DateTime time = DateTime.Now; // set current time to calculate sleep time at end of loop
+                        DateTime time = DateTime.UtcNow; // set current time to calculate sleep time at end of loop
                         CurrentBot = bot;
                         //Debug.WriteLine(bot.Name + ":" + ":" + bot.IsRunning);
                         //Debug.WriteLine("State=" + bot.AntiIdle.State);
@@ -119,7 +150,7 @@ namespace YetAnotherRelogger
                             Logger.Instance.Write("We are scheduled to start");
                             bot.Week.NextSchedule(false);
                             bot.IsRunning = true;
-                            bot.StartTime = DateTime.Now;
+                            bot.StartTime = DateTime.UtcNow;
                             StartBoth(bot);
                         }
                         else if (!bot.IsStandby && bot.IsRunning)
@@ -133,23 +164,30 @@ namespace YetAnotherRelogger
                             {
                                 if (bot.Diablo.Proc != null)
                                     Logger.Instance.Write("Diablo:{0}: Process is not running", bot.Diablo.Proc.Id);
+                                //if (bot.Demonbuddy.IsRunning && bot.Demonbuddy.Proc != null)
+                                //{
+                                //    Logger.Instance.Write("Demonbuddy:{0}: Closing db", bot.Demonbuddy.Proc.Id);
+                                //    bot.Demonbuddy.Stop();
+                                //}
                                 if (bot.Demonbuddy.IsRunning && bot.Demonbuddy.Proc != null)
                                 {
-                                    Logger.Instance.Write("Demonbuddy:{0}: Closing db", bot.Demonbuddy.Proc.Id);
-                                    bot.Demonbuddy.Stop();
+                                    Logger.Instance.Write("Demonbuddy:{0}: Waiting for Demonbuddy to self close", bot.Demonbuddy.Proc.Id);
                                 }
-                                StartBoth(bot);
+                                else
+                                {
+                                    StartBoth(bot);
+                                }
                             }
                             else if (!bot.Demonbuddy.IsRunning)
                             {
                                 Logger.Instance.Write("Demonbuddy:{0}: Process is not running", bot.Demonbuddy.Proc.Id);
                                 bot.Demonbuddy.Start();
                             }
-                            //else if (bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) > 120)
-                            //{
-                            //    Logger.Instance.Write("We did not recieve any stats during 120 seconds!");
-                            //    bot.Restart();
-                            //}
+                            else if (bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) > 300)
+                            {
+                                Logger.Instance.Write("We did not recieve any stats during 300 seconds!");
+                                bot.Restart();
+                            }
                             else if (bot.AntiIdle.IsInitialized)
                             {
                                 if (bot.ProfileSchedule.IsDone)
@@ -162,10 +200,10 @@ namespace YetAnotherRelogger
                         else
                         {
                             //Logger.Instance.Write("Bot Standby={0} Running={1} D3Running={2} DBRunning={3}", bot.IsStandby, bot.IsRunning, bot.Diablo.IsRunning, bot.Demonbuddy.IsRunning);
-                            bot.StartTime = DateTime.Now;
+                            bot.StartTime = DateTime.UtcNow;
                         }
                         // calculate sleeptime
-                        var sleep = (int)(Program.Sleeptime - DateTime.Now.Subtract(time).TotalMilliseconds);
+                        var sleep = (int)(Program.Sleeptime - DateTime.UtcNow.Subtract(time).TotalMilliseconds);
                         if (sleep > 0)
                             Thread.Sleep(sleep);
                     }
