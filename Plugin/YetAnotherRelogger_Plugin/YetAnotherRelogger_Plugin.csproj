@@ -21,6 +21,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -50,10 +51,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Demonbuddy">
-      <HintPath>..\..\..\Demonbuddy.exe</HintPath>
+      <HintPath>..\..\..\..\DB\LatestX\Demonbuddy.exe</HintPath>
     </Reference>
     <Reference Include="GreyMagic">
-      <HintPath>..\..\..\GreyMagic.dll</HintPath>
+      <HintPath>..\..\..\..\DB\LatestX\GreyMagic.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
