@@ -322,11 +322,6 @@ namespace YetAnotherRelogger.Helpers
                             ConnectionCheck.CheckValidConnection(true);
                             Send("Roger!");
                             break;
-                        case "NewMonsterPowerLevel":
-                            Logger.Instance.Write(b, "Sending MonsterPowerLevel: {0}",
-                                b.ProfileSchedule.Current.MonsterPowerLevel);
-                            Send("MonsterPower " + (int) b.ProfileSchedule.Current.MonsterPowerLevel);
-                            break;
                         case "D3Exit":
                             Send("Shutdown");
                             break;
