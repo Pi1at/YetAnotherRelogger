@@ -766,7 +766,7 @@ namespace YARPLUGIN
                     var powerlevel = Convert.ToInt32(data.Trim());
                     Log("Recieved MonsterPowerLevel: {0}", powerlevel);
                     if (powerlevel >= 0)
-                        CharacterSettings.Instance.MonsterPowerLevel = powerlevel;
+                        CharacterSettings.Instance.GameDifficulty = (GameDifficulty)Enum.ToObject(typeof(GameDifficulty), powerlevel);
                     break;
                 case "ForceEnableAll":
                     ForceEnableAllPlugins();

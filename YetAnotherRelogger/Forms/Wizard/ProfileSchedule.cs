@@ -21,8 +21,8 @@ namespace YetAnotherRelogger.Forms.Wizard
             var col = new DataGridViewComboBoxColumn
             {
                 Name = "Monster Power",
-                DataSource = Enum.GetValues(typeof (MonsterPower)),
-                ValueType = typeof (MonsterPower),
+                DataSource = Enum.GetValues(typeof (GameDifficulty)),
+                ValueType = typeof(GameDifficulty),
             };
             dataGridView1.Columns.Add(col);
 
@@ -40,7 +40,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             if (dataGridView1.Columns[e.ColumnIndex].Name.Equals("Monster Power"))
             {
                 Profiles[e.RowIndex].MonsterPowerLevel =
-                    (MonsterPower) dataGridView1.Rows[e.RowIndex].Cells["Monster Power"].Value;
+                    (GameDifficulty)dataGridView1.Rows[e.RowIndex].Cells["Monster Power"].Value;
             }
         }
 
@@ -58,7 +58,7 @@ namespace YetAnotherRelogger.Forms.Wizard
                         Name = Path.GetFileName(ofd.FileName),
                         Runs = 0,
                         Minutes = 0,
-                        MonsterPowerLevel = MonsterPower.Disabled
+                        MonsterPowerLevel = GameDifficulty.Normal
                     };
                     dataGridView1.DataSource = null;
                     Profiles.Add(p);
@@ -144,7 +144,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             // MonsterPowerLevel
             for (int i = 0; i < Profiles.Count; i++)
             {
-                MonsterPower pl = Profiles[i].MonsterPowerLevel;
+                GameDifficulty pl = Profiles[i].MonsterPowerLevel;
                 dataGridView1.Rows[i].Cells["Monster Power"].Value = pl;
             }
         }
