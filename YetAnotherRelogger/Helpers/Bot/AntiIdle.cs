@@ -51,7 +51,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                         General.DateSubtract(Stats.LastPulse), Stats.IsRunning, Stats.IsPaused, Stats.IsInGame);
                 Debug.WriteLine(debugStats);
                 //Logger.Instance.Write(debugStats);
-                if (!Stats.IsRunning && General.DateSubtract(Stats.LastRun) > 90)
+                if (Settings.Default.StartBotIfStopped && !Stats.IsRunning && General.DateSubtract(Stats.LastRun) > 90)
                 {
                     if (!FixAttemptCounter())
                         return "Roger!";
@@ -59,7 +59,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                         Parent.Demonbuddy.Proc.Id);
                     return "Restart";
                 }
-                if (Stats.IsPaused && General.DateSubtract(Stats.LastRun) > 90)
+                if (Settings.Default.StartBotIfStopped && Stats.IsPaused && General.DateSubtract(Stats.LastRun) > 90)
                 {
                     if (!FixAttemptCounter())
                         return "Roger!";
@@ -68,7 +68,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     State = IdleState.Terminate;
                     return "Roger!";
                 }
-                if (!Stats.IsPaused && General.DateSubtract(Stats.LastPulse) > 120)
+                if (Settings.Default.AllowPulseFix && !Stats.IsPaused && General.DateSubtract(Stats.LastPulse) > 120)
                 {
                     if (!FixAttemptCounter())
                         return "Roger!";
@@ -76,7 +76,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                         Parent.Demonbuddy.Proc.Id);
                     return "FixPulse";
                 }
-                if (!Stats.IsInGame && General.DateSubtract(Stats.LastGame) > 90)
+                if (Settings.Default.StartBotIfStopped && !Stats.IsInGame && General.DateSubtract(Stats.LastGame) > 90)
                 {
                     if (!FixAttemptCounter())
                         return "Roger!";
