@@ -496,20 +496,6 @@ namespace YARPLUGIN
                     Log("Exception reading Coinage", 0);
                     _bs.Coinage = -1;
                 }
-
-                if (ZetaDia.IsInGame)
-                {
-                    _bs.LastGame = DateTime.UtcNow.Ticks;
-                    _bs.IsInGame = true;
-                }
-                else
-                {
-                    if (_bs.IsInGame)
-                    {
-                        Send("GameLeft", true);
-                    }
-                    _bs.IsInGame = false;
-                }
             }
             catch (Exception ex)
             {
@@ -552,6 +538,20 @@ namespace YARPLUGIN
 
                     _bs.IsPaused = BotMain.IsPaused;
 
+                    // Calculate game runs
+                    if (ZetaDia.IsInGame)
+                    {
+                        _bs.LastGame = DateTime.UtcNow.Ticks;
+                        _bs.IsInGame = true;
+                    }
+                    else
+                    {
+                        if (_bs.IsInGame)
+                        {
+                            Send("GameLeft", true);
+                        }
+                        _bs.IsInGame = false;
+                    }
 
                     // Send stats
                     Send("XML:" + _bs.ToXmlString(), xml: true);
