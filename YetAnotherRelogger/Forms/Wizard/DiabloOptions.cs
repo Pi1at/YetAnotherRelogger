@@ -119,5 +119,30 @@ namespace YetAnotherRelogger.Forms.Wizard
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            // restore the authenticator
+            try
+            {
+                BattleNetAuthenticator auth = new BattleNetAuthenticator();
+                auth.Restore(string.Format("{0}{1}{2}{3}", textBox4.Text, textBox5.Text,
+                    textBox7.Text, textBox6.Text), textBox8.Text);
+                //Authenticator = auth;
+
+                //MessageBox.Show( "Your authenticator has been restored.\n\nYou will now be prompted where to save your new authenticator and choose your encryption level.", "YAR", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // ok to continue
+                //DialogResult = System.Windows.Forms.DialogResult.OK;
+                //MessageBox.Show( Convert.ToString( auth.CurrentCode), "YAR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                CodeField.Text = Convert.ToString(auth.CurrentCode);
+            }
+            catch (InvalidRestoreResponseException re)
+            {
+                MessageBox.Show(this, re.Message, "YAR", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                return;
+            }
+
+        }
     }
 }

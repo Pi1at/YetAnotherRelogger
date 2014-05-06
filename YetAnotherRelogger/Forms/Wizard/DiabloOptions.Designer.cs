@@ -75,6 +75,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.CodeField = new System.Windows.Forms.TextBox();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -85,6 +86,7 @@
             // groupBox3
             // 
             this.groupBox3.BackColor = System.Drawing.Color.Transparent;
+            this.groupBox3.Controls.Add(this.CodeField);
             this.groupBox3.Controls.Add(this.button3);
             this.groupBox3.Controls.Add(this.button1);
             this.groupBox3.Controls.Add(this.label9);
@@ -124,6 +126,7 @@
             this.button1.TabIndex = 10;
             this.button1.Text = "Test";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // label9
             // 
@@ -218,7 +221,6 @@
             // checkBox1
             // 
             this.checkBox1.AutoSize = true;
-            this.checkBox1.Enabled = false;
             this.checkBox1.Location = new System.Drawing.Point(9, 18);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(110, 17);
@@ -589,6 +591,14 @@
             this.label13.TabIndex = 0;
             this.label13.Text = "X:";
             // 
+            // CodeField
+            // 
+            this.CodeField.Enabled = false;
+            this.CodeField.Location = new System.Drawing.Point(11, 89);
+            this.CodeField.Name = "CodeField";
+            this.CodeField.Size = new System.Drawing.Size(107, 20);
+            this.CodeField.TabIndex = 12;
+            // 
             // DiabloOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -667,5 +677,6 @@
         public System.Windows.Forms.CheckBox useInnerSpace;
         private System.Windows.Forms.Button button4;
         public System.Windows.Forms.CheckBox removeWindowFrame;
+        public System.Windows.Forms.TextBox CodeField;
     }
 }

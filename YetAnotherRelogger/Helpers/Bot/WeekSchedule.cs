@@ -36,11 +36,11 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         public bool ShouldRun(bool isRunning)
         {
-            var day = (int) DateTime.UtcNow.DayOfWeek; // Get number for current day of the week 
+            var day = (int) DateTime.Now.DayOfWeek; // Get number for current day of the week 
             day = (day == 0 ? 7 : day); // day fix sunday is 7
             DaySchedule currentDay = GetDaySchedule(day);
             //DaySchedule nextDay = GetDaySchedule((day == 7 ? 1 : day + 1));
-            int currentHour = ClockFix(Convert.ToInt32(DateTime.UtcNow.ToString("HH")));
+            int currentHour = ClockFix(Convert.ToInt32(DateTime.Now.ToString("HH")));
             int prevHour = ClockFix((currentHour - 1 != -1 ? currentHour - 1 : 0));
 
             bool thisHour = currentDay.Hours[currentHour];
@@ -50,7 +50,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             {
                 // Check if we should stop
 
-                if (!thisHour && DateTime.UtcNow.Minute >= _currentRandom)
+                if (!thisHour && DateTime.Now.Minute >= _currentRandom)
                 {
                     GenerateNewRandom();
                     return ForceStart;
@@ -66,7 +66,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 return true;
             }
             // Check if we need to start
-            if (thisHour && (DateTime.UtcNow.Minute >= _currentRandom || currentDay.Hours[prevHour]))
+            if (thisHour && (DateTime.Now.Minute >= _currentRandom || currentDay.Hours[prevHour]))
             {
                 GenerateNewRandom();
 
@@ -84,11 +84,11 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         public void NextSchedule(bool start)
         {
-            var day = (int) DateTime.UtcNow.DayOfWeek; // Get number for current day of the week 
+            var day = (int) DateTime.Now.DayOfWeek; // Get number for current day of the week 
             day = (day == 0 ? 7 : day); // day fix sunday is 7
-            int currentHour = ClockFix(Convert.ToInt32(DateTime.UtcNow.ToString("HH")));
+            int currentHour = ClockFix(Convert.ToInt32(DateTime.Now.ToString("HH")));
 
-            DateTime date = DateTime.UtcNow;
+            DateTime date = DateTime.Now;
 
             int x = 1;
             bool first = true;
