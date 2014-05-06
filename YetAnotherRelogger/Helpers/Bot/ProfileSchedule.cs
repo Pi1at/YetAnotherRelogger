@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Xml.Serialization;
+using YetAnotherRelogger.Helpers.Enums;
 using YetAnotherRelogger.Helpers.Tools;
 
 namespace YetAnotherRelogger.Helpers.Bot
@@ -61,7 +62,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     listcount = Profiles.Count();
                 }
                 Count = 0; // Reset run counter
-                StartTime = DateTime.UtcNow; // Reset Start time
+                StartTime = DateTime.Now; // Reset Start time
                 IEnumerable<Profile> filtered =
                     from x in Profiles.Where(x => !x.IsDone).Select((item, index) => new {item, index})
                     where x.index%2 == rnd.Next(0, listcount - 1)
@@ -89,7 +90,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                 maxminutes = (maxminutes > 59 ? 59 : maxminutes);
 
                 if ((Current.Runs > 0 && Count >= Current.Runs + _addRuns) ||
-                    (Current.Minutes > 0 && DateTime.UtcNow.Subtract(StartTime).TotalMinutes > maxminutes))
+                    (Current.Minutes > 0 && DateTime.Now.Subtract(StartTime).TotalMinutes > maxminutes))
                 {
                     Current.IsDone = true;
                     return true;
@@ -103,13 +104,15 @@ namespace YetAnotherRelogger.Helpers.Bot
     {
         public Profile()
         {
-
+            DifficultyLevel = Difficulty.Disabled;
         }
 
         public string Name { get; set; }
         public string Location { get; set; }
         public int Runs { get; set; }
         public int Minutes { get; set; }
+        public int GoldTimer { get; set; }
+        public Difficulty DifficultyLevel { get; set; }
 
         [XmlIgnore]
         public bool IsDone { get; set; }

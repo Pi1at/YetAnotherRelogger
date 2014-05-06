@@ -159,8 +159,25 @@ namespace YetAnotherRelogger.Forms.Wizard
                 }
             }
 
-            //d.Serial = string.Format("{0}-{1}-{2}-{3}", ucDiablo.textBox4.Text, ucDiablo.textBox5.Text, ucDiablo.textBox7.Text, ucDiablo.textBox6.Text);
-            //ucDiablo.textBox8.Text = bot.diablo.RestoreCode;
+            //!!!d.Serial = string.Format("{0}-{1}-{2}-{3}", ucDiablo.textBox4.Text, ucDiablo.textBox5.Text, ucDiablo.textBox7.Text, ucDiablo.textBox6.Text);
+            //!!!ucDiablo.textBox8.Text = bot.diablo.RestoreCode;
+
+            /*
+             d.Serial = string.Format("{0}-{1}-{2}-{3}", _ucDiablo.textBox4.Text, _ucDiablo.textBox5.Text,
+                    _ucDiablo.textBox7.Text, _ucDiablo.textBox6.Text);
+                d.RestoreCode = _ucDiablo.textBox8.Text;
+             */
+
+            string SerialCode = bot.Diablo.Serial;
+            string[] words;
+            words = SerialCode.Split('-');
+
+            _ucDiablo.textBox4.Text = words[0];
+            _ucDiablo.textBox5.Text = words[1];
+            _ucDiablo.textBox7.Text = words[2];
+            _ucDiablo.textBox6.Text = words[3];
+            _ucDiablo.textBox8.Text = bot.Diablo.RestoreCode;
+
 
             _ucDiablo.processorAffinity.SelectedIndex = bot.Diablo.Priority;
 
@@ -242,6 +259,8 @@ namespace YetAnotherRelogger.Forms.Wizard
                 d.Region = _ucDiablo.region.SelectedItem.ToString();
                 d.UseAuthenticator = _ucDiablo.checkBox1.Checked;
                 d.Serial = string.Format("{0}-{1}-{2}-{3}", _ucDiablo.textBox4.Text, _ucDiablo.textBox5.Text,
+                    _ucDiablo.textBox7.Text, _ucDiablo.textBox6.Text);
+                d.Serial2 = string.Format("{0}{1}{2}{3}", _ucDiablo.textBox4.Text, _ucDiablo.textBox5.Text,
                     _ucDiablo.textBox7.Text, _ucDiablo.textBox6.Text);
                 d.RestoreCode = _ucDiablo.textBox8.Text;
                 d.Priority = _ucDiablo.processorAffinity.SelectedIndex;

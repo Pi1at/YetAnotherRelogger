@@ -196,7 +196,7 @@ namespace YARPLUGIN
 
             Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
             loggingHierarchy.Root.AddAppender(YARAppender);
-                        
+
             Reset();
 
             StartYarWorker();
@@ -212,9 +212,14 @@ namespace YARPLUGIN
             Log("YAR Plugin Enabled with PID: {0}", _bs.Pid);
 
             StartYarWorker();
+            Send("NewDifficultyLevel", true); // Request Difficulty level
             Reset();
         }
 
+        private void OnProfileLoaded(object sender, object e)
+        {
+            Send("NewDifficultyLevel", true); // Request Difficulty level
+        }
 
         private void StartYarWorker()
         {
@@ -293,9 +298,6 @@ namespace YARPLUGIN
         {
             try
             {
-                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
-                    return;
-
                 if (!IsEnabled)
                     ResetBotBehavior();
 
@@ -473,6 +475,15 @@ namespace YARPLUGIN
         {
             try
             {
+                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
+                {
+                    ErrorHandling();
+                    // YAR Health Check
+                    _pulseCheck = true;
+                    _bs.LastPulse = DateTime.UtcNow.Ticks;
+                    return;
+                }
+                
                 if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
                 {
                     Log("YAR Plugin Pulse from invalid state");
@@ -552,6 +563,21 @@ namespace YARPLUGIN
 
                     _bs.IsPaused = BotMain.IsPaused;
 
+                    // Calculate game runs
+                    if (ZetaDia.IsInGame)
+                    {
+                        _bs.LastGame = DateTime.UtcNow.Ticks;
+                        _bs.IsInGame = true;
+                    }
+                    else
+                    {
+                        if (_bs.IsInGame)
+                        {
+                            Send("GameLeft", true);
+                            Send("NewDifficultyLevel", true); // Request Difficulty level
+                        }
+                        _bs.IsInGame = false;
+                    }
 
                     // Send stats
                     Send("XML:" + _bs.ToXmlString(), xml: true);
@@ -759,6 +785,15 @@ namespace YARPLUGIN
                     break;
                 case "LoadProfile":
                     LoadProfile(data);
+                    break;
+                case "DifficultyLevel":
+                    var difficulty_level = Convert.ToInt32(data.Trim());                            
+                    if (difficulty_level >= 0)
+                    {
+                        var difficulty = (GameDifficulty)System.Enum.Parse(typeof(GameDifficulty), data.Trim(), true);
+                        Log("Recieved DifficultyLevel: {0}", difficulty);
+                        CharacterSettings.Instance.GameDifficulty = difficulty;
+                    }      
                     break;
                 case "ForceEnableAll":
                     ForceEnableAllPlugins();

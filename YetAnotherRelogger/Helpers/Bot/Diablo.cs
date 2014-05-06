@@ -9,6 +9,20 @@ using System.Xml.Serialization;
 using YetAnotherRelogger.Helpers.Tools;
 using YetAnotherRelogger.Properties;
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms;
+
+
+using WindowsInput;
+
 namespace YetAnotherRelogger.Helpers.Bot
 {
     public class DiabloClass
@@ -31,6 +45,37 @@ namespace YetAnotherRelogger.Helpers.Bot
             CpuCount = Environment.ProcessorCount;
             ProcessorAffinity = AllProcessors;
         }
+
+        //!!!
+        
+        IntPtr hControl;
+
+        #region WINAPI
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern IntPtr GetFocus();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern bool PostMessage(IntPtr hWnd, int Msg, char wParam, int lParam);
+
+        [DllImport("user32")]
+        public static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32")]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern uint GetCurrentThreadId();
+        #endregion
+        //!!!
+
+
+
 
         [XmlIgnore]
         [NoCopy]
@@ -75,6 +120,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         // Authenticator
         public bool UseAuthenticator { get; set; }
         public string Serial { get; set; }
+        public string Serial2 { get; set; }
         public string RestoreCode { get; set; }
 
         // Affinity
@@ -347,6 +393,63 @@ namespace YetAnotherRelogger.Helpers.Bot
                 AutoPosition.PositionWindows();
 
             Logger.Instance.Write("Diablo:{0}: Process is ready", Proc.Id);
+
+
+            if (Parent.Diablo.UseAuthenticator)
+            {
+
+                //!!! Try to authentificate
+
+                hControl = FindWindow.FindWindowClass("D3 Main Window Class", Proc.Id);
+
+                SetForegroundWindow(hControl);
+                Logger.Instance.Write("Diablo:{0}: Trying to login", Proc.Id);
+
+                try
+                {
+                    SetForegroundWindow(hControl);
+                    SendKeys.SendWait(Parent.Diablo.Username);
+
+                    SetForegroundWindow(hControl);
+                    SendKeys.SendWait("{TAB}");
+
+                    SetForegroundWindow(hControl);
+                    SendKeys.SendWait(Parent.Diablo.Password);
+
+                    SetForegroundWindow(hControl);
+                    SendKeys.SendWait("~");
+                }
+                catch (Exception exc)
+                {
+                    MessageBox.Show(exc.Message);
+                }
+
+                if (Parent.Diablo.UseAuthenticator)
+                {
+
+                    Thread.Sleep(10000);
+
+                    Logger.Instance.Write("Diablo:{0}: Trying to authentificate", Proc.Id);
+                    BattleNetAuthenticator auth = new BattleNetAuthenticator();
+                    auth.Restore(Parent.Diablo.Serial2, Parent.Diablo.RestoreCode);
+                    string authcode = Convert.ToString(auth.CurrentCode);
+
+                    try
+                    {
+                        SetForegroundWindow(hControl);
+                        SendKeys.SendWait(authcode);
+
+                        SetForegroundWindow(hControl);
+                        SendKeys.SendWait("~");
+                    }
+                    catch (Exception exc)
+                    {
+                        MessageBox.Show(exc.Message);
+                    }
+                }
+                //!!!
+            }
+
 
             // Demonbuddy start delay
             if (Settings.Default.DemonbuddyStartDelay > 0)
