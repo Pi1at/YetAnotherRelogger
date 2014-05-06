@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using YetAnotherRelogger.Helpers.Bot;
+using YetAnotherRelogger.Helpers.Enums;
 using YetAnotherRelogger.Helpers.Tools;
 
 namespace YetAnotherRelogger.Forms.Wizard
@@ -17,6 +18,14 @@ namespace YetAnotherRelogger.Forms.Wizard
             WM = parent;
             InitializeComponent();
 
+            var col = new DataGridViewComboBoxColumn
+            {
+                Name = "Difficulty",
+                DataSource = Enum.GetValues(typeof(Difficulty)),
+                ValueType = typeof(Difficulty),
+            };
+            dataGridView1.Columns.Add(col);
+
             dataGridView1.CellClick += dataGridView1_CellClick;
             dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
 
@@ -29,6 +38,12 @@ namespace YetAnotherRelogger.Forms.Wizard
         {
             if (e.RowIndex < 0)
                 return;
+
+            if (dataGridView1.Columns[e.ColumnIndex].Name.Equals("Difficulty"))
+            {
+                Profiles[e.RowIndex].DifficultyLevel =
+                    (Difficulty)dataGridView1.Rows[e.RowIndex].Cells["Difficulty"].Value;
+            }
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -45,6 +60,8 @@ namespace YetAnotherRelogger.Forms.Wizard
                         Name = Path.GetFileName(ofd.FileName),
                         Runs = 0,
                         Minutes = 0,
+                        DifficultyLevel = Difficulty.Disabled,
+                        GoldTimer = 0,
                     };
                     dataGridView1.DataSource = null;
                     Profiles.Add(p);
@@ -125,6 +142,14 @@ namespace YetAnotherRelogger.Forms.Wizard
             dataGridView1.Refresh();
             dataGridView1.ReadOnly = false;
             dataGridView1.Columns["isDone"].Visible = false;
+            dataGridView1.Columns["DifficultyLevel"].Visible = false;
+
+            // GameDifficulty
+            for (int i = 0; i < Profiles.Count; i++)
+            {
+                Difficulty pl = Profiles[i].DifficultyLevel;
+                dataGridView1.Rows[i].Cells["Difficulty"].Value = pl;
+            }
         }
     }
 }

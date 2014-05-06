@@ -212,9 +212,14 @@ namespace YARPLUGIN
             Log("YAR Plugin Enabled with PID: {0}", _bs.Pid);
 
             StartYarWorker();
+            Send("NewDifficultyLevel", true); // Request Difficulty level
             Reset();
         }
 
+        private void OnProfileLoaded(object sender, object e)
+        {
+            Send("NewDifficultyLevel", true); // Request Difficulty level
+        }
 
         private void StartYarWorker()
         {
@@ -246,7 +251,7 @@ namespace YARPLUGIN
 
 
         public void OnDisabled()
-        {
+        {    
             Pulsator.OnPulse -= Pulsator_OnPulse;
 
             Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
@@ -549,6 +554,7 @@ namespace YARPLUGIN
                         if (_bs.IsInGame)
                         {
                             Send("GameLeft", true);
+                            Send("NewDifficultyLevel", true); // Request Difficulty level
                         }
                         _bs.IsInGame = false;
                     }
@@ -759,6 +765,15 @@ namespace YARPLUGIN
                     break;
                 case "LoadProfile":
                     LoadProfile(data);
+                    break;
+                case "DifficultyLevel":
+                    var difficulty_level = Convert.ToInt32(data.Trim());                            
+                    if (difficulty_level >= 0)
+                    {
+                        var difficulty = (GameDifficulty)System.Enum.Parse(typeof(GameDifficulty), data.Trim(), true);
+                        Log("Recieved DifficultyLevel: {0}", difficulty);
+                        CharacterSettings.Instance.GameDifficulty = difficulty;
+                    }      
                     break;
                 case "ForceEnableAll":
                     ForceEnableAllPlugins();

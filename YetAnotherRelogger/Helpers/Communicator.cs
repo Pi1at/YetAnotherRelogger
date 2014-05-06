@@ -281,6 +281,11 @@ namespace YetAnotherRelogger.Helpers
                             else
                                 Send("Roger!");
                             break;
+                        case "NewDifficultyLevel":
+                            Logger.Instance.Write(b, "Sending DifficultyLevel: {0}",
+                                b.ProfileSchedule.Current.DifficultyLevel);
+                            Send("DifficultyLevel " + (int)b.ProfileSchedule.Current.DifficultyLevel);
+                            break;
                         case "UserStop":
                             b.Status = string.Format("User Stop: {0:d-m H:M:s}", DateTime.UtcNow);
                             b.AntiIdle.State = IdleState.UserStop;

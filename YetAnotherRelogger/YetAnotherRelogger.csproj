@@ -146,6 +146,7 @@
     <Compile Include="Helpers\DataGridViewExtensions.cs" />
     <Compile Include="Helpers\DebugHelper.cs" />
     <Compile Include="Helpers\DiabloClone.cs" />
+    <Compile Include="Helpers\Enums\Difficulty.cs" />
     <Compile Include="Helpers\Enums\Loglevel.cs" />
     <Compile Include="Helpers\Hotkeys\ActionContainer.cs" />
     <Compile Include="Helpers\Hotkeys\Actions\ResizeCurrent.cs" />
