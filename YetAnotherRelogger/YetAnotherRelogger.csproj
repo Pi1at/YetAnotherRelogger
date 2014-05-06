@@ -80,7 +80,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="InputSimulator">
-      <HintPath>..\ThirdParty\InputSimulator.0.1.0.0-bin\Release\InputSimulator.dll</HintPath>
+      <HintPath>..\ThirdParty\InputSimulator.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
