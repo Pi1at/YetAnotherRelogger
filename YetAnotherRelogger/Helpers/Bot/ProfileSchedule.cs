@@ -104,14 +104,15 @@ namespace YetAnotherRelogger.Helpers.Bot
     {
         public Profile()
         {
-            MonsterPowerLevel = GameDifficulty.Normal;
+            DifficultyLevel = Difficulty.Disabled;
         }
 
         public string Name { get; set; }
         public string Location { get; set; }
         public int Runs { get; set; }
         public int Minutes { get; set; }
-        public GameDifficulty MonsterPowerLevel { get; set; }
+        public int GoldTimer { get; set; }
+        public Difficulty DifficultyLevel { get; set; }
 
         [XmlIgnore]
         public bool IsDone { get; set; }

@@ -1,4 +1,4 @@
-﻿// VERSION: 0.2.1.0
+// VERSION: 0.2.1.0
 /* Changelog:
  * VERSION 0.2.1.0:
  * Compatability with DB 300+ and D3 2.0
@@ -212,10 +212,14 @@ namespace YARPLUGIN
             Log("YAR Plugin Enabled with PID: {0}", _bs.Pid);
 
             StartYarWorker();
-            Send("NewMonsterPowerLevel", true); // Request Monsterpower level
+            Send("NewDifficultyLevel", true); // Request Difficulty level
             Reset();
         }
 
+        private void OnProfileLoaded(object sender, object e)
+        {
+            Send("NewDifficultyLevel", true); // Request Difficulty level
+        }
 
         private void StartYarWorker()
         {
@@ -247,7 +251,7 @@ namespace YARPLUGIN
 
 
         public void OnDisabled()
-        {
+        {    
             Pulsator.OnPulse -= Pulsator_OnPulse;
 
             Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
@@ -497,21 +501,6 @@ namespace YARPLUGIN
                     Log("Exception reading Coinage", 0);
                     _bs.Coinage = -1;
                 }
-
-                if (ZetaDia.IsInGame)
-                {
-                    _bs.LastGame = DateTime.UtcNow.Ticks;
-                    _bs.IsInGame = true;
-                }
-                else
-                {
-                    if (_bs.IsInGame)
-                    {
-                        Send("GameLeft", true);
-                        Send("NewMonsterPowerLevel", true); // Request Monsterpower level
-                    }
-                    _bs.IsInGame = false;
-                }
             }
             catch (Exception ex)
             {
@@ -554,6 +543,21 @@ namespace YARPLUGIN
 
                     _bs.IsPaused = BotMain.IsPaused;
 
+                    // Calculate game runs
+                    if (ZetaDia.IsInGame)
+                    {
+                        _bs.LastGame = DateTime.UtcNow.Ticks;
+                        _bs.IsInGame = true;
+                    }
+                    else
+                    {
+                        if (_bs.IsInGame)
+                        {
+                            Send("GameLeft", true);
+                            Send("NewDifficultyLevel", true); // Request Difficulty level
+                        }
+                        _bs.IsInGame = false;
+                    }
 
                     // Send stats
                     Send("XML:" + _bs.ToXmlString(), xml: true);
@@ -762,11 +766,14 @@ namespace YARPLUGIN
                 case "LoadProfile":
                     LoadProfile(data);
                     break;
-                case "MonsterPower":
-                    var powerlevel = Convert.ToInt32(data.Trim());
-                    Log("Recieved MonsterPowerLevel: {0}", powerlevel);
-                    if (powerlevel >= 0)
-                        CharacterSettings.Instance.GameDifficulty = (GameDifficulty)Enum.ToObject(typeof(GameDifficulty), powerlevel);
+                case "DifficultyLevel":
+                    var difficulty_level = Convert.ToInt32(data.Trim());                            
+                    if (difficulty_level >= 0)
+                    {
+                        var difficulty = (GameDifficulty)System.Enum.Parse(typeof(GameDifficulty), data.Trim(), true);
+                        Log("Recieved DifficultyLevel: {0}", difficulty);
+                        CharacterSettings.Instance.GameDifficulty = difficulty;
+                    }      
                     break;
                 case "ForceEnableAll":
                     ForceEnableAllPlugins();
