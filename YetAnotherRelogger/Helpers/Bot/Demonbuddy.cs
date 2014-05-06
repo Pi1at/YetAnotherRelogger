@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml.Serialization;
 using YetAnotherRelogger.Helpers.Tools;
+using YetAnotherRelogger.Properties;
 
 namespace YetAnotherRelogger.Helpers.Bot
 {
@@ -234,7 +235,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (DateTime.UtcNow.Subtract(Proc.StartTime).TotalMilliseconds < (90*1000))
                 return;
 
-            if (DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
+            if (Settings.Default.AllowKillDemonbuddy && DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 120 seconds", Proc.Id);
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Killing process", Proc.Id);
@@ -248,8 +249,8 @@ namespace YetAnotherRelogger.Helpers.Bot
                     DebugHelper.Exception(ex);
                 }
             }
-            
-            else if (DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
+
+            else if (Settings.Default.AllowKillDemonbuddy && DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 90 seconds", Proc.Id);
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Closing process", Proc.Id);
