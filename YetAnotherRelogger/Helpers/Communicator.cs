@@ -281,6 +281,11 @@ namespace YetAnotherRelogger.Helpers
                             else
                                 Send("Roger!");
                             break;
+                        case "NewDifficultyLevel":
+                            Logger.Instance.Write(b, "Sending DifficultyLevel: {0}",
+                                b.ProfileSchedule.Current.DifficultyLevel);
+                            Send("DifficultyLevel " + (int)b.ProfileSchedule.Current.DifficultyLevel);
+                            break;
                         case "UserStop":
                             b.Status = string.Format("User Stop: {0:d-m H:M:s}", DateTime.UtcNow);
                             b.AntiIdle.State = IdleState.UserStop;
@@ -321,11 +326,6 @@ namespace YetAnotherRelogger.Helpers
                         case "CheckConnection":
                             ConnectionCheck.CheckValidConnection(true);
                             Send("Roger!");
-                            break;
-                        case "NewMonsterPowerLevel":
-                            Logger.Instance.Write(b, "Sending MonsterPowerLevel: {0}",
-                                b.ProfileSchedule.Current.MonsterPowerLevel);
-                            Send("MonsterPower " + (int) b.ProfileSchedule.Current.MonsterPowerLevel);
                             break;
                         case "D3Exit":
                             Send("Shutdown");

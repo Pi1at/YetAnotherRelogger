@@ -1,14 +1,18 @@
-﻿using System;
-using System.Diagnostics;
-using System.Drawing;
-using System.IO;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Xml.Serialization;
-using YetAnotherRelogger.Helpers.Tools;
-
-namespace YetAnotherRelogger.Helpers.Bot
+﻿namespace YetAnotherRelogger.Helpers.Bot
 {
+    using System;
+    using System.Diagnostics;
+    using System.Drawing;
+    using System.IO;
+    using System.Runtime.InteropServices;
+    using System.Text.RegularExpressions;
+    using System.Threading;
+    using System.Xml.Serialization;
+
+    using Tools;
+
+    using Properties;
+
     public class DemonbuddyClass
     {
         [XmlIgnore] public Rectangle AutoPos;
@@ -23,6 +27,36 @@ namespace YetAnotherRelogger.Helpers.Bot
             CpuCount = Environment.ProcessorCount;
             ProcessorAffinity = AllProcessors;
         }
+
+
+        //!!!
+
+        IntPtr hControl;
+
+        #region WINAPI
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern IntPtr GetFocus();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern bool PostMessage(IntPtr hWnd, int Msg, char wParam, int lParam);
+
+        [DllImport("user32")]
+        public static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32")]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern uint GetCurrentThreadId();
+        #endregion
+        //!!!
+
 
         [XmlIgnore]
         [NoCopy]
@@ -234,7 +268,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (DateTime.UtcNow.Subtract(Proc.StartTime).TotalMilliseconds < (90*1000))
                 return;
 
-            if (DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
+            if (Settings.Default.AllowKillDemonbuddy && DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 120 seconds", Proc.Id);
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Killing process", Proc.Id);
@@ -248,8 +282,8 @@ namespace YetAnotherRelogger.Helpers.Bot
                     DebugHelper.Exception(ex);
                 }
             }
-            
-            else if (DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
+
+            else if (Settings.Default.AllowKillDemonbuddy && DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Is unresponsive for more than 90 seconds", Proc.Id);
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Closing process", Proc.Id);
@@ -292,9 +326,13 @@ namespace YetAnotherRelogger.Helpers.Bot
                 arguments += " -key=" + Key;
                 arguments += " -autostart";
                 arguments += string.Format(" -routine=\"{0}\"", CombatRoutine);
+
+                if (!Parent.Diablo.UseAuthenticator)
+                {
                 arguments += string.Format(" -bnetaccount=\"{0}\"", Parent.Diablo.Username);
                 arguments += string.Format(" -bnetpassword=\"{0}\"", Parent.Diablo.Password);
-
+                }
+                
                 if (profilepath != null)
                 {
                     // Check if current profile path is Kickstart
@@ -422,6 +460,36 @@ namespace YetAnotherRelogger.Helpers.Bot
                     break;
                 if (!Parent.AntiIdle.IsInitialized)
                     continue; // Retry
+
+                /*
+                //!!!
+                //Parent.Diablo.Proc.Id
+
+                if (Parent.Diablo.UseAuthenticator)
+                {
+
+                    Thread.Sleep(1000);
+
+                    Logger.Instance.Write("Diablo:{0}: Trying to authentificate", Parent.Diablo.Proc.Id);
+                    BattleNetAuthenticator auth = new BattleNetAuthenticator();
+                    auth.Restore(Parent.Diablo.Serial2, Parent.Diablo.RestoreCode);
+                    string authcode = Convert.ToString(auth.CurrentCode);
+
+                    try
+                    {
+                        SetForegroundWindow(hControl);
+                        SendKeys.SendWait(authcode);
+                        SendKeys.SendWait("~");
+                    }
+                    catch (Exception exc)
+                    {
+                        MessageBox.Show(exc.Message);
+                    }
+                }
+
+                //!!!
+                */
+
 
                 // We are ready to go
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Initialized! We are ready to go", Proc.Id);

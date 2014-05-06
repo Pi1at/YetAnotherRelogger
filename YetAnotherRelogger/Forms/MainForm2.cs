@@ -350,13 +350,19 @@ namespace YetAnotherRelogger.Forms
                     Relogger.Instance.Stop();
                     foreach (BotClass bot in runningBots)
                     {
+                        Stopwatch swKill = new Stopwatch();
+                        swKill.Start();
                         bot.Demonbuddy.Stop();
-                        //Thread.Sleep(500);
+                        int pid = Convert.ToInt32(bot.DemonbuddyPid);
+                        if (Process.GetProcesses().Any(p => p.Id == pid))
+                        {
+                            Process p = Process.GetProcessById(pid);
+                            while (p != null && !p.HasExited && swKill.ElapsedMilliseconds < 10000)
+                            {
+                                Thread.Sleep(10);
+                            }
+                        }
                     }
-                    //foreach (var bot in runningBots)
-                    //{
-                    //    bot.Demonbuddy.Start();
-                    //}
                     Relogger.Instance.Start();
                 }
             }

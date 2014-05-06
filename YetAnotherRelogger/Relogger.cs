@@ -183,7 +183,8 @@ namespace YetAnotherRelogger
                                 Logger.Instance.Write("Demonbuddy:{0}: Process is not running", bot.Demonbuddy.Proc.Id);
                                 bot.Demonbuddy.Start();
                             }
-                            else if (bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) > 300)
+                            else if (Settings.Default.AntiIdleStatsDuration > 0 && bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) >
+                                (double)Settings.Default.AntiIdleStatsDuration)
                             {
                                 Logger.Instance.Write("We did not recieve any stats during 300 seconds!");
                                 bot.Restart();

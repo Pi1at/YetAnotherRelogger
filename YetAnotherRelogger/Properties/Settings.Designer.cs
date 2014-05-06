@@ -673,7 +673,7 @@ namespace YetAnotherRelogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("900")]
+        [global::System.Configuration.DefaultSettingValueAttribute("600")]
         public decimal GoldTimer {
             get {
                 return ((decimal)(this["GoldTimer"]));
@@ -716,6 +716,66 @@ namespace YetAnotherRelogger.Properties {
             }
             set {
                 this["SplitterDistance"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AllowPulseFix {
+            get {
+                return ((bool)(this["AllowPulseFix"]));
+            }
+            set {
+                this["AllowPulseFix"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool StartBotIfStopped {
+            get {
+                return ((bool)(this["StartBotIfStopped"]));
+            }
+            set {
+                this["StartBotIfStopped"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AllowKillGame {
+            get {
+                return ((bool)(this["AllowKillGame"]));
+            }
+            set {
+                this["AllowKillGame"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AllowKillDemonbuddy {
+            get {
+                return ((bool)(this["AllowKillDemonbuddy"]));
+            }
+            set {
+                this["AllowKillDemonbuddy"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("300")]
+        public decimal AntiIdleStatsDuration {
+            get {
+                return ((decimal)(this["AntiIdleStatsDuration"]));
+            }
+            set {
+                this["AntiIdleStatsDuration"] = value;
             }
         }
     }

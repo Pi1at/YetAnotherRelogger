@@ -20,9 +20,9 @@ namespace YetAnotherRelogger.Forms.Wizard
 
             var col = new DataGridViewComboBoxColumn
             {
-                Name = "Monster Power",
-                DataSource = Enum.GetValues(typeof (GameDifficulty)),
-                ValueType = typeof(GameDifficulty),
+                Name = "Difficulty",
+                DataSource = Enum.GetValues(typeof(Difficulty)),
+                ValueType = typeof(Difficulty),
             };
             dataGridView1.Columns.Add(col);
 
@@ -39,10 +39,10 @@ namespace YetAnotherRelogger.Forms.Wizard
             if (e.RowIndex < 0)
                 return;
 
-            if (dataGridView1.Columns[e.ColumnIndex].Name.Equals("Monster Power"))
+            if (dataGridView1.Columns[e.ColumnIndex].Name.Equals("Difficulty"))
             {
-                Profiles[e.RowIndex].MonsterPowerLevel =
-                    (GameDifficulty)dataGridView1.Rows[e.RowIndex].Cells["Monster Power"].Value;
+                Profiles[e.RowIndex].DifficultyLevel =
+                    (Difficulty)dataGridView1.Rows[e.RowIndex].Cells["Difficulty"].Value;
             }
         }
 
@@ -60,7 +60,8 @@ namespace YetAnotherRelogger.Forms.Wizard
                         Name = Path.GetFileName(ofd.FileName),
                         Runs = 0,
                         Minutes = 0,
-                        MonsterPowerLevel = GameDifficulty.Normal
+                        DifficultyLevel = Difficulty.Disabled,
+                        GoldTimer = 0,
                     };
                     dataGridView1.DataSource = null;
                     Profiles.Add(p);
@@ -141,13 +142,13 @@ namespace YetAnotherRelogger.Forms.Wizard
             dataGridView1.Refresh();
             dataGridView1.ReadOnly = false;
             dataGridView1.Columns["isDone"].Visible = false;
-            dataGridView1.Columns["MonsterPowerLevel"].Visible = false;
+            dataGridView1.Columns["DifficultyLevel"].Visible = false;
 
-            // MonsterPowerLevel
+            // GameDifficulty
             for (int i = 0; i < Profiles.Count; i++)
             {
-                GameDifficulty pl = Profiles[i].MonsterPowerLevel;
-                dataGridView1.Rows[i].Cells["Monster Power"].Value = pl;
+                Difficulty pl = Profiles[i].DifficultyLevel;
+                dataGridView1.Rows[i].Cells["Difficulty"].Value = pl;
             }
         }
     }
