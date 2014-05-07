@@ -216,11 +216,6 @@ namespace YARPLUGIN
             Reset();
         }
 
-        private void OnProfileLoaded(object sender, object e)
-        {
-            Send("NewDifficultyLevel", true); // Request Difficulty level
-        }
-
         private void StartYarWorker()
         {
             if (_yarThread == null || (_yarThread != null && !_yarThread.IsAlive))
