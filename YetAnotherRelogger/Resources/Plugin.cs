@@ -196,7 +196,7 @@ namespace YARPLUGIN
 
             Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
             loggingHierarchy.Root.AddAppender(YARAppender);
-                        
+
             Reset();
 
             StartYarWorker();
@@ -216,7 +216,7 @@ namespace YARPLUGIN
             Reset();
         }
 
-        private void StartYarWorker()
+		private void StartYarWorker()
         {
             if (_yarThread == null || (_yarThread != null && !_yarThread.IsAlive))
             {
@@ -293,9 +293,6 @@ namespace YARPLUGIN
         {
             try
             {
-                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
-                    return;
-
                 if (!IsEnabled)
                     ResetBotBehavior();
 
@@ -473,6 +470,15 @@ namespace YARPLUGIN
         {
             try
             {
+                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
+                {
+                    ErrorHandling();
+                    // YAR Health Check
+                    _pulseCheck = true;
+                    _bs.LastPulse = DateTime.UtcNow.Ticks;
+                    return;
+                }
+                
                 if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
                 {
                     Log("YAR Plugin Pulse from invalid state");

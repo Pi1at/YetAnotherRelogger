@@ -6,7 +6,16 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml.Serialization;
 using YetAnotherRelogger.Helpers.Tools;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Reflection;
+using System.Runtime.InteropServices;
+using System.Runtime.CompilerServices;
+using System.Windows.Forms;
 using YetAnotherRelogger.Properties;
+
 
 namespace YetAnotherRelogger.Helpers.Bot
 {
@@ -24,6 +33,36 @@ namespace YetAnotherRelogger.Helpers.Bot
             CpuCount = Environment.ProcessorCount;
             ProcessorAffinity = AllProcessors;
         }
+
+
+        //!!!
+
+        IntPtr hControl;
+
+        #region WINAPI
+        [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
+        public static extern IntPtr GetFocus();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr GetForegroundWindow();
+
+        [DllImport("user32.dll")]
+        public static extern IntPtr SetForegroundWindow(IntPtr hWnd);
+
+        [DllImport("user32.dll", CharSet = CharSet.Auto)]
+        static extern bool PostMessage(IntPtr hWnd, int Msg, char wParam, int lParam);
+
+        [DllImport("user32")]
+        public static extern bool AttachThreadInput(uint idAttach, uint idAttachTo, bool fAttach);
+
+        [DllImport("user32")]
+        public static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
+
+        [DllImport("kernel32.dll", SetLastError = true)]
+        static extern uint GetCurrentThreadId();
+        #endregion
+        //!!!
+
 
         [XmlIgnore]
         [NoCopy]
@@ -293,9 +332,13 @@ namespace YetAnotherRelogger.Helpers.Bot
                 arguments += " -key=" + Key;
                 arguments += " -autostart";
                 arguments += string.Format(" -routine=\"{0}\"", CombatRoutine);
+
+                if (!Parent.Diablo.UseAuthenticator)
+                {
                 arguments += string.Format(" -bnetaccount=\"{0}\"", Parent.Diablo.Username);
                 arguments += string.Format(" -bnetpassword=\"{0}\"", Parent.Diablo.Password);
-
+                }
+                
                 if (profilepath != null)
                 {
                     // Check if current profile path is Kickstart
@@ -423,6 +466,36 @@ namespace YetAnotherRelogger.Helpers.Bot
                     break;
                 if (!Parent.AntiIdle.IsInitialized)
                     continue; // Retry
+
+                /*
+                //!!!
+                //Parent.Diablo.Proc.Id
+
+                if (Parent.Diablo.UseAuthenticator)
+                {
+
+                    Thread.Sleep(1000);
+
+                    Logger.Instance.Write("Diablo:{0}: Trying to authentificate", Parent.Diablo.Proc.Id);
+                    BattleNetAuthenticator auth = new BattleNetAuthenticator();
+                    auth.Restore(Parent.Diablo.Serial2, Parent.Diablo.RestoreCode);
+                    string authcode = Convert.ToString(auth.CurrentCode);
+
+                    try
+                    {
+                        SetForegroundWindow(hControl);
+                        SendKeys.SendWait(authcode);
+                        SendKeys.SendWait("~");
+                    }
+                    catch (Exception exc)
+                    {
+                        MessageBox.Show(exc.Message);
+                    }
+                }
+
+                //!!!
+                */
+
 
                 // We are ready to go
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Initialized! We are ready to go", Proc.Id);
