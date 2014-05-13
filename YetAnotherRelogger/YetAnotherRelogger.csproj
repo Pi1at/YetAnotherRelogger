@@ -419,13 +419,31 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(SolutionDir)ThirdParty\mt\mt.exe" -manifest "$(ProjectDir)Properties\app.manifest"  -outputresource:"$(TargetDir)$(TargetFileName)"
-if "$(ConfigurationName)"=="Release" "$(SolutionDir)ThirdParty\ILMerge.exe" /v4 /target:winexe /wildcards /out:"$(TargetDir)$(TargetName).merged.exe" "$(TargetDir)$(TargetFileName)" "$(TargetDir)*.dll"
-if "$(ConfigurationName)"=="Release" del "$(TargetPath)"
-if "$(ConfigurationName)"=="Release" ren "$(TargetDir)$(TargetName).merged.exe" "$(TargetFileName)"
-if "$(ConfigurationName)"=="Release" "$(SolutionDir)ThirdParty\PETool\PETool.exe" "$(TargetPath)" /DeStamp /VerChange "OriginalFilename" "" /VerChange "InternalName" "" /VerChange "FileVersion" "" /VerChange "ProductVersion" "" /VerChange "Assembly Version" ""
-if "$(ConfigurationName)"=="Release" "$(TargetPath)" "$(SolutionDir)LatestBuild\$(TargetFileName)" /Y
-</PostBuildEvent>
+    <PostBuildEvent>echo Setting up Manifest
+"$(SolutionDir)ThirdParty\mt\mt.exe" -manifest "$(ProjectDir)Properties\app.manifest"  -outputresource:"$(TargetDir)$(TargetFileName)"
+
+echo Merging with ILMerge
+"$(SolutionDir)ThirdParty\ILMerge.exe" /v4 /target:winexe /wildcards /out:"$(TargetDir)$(TargetName).merged.exe" "$(TargetDir)$(TargetFileName)" "$(TargetDir)*.dll"
+
+if "$(ConfigurationName)"=="Release" (
+echo Deleting "$(TargetPath)"
+del "$(TargetPath)"
+
+echo Renaming "$(TargetDir)$(TargetName).merged.exe" to "$(TargetFileName)"
+ren "$(TargetDir)$(TargetName).merged.exe" "$(TargetFileName)"
+
+echo Destamping with PETool
+"$(SolutionDir)ThirdParty\PETool\PETool.exe" "$(TargetPath)" /DeStamp /VerChange "OriginalFilename" "" /VerChange "InternalName" "" /VerChange "FileVersion" "" /VerChange "ProductVersion" "" /VerChange "Assembly Version" ""
+
+
+echo Deleting "$(SolutionDir)LatestBuild\*"
+rd /S /Q "$(SolutionDir)LatestBuild\*"
+
+echo Creating "$(SolutionDir)LatestBuild\"
+mkdir "$(SolutionDir)LatestBuild\"
+echo Copying "$(TargetPath)"  to "$(SolutionDir)LatestBuild\$(TargetFileName)"
+copy "$(TargetPath)" "$(SolutionDir)LatestBuild\$(TargetFileName)" /Y
+)</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>if exist {$(SolutionDir)..\Plugins\YAR\Plugin.cs} (

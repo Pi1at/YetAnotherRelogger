@@ -6,17 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Xml.Serialization;
 using YetAnotherRelogger.Helpers.Tools;
-
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Runtime.CompilerServices;
-using System.Windows.Forms;
 using YetAnotherRelogger.Properties;
 
 
@@ -36,12 +26,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             CpuCount = Environment.ProcessorCount;
             ProcessorAffinity = AllProcessors;
         }
-
-
-        //!!!
-
-        IntPtr hControl;
-
+        
         #region WINAPI
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr GetFocus();
@@ -64,7 +49,6 @@ namespace YetAnotherRelogger.Helpers.Bot
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern uint GetCurrentThreadId();
         #endregion
-        //!!!
 
 
         [XmlIgnore]
