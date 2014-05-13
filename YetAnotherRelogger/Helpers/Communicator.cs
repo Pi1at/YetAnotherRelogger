@@ -50,7 +50,7 @@ namespace YetAnotherRelogger.Helpers
 
         public void Start()
         {
-            _threadWorker = new Thread(Worker) {IsBackground = true};
+            _threadWorker = new Thread(Worker) { IsBackground = true };
             _threadWorker.Start();
         }
 
@@ -83,7 +83,7 @@ namespace YetAnotherRelogger.Helpers
             {
                 _stream = stream;
                 _reader = new StreamReader(stream);
-                _writer = new StreamWriter(stream) {AutoFlush = true};
+                _writer = new StreamWriter(stream) { AutoFlush = true };
             }
 
             public void Dispose()
@@ -95,9 +95,8 @@ namespace YetAnotherRelogger.Helpers
                     {
                         _stream.Close();
                     }
-                    catch
-                    {
-                    }
+                    catch (ObjectDisposedException) { }
+                    catch { }
                     _stream = null;
                 }
                 if (_reader != null)
@@ -106,9 +105,8 @@ namespace YetAnotherRelogger.Helpers
                     {
                         _reader.Close();
                     }
-                    catch
-                    {
-                    }
+                    catch (ObjectDisposedException) { }
+                    catch { }
                     _reader = null;
                 }
                 if (_writer != null)
@@ -117,9 +115,8 @@ namespace YetAnotherRelogger.Helpers
                     {
                         _writer.Close();
                     }
-                    catch
-                    {
-                    }
+                    catch (ObjectDisposedException) { }
+                    catch { }
                     _writer = null;
                 }
             }
@@ -180,7 +177,7 @@ namespace YetAnotherRelogger.Helpers
             private void HandleXml(string data)
             {
                 BotStats stats;
-                var xml = new XmlSerializer(typeof (BotStats));
+                var xml = new XmlSerializer(typeof(BotStats));
                 using (var stringReader = new StringReader(data))
                 {
                     stats = xml.Deserialize(stringReader) as BotStats;
@@ -298,7 +295,7 @@ namespace YetAnotherRelogger.Helpers
                             b.AntiIdle.State = IdleState.StartDelay;
                             Send("Roger!");
                             break;
-                            // Giles Compatibility
+                        // Giles Compatibility
                         case "ThirdpartyStop":
                             b.Status = string.Format("Thirdparty Stop: {0:d-m H:M:s}", DateTime.UtcNow);
                             b.AntiIdle.State = IdleState.UserStop;
@@ -330,7 +327,7 @@ namespace YetAnotherRelogger.Helpers
                         case "D3Exit":
                             Send("Shutdown");
                             break;
-                            // Unknown command reply
+                        // Unknown command reply
                         default:
                             Send("Unknown command!");
                             Logger.Instance.WriteGlobal("Unknown command recieved: " + msg);

@@ -38,6 +38,9 @@ namespace YetAnotherRelogger
 
         public void Start()
         {
+            if (_threadRelogger != null && (_threadRelogger == null || _threadRelogger.IsAlive))
+                return;
+
             _isStopped = false;
             _threadRelogger = new Thread(ReloggerWorker) { IsBackground = true };
             _threadRelogger.Start();
@@ -48,7 +51,10 @@ namespace YetAnotherRelogger
         {
             _isStopped = true;
             _threadRelogger.Abort();
+            _threadRelogger = null;
         }
+
+        private Thread _blizzErrorKiller;
 
         private void ReloggerWorker()
         {
@@ -92,30 +98,32 @@ namespace YetAnotherRelogger
                         continue;
                     }
 
-                    new Thread(() =>
+                    List<Process> blizzardErrorProcs =
+                         (from p in Process.GetProcessesByName("BlizzardError.exe")
+                          select p).ToList();
+                    if (blizzardErrorProcs.Any() && (_blizzErrorKiller == null) || (_blizzErrorKiller != null && !_blizzErrorKiller.IsAlive))
+                    {
+                        _blizzErrorKiller = new Thread(() =>
                     {
                         try
                         {
-                            List<Process> BlizzardErrorProcs =
-                                (from p in Process.GetProcessesByName("BlizzardError.exe")
-                                 select p).ToList();
-                            if (BlizzardErrorProcs.Any())
-                            {
-                                foreach (var p in BlizzardErrorProcs)
+                                foreach (var p in blizzardErrorProcs)
                                 {
                                     Logger.Instance.Write("Killing BlizzardError.exe with PID {0}", p.Id);
                                     p.Kill();
                                 }
-                            }
+
                         }
                         catch (Exception ex)
                         {
-                            Logger.Instance.Write("Exception killing BlizzardError.exe: " + ex.ToString());
+                                Logger.Instance.Write("Exception killing BlizzardError.exe: " + ex);
                         }
                     })
                     {
                         IsBackground = true
-                    }.Start();
+                        };
+                        _blizzErrorKiller.Start();
+                    }
 
                     // Check / validate internet connection
                     if (!ConnectionCheck.IsConnected || !ConnectionCheck.ValidConnection)

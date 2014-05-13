@@ -563,8 +563,14 @@ namespace YARPLUGIN
 
                     _bs.IsPaused = BotMain.IsPaused;
 
+                    bool isInGame = false;
+                    try
+                    {
+                        isInGame = ZetaDia.IsInGame;
+                    }
+                    catch { }
                     // Calculate game runs
-                    if (ZetaDia.IsInGame)
+                    if (isInGame)
                     {
                         _bs.LastGame = DateTime.UtcNow.Ticks;
                         _bs.IsInGame = true;

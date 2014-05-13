@@ -11,7 +11,8 @@
     <RootNamespace>YetAnotherRelogger</RootNamespace>
     <AssemblyName>YetAnotherRelogger</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <PublishUrl>publish\</PublishUrl>
@@ -41,7 +42,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>none</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -77,6 +78,22 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>YetAnotherRelogger.Program</StartupObject>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <OutputPath>bin\Release\</OutputPath>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="InputSimulator">
@@ -403,9 +420,9 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>"$(SolutionDir)ThirdParty\mt\mt.exe" -manifest "$(ProjectDir)Properties\app.manifest"  -outputresource:"$(TargetDir)$(TargetFileName)"
-"$(SolutionDir)ThirdParty\ILMerge.exe" /v4 /target:winexe /wildcards /out:"$(TargetDir)$(TargetName).merged.exe" "$(TargetDir)$(TargetFileName)" "$(TargetDir)*.dll"
-del "$(TargetPath)"
-ren "$(TargetDir)$(TargetName).merged.exe" "$(TargetFileName)"
+if "$(ConfigurationName)"=="Release" "$(SolutionDir)ThirdParty\ILMerge.exe" /v4 /target:winexe /wildcards /out:"$(TargetDir)$(TargetName).merged.exe" "$(TargetDir)$(TargetFileName)" "$(TargetDir)*.dll"
+if "$(ConfigurationName)"=="Release"del "$(TargetPath)"
+if "$(ConfigurationName)"=="Release"ren "$(TargetDir)$(TargetName).merged.exe" "$(TargetFileName)"
 
 if "$(ConfigurationName)"=="Release" "$(SolutionDir)ThirdParty\PETool\PETool.exe" "$(TargetPath)" /DeStamp /VerChange "OriginalFilename" "" /VerChange "InternalName" "" /VerChange "FileVersion" "" /VerChange "ProductVersion" "" /VerChange "Assembly Version" ""
 

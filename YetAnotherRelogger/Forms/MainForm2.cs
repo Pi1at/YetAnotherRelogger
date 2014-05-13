@@ -24,7 +24,7 @@ namespace YetAnotherRelogger.Forms
     public partial class MainForm2 : Form
     {
         private bool bClose;
-        private Thread m_RestartBotsThread;
+        private Thread _restartBotsThread;
         private ContextMenu m_menu;
 
         public MainForm2()
@@ -40,27 +40,27 @@ namespace YetAnotherRelogger.Forms
             if (!CommandLineArgs.SafeMode)
             {
                 // Set window location
-                if (Settings.Default.WindowLocation != null && Settings.Default.WindowLocation != Point.Empty)
+                if (Settings.Default.WindowLocation != Point.Empty)
                 {
-
-                    if (Settings.Default.WindowLocation.X < screenMaxSize.X && Settings.Default.WindowLocation.Y < screenMaxSize.Y &&
-                        Settings.Default.WindowLocation.Y > 0 && Settings.Default.WindowLocation.Y > 0)
+                    if (Settings.Default.WindowLocation.X <= screenMaxSize.X && Settings.Default.WindowLocation.Y <= screenMaxSize.Y &&
+                        Settings.Default.WindowLocation.Y >= 0 && Settings.Default.WindowLocation.Y >= 0)
                     {
-                        this.Location = Settings.Default.WindowLocation;
+                        Location = Settings.Default.WindowLocation;
                     }
                 }
 
                 // Set window size
-                if (Settings.Default.WindowSize != null &&
-                    Settings.Default.WindowSize.Width > 0 &&
-                    Settings.Default.WindowSize.Height > 0 &&
-                    Settings.Default.WindowSize.Width < screenMaxSize.X &&
-                    Settings.Default.WindowSize.Height < screenMaxSize.Y)
+                if (Settings.Default.WindowSize.Width >= 0 &&
+                    Settings.Default.WindowSize.Height >= 0 &&
+                    Settings.Default.WindowSize.Width <= screenMaxSize.X &&
+                    Settings.Default.WindowSize.Height <= screenMaxSize.Y)
                 {
-                    this.Size = Settings.Default.WindowSize;
+                    Size = Settings.Default.WindowSize;
                 }
                 splitContainer1.SplitterDistance = Settings.Default.SplitterDistance;
             }
+
+            Resize += MainForm2_Resize;
 
             Text = string.Format("R-YAR [{0}] BETA", Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
@@ -86,8 +86,6 @@ namespace YetAnotherRelogger.Forms
                 // Update Regkey
                 RegistryClass.WindowsAutoStartAdd();
             }
-
-            Resize += MainForm2_Resize;
 
             // Set stuff for list of bots
             dataGridView1.DoubleBuffered(true);
@@ -153,18 +151,11 @@ namespace YetAnotherRelogger.Forms
         private void SaveWindowState()
         {
             // Copy window location to app settings
-            Settings.Default.WindowLocation = this.Location;
+            Settings.Default.WindowLocation = Location;
             Settings.Default.SplitterDistance = splitContainer1.SplitterDistance;
 
             // Copy window size to app settings
-            if (this.WindowState == FormWindowState.Normal)
-            {
-                Settings.Default.WindowSize = this.Size;
-            }
-            else
-            {
-                Settings.Default.WindowSize = this.RestoreBounds.Size;
-            }
+            Settings.Default.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
 
             // Save settings
             Settings.Default.Save();
@@ -330,9 +321,9 @@ namespace YetAnotherRelogger.Forms
 
         private void btnRestartAllDb_Click(object sender, EventArgs e)
         {
-            m_RestartBotsThread = new Thread(RestartAllBots);
-            m_RestartBotsThread.IsBackground = true;
-            m_RestartBotsThread.Start();
+            DisableMainFormButtons();
+            _restartBotsThread = new Thread(RestartAllBots) { IsBackground = true };
+            _restartBotsThread.Start();
             btnRestartAllDb.Enabled = false;
         }
 
@@ -340,11 +331,9 @@ namespace YetAnotherRelogger.Forms
         {
             lock (BotSettings.Instance)
             {
-                var runningBots = new List<BotClass>();
-                foreach (BotClass bot in BotSettings.Instance.Bots.Where(b => b.IsRunning))
-                {
-                    runningBots.Add(bot);
-                }
+
+                var runningBots = BotSettings.Instance.Bots.Where(b => b.IsRunning).ToList();
+
                 if (runningBots.Any())
                 {
                     Relogger.Instance.Stop();
@@ -354,17 +343,22 @@ namespace YetAnotherRelogger.Forms
                         swKill.Start();
                         bot.Demonbuddy.Stop();
                         int pid = Convert.ToInt32(bot.DemonbuddyPid);
-                        if (Process.GetProcesses().Any(p => p.Id == pid))
+                        if (Process.GetProcesses().All(p => p.Id != pid))
+                            continue;
+                        try
                         {
                             Process p = Process.GetProcessById(pid);
-                            while (p != null && !p.HasExited && swKill.ElapsedMilliseconds < 10000)
+                            while (!p.HasExited && swKill.ElapsedMilliseconds < 10000)
                             {
                                 Thread.Sleep(10);
                             }
                         }
+                        catch (Win32Exception) { Thread.Sleep(250); }
+                        catch { Thread.Sleep(250); }
                     }
                     Relogger.Instance.Start();
                 }
+                EnableMainFormButtons();
             }
 
             btnRestartAllDb.BeginInvoke(new System.Action(() => btnRestartAllDb.Enabled = true));
@@ -531,6 +525,36 @@ namespace YetAnotherRelogger.Forms
                     Logger.Instance.Write("Unable to open log file {0}: {1}", Logger.Instance.Logfile, ex);
                 }
             }
+        }
+
+        public void DisableMainFormButtons()
+        {
+            btnClone.Enabled = false;
+            btnClose.Enabled = false;
+            btnEdit.Enabled = false;
+            btnNew.Enabled = false;
+            btnOpenLog.Enabled = false;
+            btnPause.Enabled = false;
+            btnStartAll.Enabled = false;
+            btnStopAll.Enabled = false;
+
+            dataGridView1.Enabled = false;
+            contextMenuStrip1.Enabled = false;
+        }
+
+        public void EnableMainFormButtons()
+        {
+            btnClone.Enabled = true;
+            btnClose.Enabled = true;
+            btnEdit.Enabled = true;
+            btnNew.Enabled = true;
+            btnOpenLog.Enabled = true;
+            btnPause.Enabled = true;
+            btnStartAll.Enabled = true;
+            btnStopAll.Enabled = true;
+
+            dataGridView1.Enabled = true;
+            contextMenuStrip1.Enabled = true;
         }
 
         #region Settings Tree
