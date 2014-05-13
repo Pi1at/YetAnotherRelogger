@@ -421,12 +421,11 @@
   <PropertyGroup>
     <PostBuildEvent>"$(SolutionDir)ThirdParty\mt\mt.exe" -manifest "$(ProjectDir)Properties\app.manifest"  -outputresource:"$(TargetDir)$(TargetFileName)"
 if "$(ConfigurationName)"=="Release" "$(SolutionDir)ThirdParty\ILMerge.exe" /v4 /target:winexe /wildcards /out:"$(TargetDir)$(TargetName).merged.exe" "$(TargetDir)$(TargetFileName)" "$(TargetDir)*.dll"
-if "$(ConfigurationName)"=="Release"del "$(TargetPath)"
-if "$(ConfigurationName)"=="Release"ren "$(TargetDir)$(TargetName).merged.exe" "$(TargetFileName)"
-
+if "$(ConfigurationName)"=="Release" del "$(TargetPath)"
+if "$(ConfigurationName)"=="Release" ren "$(TargetDir)$(TargetName).merged.exe" "$(TargetFileName)"
 if "$(ConfigurationName)"=="Release" "$(SolutionDir)ThirdParty\PETool\PETool.exe" "$(TargetPath)" /DeStamp /VerChange "OriginalFilename" "" /VerChange "InternalName" "" /VerChange "FileVersion" "" /VerChange "ProductVersion" "" /VerChange "Assembly Version" ""
-
-if "$(ConfigurationName)"=="Release" copy "$(TargetPath)" "$(SolutionDir)LatestBuild\$(TargetFileName)" /Y</PostBuildEvent>
+if "$(ConfigurationName)"=="Release" "$(TargetPath)" "$(SolutionDir)LatestBuild\$(TargetFileName)" /Y
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>if exist {$(SolutionDir)..\Plugins\YAR\Plugin.cs} (

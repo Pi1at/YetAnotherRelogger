@@ -30,18 +30,21 @@ namespace YetAnotherRelogger.Helpers.Bot
 
 
         [XmlIgnore]
+        [NoCopy]
         public int MaxRuns
         {
             get { return Current.Runs + _addRuns; }
         }
 
         [XmlIgnore]
+        [NoCopy]
         public int MaxTime
         {
             get { return Current.Minutes + _addTime; }
         }
 
         [XmlIgnore]
+        [NoCopy]
         public string GetProfile
         {
             get
@@ -82,6 +85,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsDone
         {
             get

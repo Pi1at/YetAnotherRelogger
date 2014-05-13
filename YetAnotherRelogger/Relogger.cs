@@ -133,7 +133,7 @@ namespace YetAnotherRelogger
                         continue;
                     }
 
-                    foreach (BotClass bot in BotSettings.Instance.Bots.Where(bot => bot != null))
+                    foreach (BotClass bot in BotSettings.Instance.Bots.Where(bot => bot != null).ToList())
                     {
                         if (Program.Pause)
                             break;

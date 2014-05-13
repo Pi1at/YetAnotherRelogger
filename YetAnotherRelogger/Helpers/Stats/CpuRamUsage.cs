@@ -89,9 +89,19 @@ namespace YetAnotherRelogger.Helpers.Stats
                         if (proc.Id == 0)
                             continue;
 
+                        try
+                        {
+                            if (proc.HasExited)
+                                continue;
+                        }
+                        catch { continue; }
+
                         Int64 procTotal;
                         double oldCpuUsage = 0d;
                         ProcUsage p = GetById(proc.Id);
+                        if (proc.HasExited)
+                            continue;
+
                         if (p != null)
                         {
                             procTotal = proc.TotalProcessorTime.Ticks - p.LastProcTime.Ticks;
