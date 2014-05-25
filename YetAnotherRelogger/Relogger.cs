@@ -54,7 +54,7 @@ namespace YetAnotherRelogger
             _threadRelogger = null;
         }
 
-        private Thread _blizzErrorKiller;
+        private DateTime _lastSaveSettings = DateTime.MinValue;
 
         private void ReloggerWorker()
         {
@@ -101,28 +101,28 @@ namespace YetAnotherRelogger
                     List<Process> blizzardErrorProcs =
                          (from p in Process.GetProcessesByName("BlizzardError.exe")
                           select p).ToList();
-                    if (blizzardErrorProcs.Any() && (_blizzErrorKiller == null) || (_blizzErrorKiller != null && !_blizzErrorKiller.IsAlive))
-                    {
-                        _blizzErrorKiller = new Thread(() =>
+                    if (blizzardErrorProcs.Any())
                     {
                         try
                         {
-                                foreach (var p in blizzardErrorProcs)
-                                {
-                                    Logger.Instance.Write("Killing BlizzardError.exe with PID {0}", p.Id);
-                                    p.Kill();
-                                }
+                            foreach (var p in blizzardErrorProcs)
+                            {
+                                Logger.Instance.Write("Killing BlizzardError.exe with PID {0}", p.Id);
+                                p.Kill();
+                            }
 
                         }
                         catch (Exception ex)
                         {
-                                Logger.Instance.Write("Exception killing BlizzardError.exe: " + ex);
+                            Logger.Instance.Write("Exception killing BlizzardError.exe: " + ex);
                         }
-                    })
+                    }
+
+                    if (DateTime.UtcNow.Subtract(_lastSaveSettings).TotalSeconds > 10)
                     {
-                        IsBackground = true
-                        };
-                        _blizzErrorKiller.Start();
+                        _lastSaveSettings = DateTime.UtcNow;
+                        Settings.Default.Save();
+                        BotSettings.Instance.Save();
                     }
 
                     // Check / validate internet connection

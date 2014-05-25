@@ -60,6 +60,7 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
+using System.Windows.Documents;
 using System.Xml.Serialization;
 using log4net;
 using log4net.Appender;
@@ -157,7 +158,7 @@ namespace YARPLUGIN
         private bool _pulseFix;
         private YARAppender YARAppender = new YARAppender();
 
-        public bool IsEnabled { get { return PluginManager.Plugins.Any(p => p.Plugin.Name == this.Name && p.Enabled); } }
+        public bool IsEnabled { get; set; }
 
         public static void Log(string str)
         {
@@ -181,39 +182,106 @@ namespace YARPLUGIN
         {
             _bs.Pid = Process.GetCurrentProcess().Id;
         }
+
+        private bool _appenderAdded;
+        private object _appenderLock = 0;
         public void OnInitialize()
         {
             Log("YAR Plugin Initialized with PID: {0}", _bs.Pid);
+
             // Force enable YAR
-            foreach (var plugin in PluginManager.Plugins)
-            {
-                if (!plugin.Enabled && plugin.Plugin.Name == this.Name)
-                    plugin.Enabled = true;
-            }
+            var enabledPluginsList = PluginManager.Plugins.Where(p => p.Enabled).Select(p => p.Plugin.Name).ToList();
+            if (!enabledPluginsList.Contains(Name))
+                enabledPluginsList.Add(Name);
+            PluginManager.SetEnabledPlugins(enabledPluginsList.ToArray());
 
             _bs = new BotStats();
             _bs.LastPulse = DateTime.UtcNow.Ticks;
 
-            Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
-            loggingHierarchy.Root.AddAppender(YARAppender);
+            lock (_appenderLock)
+            {
+                if (!_appenderAdded)
+                {
+                    Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
+                    loggingHierarchy.Root.AddAppender(YARAppender);
+                    _appenderAdded = true;
+                }
+            }
 
             Reset();
 
             StartYarWorker();
 
             Pulsator.OnPulse += Pulsator_OnPulse;
+            TreeHooks.Instance.OnHooksCleared += Instance_OnHooksCleared;
 
             Send("Initialized");
         }
 
+        void BotMain_OnStart(IBot bot)
+        {
+            InsertOrRemoveHook();
+        }
+
+        void Instance_OnHooksCleared(object sender, EventArgs e)
+        {
+            InsertOrRemoveHook();
+        }
 
         public void OnEnabled()
         {
+            IsEnabled = true;
             Log("YAR Plugin Enabled with PID: {0}", _bs.Pid);
+            BotMain.OnStart += BotMain_OnStart;
 
             StartYarWorker();
             Send("NewDifficultyLevel", true); // Request Difficulty level
             Reset();
+        }
+
+        public void OnDisabled()
+        {
+            IsEnabled = false;
+            Pulsator.OnPulse -= Pulsator_OnPulse;
+            BotMain.OnStart -= BotMain_OnStart;
+            TreeHooks.Instance.OnHooksCleared -= Instance_OnHooksCleared;
+
+            lock (_appenderLock)
+            {
+                if (_appenderAdded)
+                {
+                    Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
+                    _appenderAdded = false;
+                    loggingHierarchy.Root.RemoveAppender(YARAppender);
+                }
+            }
+
+            Log("YAR Plugin Disabled!");
+
+            // Pulsefix disabled plugin
+            if (_pulseFix)
+            {
+                _pulseFix = false;
+                return; // Stop here to prevent Thread abort
+            }
+            try
+            {
+                if (_yarThread.IsAlive)
+                {
+                    // user disabled plugin abort Thread
+                    _yarThread.Abort();
+                }
+            }
+            catch (ThreadAbortException) { }
+            catch (Exception ex)
+            {
+                Log(ex.ToString());
+            }
+        }
+
+        public void OnPulse()
+        {
+            // Do nothing here, we're hooked into TreeStart
         }
 
         private void OnProfileLoaded(object sender, object e)
@@ -240,6 +308,8 @@ namespace YARPLUGIN
         {
             _bs.LastPulse = DateTime.UtcNow.Ticks;
 
+            ErrorHandling();
+
             if (IsEnabled)
                 StartYarWorker();
         }
@@ -250,78 +320,22 @@ namespace YARPLUGIN
         }
 
 
-        public void OnDisabled()
-        {
-            Pulsator.OnPulse -= Pulsator_OnPulse;
-
-            Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
-            loggingHierarchy.Root.RemoveAppender(YARAppender);
-
-            ResetBotBehavior();
-
-            Log("YAR Plugin Disabled!");
-
-            // Pulsefix disabled plugin
-            if (_pulseFix)
-            {
-                _pulseFix = false;
-                return; // Stop here to prevent Thread abort
-            }
-            try
-            {
-                if (_yarThread.IsAlive)
-                {
-                    // user disabled plugin abort Thread
-                    _yarThread.Abort();
-                }
-            }
-            catch (ThreadAbortException) { }
-            catch (Exception ex)
-            {
-                Log(ex.ToString());
-            }
-        }
-
-        private static void ResetBotBehavior()
-        {
-            if (originalBotBehavior != null)
-            {
-                Log("Resetting BotBehavior TreeHook to Original");
-                TreeHooks.Instance.ReplaceHook("BotBehavior", originalBotBehavior[0]);
-            }
-        }
-
-        private static Stopwatch pulseTimer = new Stopwatch();
         LoggingEvent[] _logBuffer;
 
-        private void Pulse_Main(object sender, EventArgs e)
+        /// <summary>
+        /// Reads through the LogMessage queue and sends updates to YAR
+        /// </summary>
+        private void LogWorker()
         {
             try
             {
-                if (!IsEnabled)
-                    ResetBotBehavior();
-
-                // Handle errors and other strange situations
-                ErrorHandling();
-
-                // YAR Health Check
-                _pulseCheck = true;
-                _bs.LastPulse = DateTime.UtcNow.Ticks;
-
-                _bs.PluginPulse = DateTime.UtcNow.Ticks;
                 _bs.IsRunning = BotMain.IsRunning;
 
-                if (BotMain.IsPaused || BotMain.IsPausedForStateExecution)
-                {
-                    _bs.IsPaused = true;
-                }
-                else if (BotMain.IsRunning)
+                if (BotMain.IsRunning)
                 {
                     _bs.IsPaused = false;
                     _bs.LastRun = DateTime.UtcNow.Ticks;
                 }
-                else
-                    _bs.IsPaused = false;
 
                 Queue<LoggingEvent> localQueue = new Queue<LoggingEvent>();
                 lock (YARAppender.Messages)
@@ -413,41 +427,35 @@ namespace YARPLUGIN
                     {
                         LogException(ex);
                     }
-
                 }
 
-                if (!pulseTimer.IsRunning)
-                {
-                    pulseTimer.Start();
-                }
-
-                if (pulseTimer.ElapsedMilliseconds <= 1000)
-                {
-                    return;
-                }
-
-                if (pulseTimer.ElapsedMilliseconds > 1000)
-                    pulseTimer.Restart();
             }
             catch (Exception ex)
             {
-                Log("Exception in Pulse_Main: {0}", ex);
+                Log("Exception in LogWorker: {0}", ex);
             }
         }
 
-        private static List<Composite> originalBotBehavior;
-        private void ReplaceBotBehavior()
+        private static Composite _yarHook;
+        private void InsertOrRemoveHook(bool forceInsert = false)
         {
             try
             {
-                if (originalBotBehavior == null)
-                    originalBotBehavior = TreeHooks.Instance.Hooks["BotBehavior"];
-
-                if (DateTime.UtcNow.Subtract(new DateTime(_bs.LastPulse)).TotalMilliseconds > 5000)
+                if (IsEnabled || forceInsert)
                 {
-                    Log("Replacing BotBehavior TreeHook");
-                    TreeHooks.Instance.ReplaceHook("BotBehavior", CreateBotBehavior(originalBotBehavior));
-                    _bs.LastPulse = DateTime.UtcNow.Ticks;
+                    if (_yarHook == null)
+                        _yarHook = CreateYarHook();
+
+                    Log("Inserting YAR Hook");
+                    TreeHooks.Instance.InsertHook("OutOfgame", 0, _yarHook);
+                }
+                else
+                {
+                    if (_yarHook != null)
+                    {
+                        Log("Removing YAR Hook");
+                        TreeHooks.Instance.RemoveHook("OutOfgame", _yarHook);
+                    }
                 }
             }
             catch (Exception ex)
@@ -456,43 +464,39 @@ namespace YARPLUGIN
             }
         }
 
-        internal Composite CreateBotBehavior(List<Composite> originals)
+        internal Composite CreateYarHook()
         {
-            try
-            {
-                return new Sequence(
-                    new Action(ret => Pulse_Main(null, null)),
-                    originals[0]);
-            }
-            catch (Exception ex)
-            {
-                Log(ex);
-                return originals.FirstOrDefault();
-            }
+            return new Action(ret => TreeStartPulse());
         }
 
-        public void OnPulse()
+        /// <summary>
+        /// This is called from TreeStart
+        /// </summary>
+        /// <returns></returns>
+        public RunStatus TreeStartPulse()
         {
             try
             {
-                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
+                // YAR Health Check
+                _pulseCheck = true;
+                _bs.LastPulse = DateTime.UtcNow.Ticks;
+
+                _bs.PluginPulse = DateTime.UtcNow.Ticks;
+
+                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected || !ZetaDia.Service.Hero.IsValid)
                 {
                     ErrorHandling();
-                    // YAR Health Check
-                    _pulseCheck = true;
-                    _bs.LastPulse = DateTime.UtcNow.Ticks;
-                    return;
+
+                    // We handled an error, we should 
+                    return RunStatus.Failure;
                 }
-                
+
                 if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
                 {
-                    Log("YAR Plugin Pulse from invalid state");
-                    return;
+                    return RunStatus.Failure;
                 }
 
-                Pulse_Main(null, null);
-
-                ReplaceBotBehavior();
+                LogWorker();
 
                 // in-game / character data 
                 _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
@@ -526,7 +530,7 @@ namespace YARPLUGIN
             {
                 Log(ex);
             }
-
+            return RunStatus.Failure;
         }
         #endregion
 
@@ -544,10 +548,6 @@ namespace YARPLUGIN
         }
         #endregion
 
-        #region Events
-        // Nothing here :)
-        #endregion
-
         #region yarWorker
         public void YarWorker()
         {
@@ -560,8 +560,6 @@ namespace YARPLUGIN
                         _bs.IsRunning = BotMain.BotThread.IsAlive;
                     else
                         _bs.IsRunning = false;
-
-                    _bs.IsPaused = BotMain.IsPaused;
 
                     bool isInGame = false;
                     try
@@ -588,6 +586,8 @@ namespace YARPLUGIN
                     // Send stats
                     Send("XML:" + _bs.ToXmlString(), xml: true);
 
+                    LogWorker();
+
                     Thread.Sleep(750);
                 }
                 catch (ThreadAbortException)
@@ -605,41 +605,48 @@ namespace YARPLUGIN
         #region Handle Errors and strange situations
 
         private bool handlederror;
-        private void ErrorHandling()
+        private bool ErrorHandling()
         {
+            bool errorHandled = false;
             if (ErrorDialog.IsVisible)
-            { // Check if Demonbuddy found errordialog
+            {
+                // Check if Demonbuddy found errordialog
                 if (!handlederror)
                 {
                     Send("CheckConnection", pause: true);
                     handlederror = true;
+                    errorHandled = true;
                 }
                 else
                 {
                     handlederror = false;
                     ErrorDialog.Click();
-                    bootTo();
-                }
-            }
-            else if (UIElementTester.isValid(_UIElement.errordialog_okbutton))
-            { // Demonbuddy failed to find error dialog use static hash to find the OK button
-                Send("CheckConnection", pause: true);
-                UIElement.FromHash(_UIElement.errordialog_okbutton).Click();
-                bootTo();
-            }
-            else
-            {
-                handlederror = false;
-                if (UIElementTester.isValid(_UIElement.loginscreen_username))
-                { // We are at loginscreen
-                    Send("CheckConnection", pause: true);
+                    CheckForLoginScreen();
+                    errorHandled = true;
                 }
             }
 
+            if (UIElementTester.isValid(_UIElement.errordialog_okbutton))
+            {
+                // Demonbuddy failed to find error dialog use static hash to find the OK button
+                Send("CheckConnection", pause: true);
+                UIElement.FromHash(_UIElement.errordialog_okbutton).Click();
+                CheckForLoginScreen();
+                errorHandled = true;
+            }
+
+            handlederror = false;
+            if (UIElementTester.isValid(_UIElement.loginscreen_username))
+            {
+                // We are at loginscreen
+                Send("CheckConnection", pause: true);
+                errorHandled = true;
+            }
+            return errorHandled;
         }
 
         // Detect if we are booted to login screen or character selection screen
-        private void bootTo()
+        private void CheckForLoginScreen()
         {
             var timeout = DateTime.UtcNow;
             while (DateTime.UtcNow.Subtract(timeout).TotalSeconds <= 15)
@@ -793,13 +800,13 @@ namespace YARPLUGIN
                     LoadProfile(data);
                     break;
                 case "DifficultyLevel":
-                    var difficulty_level = Convert.ToInt32(data.Trim());                            
+                    var difficulty_level = Convert.ToInt32(data.Trim());
                     if (difficulty_level >= 0)
                     {
                         var difficulty = (GameDifficulty)System.Enum.Parse(typeof(GameDifficulty), data.Trim(), true);
                         Log("Recieved DifficultyLevel: {0}", difficulty);
                         CharacterSettings.Instance.GameDifficulty = difficulty;
-                    }      
+                    }
                     break;
                 case "ForceEnableAll":
                     ForceEnableAllPlugins();
@@ -862,7 +869,7 @@ namespace YARPLUGIN
             PluginContainer test;
             DateTime limit;
 
-            var disabledPlugins = PluginManager.Plugins.Where(p => !p.Enabled && p.Plugin.Name != "BuddyMonitor");
+            var disabledPlugins = PluginManager.Plugins.Where(p => !p.Enabled && p.Plugin.Name != "BuddyMonitor").ToList();
             if (!disabledPlugins.Any())
                 return;
 

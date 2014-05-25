@@ -520,8 +520,8 @@ namespace YetAnotherRelogger.Helpers.Bot
             // Force close
             if (force)
             {
-                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Process is not responding, Closing main Window!", Proc.Id);
-                Proc.CloseMainWindow();
+                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Process is not responding, killing!", Proc.Id);
+                Proc.Kill();
                 return;
             }
 
@@ -545,6 +545,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             if (Proc.HasExited)
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Closed.", Proc.Id);
+
             else if (!Proc.Responding)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to close! kill process", Proc.Id);

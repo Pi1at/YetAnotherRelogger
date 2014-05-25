@@ -242,5 +242,18 @@ namespace YetAnotherRelogger.Helpers.Bot
             _demonbuddy.Stop();
             _diablo.Stop();
         }
+
+        public void KillDB()
+        {
+            Logger.Instance.Write(this, "Killing Demonbuddy");
+            _demonbuddy.Stop(true);
+        }
+
+        public void KillDiablo()
+        {
+            Logger.Instance.Write(this, "Killing Diablo");
+            _diablo.Stop();
+
+        }
     }
 }

@@ -669,5 +669,17 @@ namespace YetAnotherRelogger.Forms
         }
 
         #endregion
+
+        private void killDemonbuddyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].IsStarted)
+                BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].KillDB();
+        }
+
+        private void killDiabloToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].IsStarted)
+                BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].KillDiablo();
+        }
     }
 }
