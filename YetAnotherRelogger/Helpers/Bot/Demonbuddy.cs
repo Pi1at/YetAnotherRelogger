@@ -14,19 +14,24 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class DemonbuddyClass
     {
-        [XmlIgnore] public Rectangle AutoPos;
-        [XmlIgnore] public IntPtr MainWindowHandle;
-        [XmlIgnore] private bool _crashTenderRestart;
-        [XmlIgnore] private bool _isStopped;
+        [XmlIgnore]
+        public Rectangle AutoPos;
+        [XmlIgnore]
+        public IntPtr MainWindowHandle;
+        [XmlIgnore]
+        private bool _crashTenderRestart;
+        [XmlIgnore]
+        private bool _isStopped;
         private DateTime _lastRepsonse;
-        [XmlIgnore] private Process _proc;
+        [XmlIgnore]
+        private Process _proc;
 
         public DemonbuddyClass()
         {
             CpuCount = Environment.ProcessorCount;
             ProcessorAffinity = AllProcessors;
         }
-        
+
         #region WINAPI
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr GetFocus();
@@ -258,7 +263,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             if (Proc.Responding)
                 _lastRepsonse = DateTime.UtcNow;
 
-            if (DateTime.UtcNow.Subtract(Proc.StartTime).TotalMilliseconds < (90*1000))
+            if (DateTime.UtcNow.Subtract(Proc.StartTime).TotalMilliseconds < (90 * 1000))
                 return;
 
             if (Settings.Default.AllowKillDemonbuddy && DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
@@ -322,10 +327,10 @@ namespace YetAnotherRelogger.Helpers.Bot
 
                 if (!Parent.Diablo.UseAuthenticator)
                 {
-                arguments += string.Format(" -bnetaccount=\"{0}\"", Parent.Diablo.Username);
-                arguments += string.Format(" -bnetpassword=\"{0}\"", Parent.Diablo.Password);
+                    arguments += string.Format(" -bnetaccount=\"{0}\"", Parent.Diablo.Username);
+                    arguments += string.Format(" -bnetpassword=\"{0}\"", Parent.Diablo.Password);
                 }
-                
+
                 if (profilepath != null)
                 {
                     // Check if current profile path is Kickstart
@@ -333,7 +338,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                     if (file == null || (file.Equals("YAR_Kickstart.xml") || file.Equals("YAR_TMP_Kickstart.xml")))
                         profilepath = Parent.ProfileSchedule.Current.Location;
 
-                    var profile = new Profile {Location = profilepath};
+                    var profile = new Profile { Location = profilepath };
                     string path = ProfileKickstart.GenerateKickstart(profile);
                     Logger.Instance.Write("Using Profile {0}", path);
                     arguments += string.Format(" -profile=\"{0}\"", path);
@@ -359,9 +364,9 @@ namespace YetAnotherRelogger.Helpers.Bot
                 if (ForceEnableAllPlugins)
                     arguments += " -YarEnableAll";
 
-                Debug.WriteLine("DB Arguments: {0}", arguments);
+                Debug.WriteLine(string.Format("DB Arguments: {0}", arguments));
 
-                var p = new ProcessStartInfo(Location, arguments) {WorkingDirectory = Path.GetDirectoryName(Location)};
+                var p = new ProcessStartInfo(Location, arguments) { WorkingDirectory = Path.GetDirectoryName(Location) };
                 p = UserAccount.ImpersonateStartInfo(p, Parent);
 
                 // Check/Install latest Communicator plugin
@@ -387,7 +392,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                         ProcessorAffinity = AllProcessors; // set it to all ones
                         CpuCount = Environment.ProcessorCount;
                     }
-                    Proc.ProcessorAffinity = (IntPtr) ProcessorAffinity;
+                    Proc.ProcessorAffinity = (IntPtr)ProcessorAffinity;
 
 
                     Logger.Instance.Write(Parent, "Demonbuddy:{0}: Waiting for process to become ready", Proc.Id);

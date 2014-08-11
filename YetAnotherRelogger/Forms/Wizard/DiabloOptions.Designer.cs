@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.CodeField = new System.Windows.Forms.TextBox();
             this.button3 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
@@ -75,7 +76,6 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
-            this.CodeField = new System.Windows.Forms.TextBox();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -106,6 +106,14 @@
             this.groupBox3.TabIndex = 4;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Battle.net authenticator";
+            // 
+            // CodeField
+            // 
+            this.CodeField.Enabled = false;
+            this.CodeField.Location = new System.Drawing.Point(11, 89);
+            this.CodeField.Name = "CodeField";
+            this.CodeField.Size = new System.Drawing.Size(107, 20);
+            this.CodeField.TabIndex = 12;
             // 
             // button3
             // 
@@ -257,7 +265,8 @@
             this.region.Items.AddRange(new object[] {
             "Europe",
             "America",
-            "Asia"});
+            "Asia",
+            "Beta"});
             this.region.Location = new System.Drawing.Point(89, 123);
             this.region.Name = "region";
             this.region.Size = new System.Drawing.Size(188, 21);
@@ -590,14 +599,6 @@
             this.label13.Size = new System.Drawing.Size(17, 13);
             this.label13.TabIndex = 0;
             this.label13.Text = "X:";
-            // 
-            // CodeField
-            // 
-            this.CodeField.Enabled = false;
-            this.CodeField.Location = new System.Drawing.Point(11, 89);
-            this.CodeField.Name = "CodeField";
-            this.CodeField.Size = new System.Drawing.Size(107, 20);
-            this.CodeField.TabIndex = 12;
             // 
             // DiabloOptions
             // 

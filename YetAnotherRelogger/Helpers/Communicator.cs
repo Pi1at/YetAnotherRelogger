@@ -50,7 +50,7 @@ namespace YetAnotherRelogger.Helpers
 
         public void Start()
         {
-            _threadWorker = new Thread(Worker) { IsBackground = true };
+            _threadWorker = new Thread(Worker) { IsBackground = true, Name = "CommunicatorWorker" };
             _threadWorker.Start();
         }
 
@@ -63,7 +63,7 @@ namespace YetAnotherRelogger.Helpers
                     var serverStream = new NamedPipeServerStream("YetAnotherRelogger", PipeDirection.InOut, 254);
                     serverStream.WaitForConnection();
                     var handleClient = new HandleClient(serverStream);
-                    new Thread(handleClient.Start).Start();
+                    new Thread(handleClient.Start) { Name = "CommunicatorHandleClient" }.Start();
                 }
                 catch (Exception ex)
                 {
@@ -109,16 +109,16 @@ namespace YetAnotherRelogger.Helpers
                     catch { }
                     _reader = null;
                 }
-                if (_writer != null)
-                {
-                    try
-                    {
-                        _writer.Close();
-                    }
-                    catch (ObjectDisposedException) { }
-                    catch { }
-                    _writer = null;
-                }
+                //if (_writer != null)
+                //{
+                //    try
+                //    {
+                //        _writer.Close();
+                //    }
+                //    catch (ObjectDisposedException) { }
+                //    catch { }
+                //    _writer = null;
+                //}
             }
 
             public void Start()

@@ -42,7 +42,7 @@ namespace YetAnotherRelogger
                 return;
 
             _isStopped = false;
-            _threadRelogger = new Thread(ReloggerWorker) { IsBackground = true };
+            _threadRelogger = new Thread(ReloggerWorker) { IsBackground = true, Name = "ReloggerWorker" };
             _threadRelogger.Start();
         }
 

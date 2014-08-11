@@ -92,6 +92,9 @@ namespace YetAnotherRelogger.Helpers.Tools
 
                 switch (Region)
                 {
+                    case "Beta":
+                        regionUrl = "beta.actual.battle.net";
+                        break;
                     case "Europe":
                         regionUrl = "eu.actual.battle.net";
                         break;

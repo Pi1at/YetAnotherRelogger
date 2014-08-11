@@ -322,7 +322,7 @@ namespace YetAnotherRelogger.Forms
         private void btnRestartAllDb_Click(object sender, EventArgs e)
         {
             DisableMainFormButtons();
-            _restartBotsThread = new Thread(RestartAllBots) { IsBackground = true };
+            _restartBotsThread = new Thread(RestartAllBots) { IsBackground = true, Name = "RestartBotsThread" };
             _restartBotsThread.Start();
             btnRestartAllDb.Enabled = false;
         }

@@ -242,7 +242,13 @@ namespace YetAnotherRelogger.Helpers.Bot
             {
                 try
                 {
-                    const string arguments = "-launch";
+                    string arguments = "-launch";
+
+                    if (Region == "Beta")
+                    {
+                        arguments += " OnlineService.PTR=true";
+                    }
+
                     var pi = new ProcessStartInfo(Location2, arguments)
                     {
                         WorkingDirectory = Path.GetDirectoryName(Location2)

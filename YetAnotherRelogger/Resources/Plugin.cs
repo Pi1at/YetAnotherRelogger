@@ -110,6 +110,8 @@ namespace YARPLUGIN
                 /* Failed to attach to D3*/
                 new Regex(@"Was not able to attach to any running Diablo III process, are you running the bot already\?", RegexOptions.Compiled), 
                 new Regex(@"Traceback (most recent call last):", RegexOptions.IgnoreCase | RegexOptions.Compiled),
+                new Regex(@"Exception during bot tick.*System.NullReferenceException: Object reference not set to an instance of an object.*at Zeta.Bot.Logic.OrderBot", 
+                    RegexOptions.Compiled | RegexOptions.Singleline)
             };
 
         private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game", RegexOptions.Compiled);
@@ -281,7 +283,17 @@ namespace YARPLUGIN
 
         public void OnPulse()
         {
-            // Do nothing here, we're hooked into TreeStart
+            _bs.IsInGame = ZetaDia.IsInGame;
+            _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
+
+            if (!ZetaDia.IsInGame || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
+                return;
+
+            _bs.LastPulse = DateTime.UtcNow.Ticks;
+            _bs.PluginPulse = DateTime.UtcNow.Ticks;
+            _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
+
+            Pulse();
         }
 
         private void OnProfileLoaded(object sender, object e)
@@ -466,14 +478,14 @@ namespace YARPLUGIN
 
         internal Composite CreateYarHook()
         {
-            return new Action(ret => TreeStartPulse());
+            return new Action(ret => Pulse());
         }
 
         /// <summary>
         /// This is called from TreeStart
         /// </summary>
         /// <returns></returns>
-        public RunStatus TreeStartPulse()
+        public RunStatus Pulse()
         {
             try
             {
