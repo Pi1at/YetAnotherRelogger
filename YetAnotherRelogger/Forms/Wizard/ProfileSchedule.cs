@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using YetAnotherRelogger.Helpers;
 using YetAnotherRelogger.Helpers.Bot;
 using YetAnotherRelogger.Helpers.Enums;
 using YetAnotherRelogger.Helpers.Tools;
@@ -15,6 +16,7 @@ namespace YetAnotherRelogger.Forms.Wizard
 
         public ProfileSchedule(WizardMain parent)
         {
+
             WM = parent;
             InitializeComponent();
 
@@ -24,31 +26,32 @@ namespace YetAnotherRelogger.Forms.Wizard
                 DataSource = Enum.GetValues(typeof(Difficulty)),
                 ValueType = typeof(Difficulty),
             };
-            dataGridView1.Columns.Add(col);
+            profileGrid.Columns.Add(col);
 
-            dataGridView1.CellClick += dataGridView1_CellClick;
-            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
+            profileGrid.CellClick += profileGrid_CellClick;
+            profileGrid.CellValueChanged += profileGrid_CellValueChanged;
+            profileGrid.DoubleBuffered(true);
 
             this.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
         }
 
         public BindingList<Profile> Profiles { get; set; }
 
-        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        private void profileGrid_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
                 return;
 
-            if (dataGridView1.Columns[e.ColumnIndex].Name.Equals("Difficulty"))
+            if (profileGrid.Columns[e.ColumnIndex].Name.Equals("Difficulty"))
             {
                 Profiles[e.RowIndex].DifficultyLevel =
-                    (Difficulty)dataGridView1.Rows[e.RowIndex].Cells["Difficulty"].Value;
+                    (Difficulty)profileGrid.Rows[e.RowIndex].Cells["Difficulty"].Value;
             }
         }
 
-        private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void profileGrid_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && dataGridView1.Rows[e.RowIndex].IsNewRow)
+            if (e.RowIndex >= 0 && profileGrid.Rows[e.RowIndex].IsNewRow)
             {
                 var ofd = new OpenFileDialog {Filter = "Profile file|*.xml", Title = "Browse to profile"};
                 if (ofd.ShowDialog() == DialogResult.OK)
@@ -63,10 +66,10 @@ namespace YetAnotherRelogger.Forms.Wizard
                         DifficultyLevel = Difficulty.Disabled,
                         GoldTimer = 0,
                     };
-                    dataGridView1.DataSource = null;
+                    profileGrid.DataSource = null;
                     Profiles.Add(p);
-                    dataGridView1.DataSource = Profiles;
-                    dataGridView1.Columns["isDone"].Visible = false;
+                    profileGrid.DataSource = Profiles;
+                    profileGrid.Columns["isDone"].Visible = false;
                     UpdateGridview();
                 }
             }
@@ -105,7 +108,7 @@ namespace YetAnotherRelogger.Forms.Wizard
         private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Delete record
-            if (dataGridView1.CurrentRow.IsNewRow)
+            if (profileGrid.CurrentRow.IsNewRow)
             {
                 return;
             }
@@ -114,17 +117,17 @@ namespace YetAnotherRelogger.Forms.Wizard
                     "Delete profile from schedule", MessageBoxButtons.YesNo, MessageBoxIcon.Question) ==
                 DialogResult.Yes)
             {
-                dataGridView1.Rows.Remove(dataGridView1.CurrentRow);
+                profileGrid.Rows.Remove(profileGrid.CurrentRow);
             }
         }
 
         private void dataGridView1_MouseUp(object sender, MouseEventArgs e)
         {
-            DataGridView.HitTestInfo hitTestInfo = dataGridView1.HitTest(e.X, e.Y);
-            if (!dataGridView1.CurrentRow.IsNewRow && hitTestInfo.Type == DataGridViewHitTestType.Cell)
+            DataGridView.HitTestInfo hitTestInfo = profileGrid.HitTest(e.X, e.Y);
+            if (!profileGrid.CurrentRow.IsNewRow && hitTestInfo.Type == DataGridViewHitTestType.Cell)
             {
                 if (e.Button == MouseButtons.Right)
-                    contextMenuStrip1.Show(dataGridView1, new Point(e.X, e.Y));
+                    contextMenuStrip1.Show(profileGrid, new Point(e.X, e.Y));
             }
         }
 
@@ -138,17 +141,17 @@ namespace YetAnotherRelogger.Forms.Wizard
             if (Profiles == null)
                 Profiles = new BindingList<Profile>();
 
-            dataGridView1.DataSource = Profiles;
-            dataGridView1.Refresh();
-            dataGridView1.ReadOnly = false;
-            dataGridView1.Columns["isDone"].Visible = false;
-            dataGridView1.Columns["DifficultyLevel"].Visible = false;
+            profileGrid.DataSource = Profiles;
+            profileGrid.Refresh();
+            profileGrid.ReadOnly = false;
+            profileGrid.Columns["isDone"].Visible = false;
+            profileGrid.Columns["DifficultyLevel"].Visible = false;
 
             // GameDifficulty
             for (int i = 0; i < Profiles.Count; i++)
             {
                 Difficulty pl = Profiles[i].DifficultyLevel;
-                dataGridView1.Rows[i].Cells["Difficulty"].Value = pl;
+                profileGrid.Rows[i].Cells["Difficulty"].Value = pl;
             }
         }
     }

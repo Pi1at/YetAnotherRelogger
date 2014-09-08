@@ -16,6 +16,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         public DateTime InitTime;
         public bool IsInitialized;
 
+        [NoCopy]
         public int LastCoinage;
         public DateTime LastCoinageBugReported;
         public DateTime LastCoinageIncrease;
@@ -24,6 +25,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         [NoCopy] public BotClass Parent;
         public DateTime StartDelay;
         public IdleState State;
+        [NoCopy]
         public BotStats Stats;
         public DateTime TimeFailedStartDelay;
         private DateTime _fixAttemptTime;

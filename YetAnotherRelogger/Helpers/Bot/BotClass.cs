@@ -70,14 +70,17 @@ namespace YetAnotherRelogger.Helpers.Bot
         public ProfileScheduleClass ProfileSchedule { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsStarted { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsRunning { get; set; }
 
         // Standby to try again at a later moment
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsStandby
         {
             get
@@ -100,6 +103,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public string Status
         {
             get { return _status; }
@@ -107,9 +111,11 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public DateTime StartTime { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public string RunningTime
         {
             get { return _runningtime; }
@@ -117,9 +123,11 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public ChartStats ChartStats { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public string DemonbuddyPid
         {
             get { return _demonbuddyPid; }

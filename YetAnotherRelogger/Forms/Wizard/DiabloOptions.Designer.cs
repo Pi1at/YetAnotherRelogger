@@ -30,16 +30,16 @@
         {
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.CodeField = new System.Windows.Forms.TextBox();
-            this.button3 = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
+            this.authenticatorClearButton = new System.Windows.Forms.Button();
+            this.authenticatorTestButton = new System.Windows.Forms.Button();
             this.label9 = new System.Windows.Forms.Label();
             this.label8 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
             this.textBox8 = new System.Windows.Forms.TextBox();
-            this.textBox7 = new System.Windows.Forms.TextBox();
-            this.textBox6 = new System.Windows.Forms.TextBox();
-            this.textBox5 = new System.Windows.Forms.TextBox();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.authField3 = new System.Windows.Forms.TextBox();
+            this.authField4 = new System.Windows.Forms.TextBox();
+            this.authField2 = new System.Windows.Forms.TextBox();
+            this.authField1 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
@@ -87,16 +87,16 @@
             // 
             this.groupBox3.BackColor = System.Drawing.Color.Transparent;
             this.groupBox3.Controls.Add(this.CodeField);
-            this.groupBox3.Controls.Add(this.button3);
-            this.groupBox3.Controls.Add(this.button1);
+            this.groupBox3.Controls.Add(this.authenticatorClearButton);
+            this.groupBox3.Controls.Add(this.authenticatorTestButton);
             this.groupBox3.Controls.Add(this.label9);
             this.groupBox3.Controls.Add(this.label8);
             this.groupBox3.Controls.Add(this.label7);
             this.groupBox3.Controls.Add(this.textBox8);
-            this.groupBox3.Controls.Add(this.textBox7);
-            this.groupBox3.Controls.Add(this.textBox6);
-            this.groupBox3.Controls.Add(this.textBox5);
-            this.groupBox3.Controls.Add(this.textBox4);
+            this.groupBox3.Controls.Add(this.authField3);
+            this.groupBox3.Controls.Add(this.authField4);
+            this.groupBox3.Controls.Add(this.authField2);
+            this.groupBox3.Controls.Add(this.authField1);
             this.groupBox3.Controls.Add(this.label6);
             this.groupBox3.Controls.Add(this.label5);
             this.groupBox3.Controls.Add(this.checkBox1);
@@ -113,28 +113,28 @@
             this.CodeField.Location = new System.Drawing.Point(11, 89);
             this.CodeField.Name = "CodeField";
             this.CodeField.Size = new System.Drawing.Size(107, 20);
-            this.CodeField.TabIndex = 12;
+            this.CodeField.TabIndex = 37;
             // 
-            // button3
+            // authenticatorClearButton
             // 
-            this.button3.Enabled = false;
-            this.button3.Location = new System.Drawing.Point(124, 89);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(75, 23);
-            this.button3.TabIndex = 11;
-            this.button3.Text = "Clear";
-            this.button3.UseVisualStyleBackColor = true;
+            this.authenticatorClearButton.Enabled = false;
+            this.authenticatorClearButton.Location = new System.Drawing.Point(124, 89);
+            this.authenticatorClearButton.Name = "authenticatorClearButton";
+            this.authenticatorClearButton.Size = new System.Drawing.Size(75, 23);
+            this.authenticatorClearButton.TabIndex = 38;
+            this.authenticatorClearButton.Text = "Clear";
+            this.authenticatorClearButton.UseVisualStyleBackColor = true;
             // 
-            // button1
+            // authenticatorTestButton
             // 
-            this.button1.Enabled = false;
-            this.button1.Location = new System.Drawing.Point(202, 89);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 10;
-            this.button1.Text = "Test";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.authenticatorTestButton.Enabled = false;
+            this.authenticatorTestButton.Location = new System.Drawing.Point(202, 89);
+            this.authenticatorTestButton.Name = "authenticatorTestButton";
+            this.authenticatorTestButton.Size = new System.Drawing.Size(75, 23);
+            this.authenticatorTestButton.TabIndex = 39;
+            this.authenticatorTestButton.Text = "Test";
+            this.authenticatorTestButton.UseVisualStyleBackColor = true;
+            this.authenticatorTestButton.Click += new System.EventHandler(this.authenticatorTestButton_Click);
             // 
             // label9
             // 
@@ -172,39 +172,39 @@
             this.textBox8.Location = new System.Drawing.Point(89, 63);
             this.textBox8.Name = "textBox8";
             this.textBox8.Size = new System.Drawing.Size(188, 20);
-            this.textBox8.TabIndex = 7;
+            this.textBox8.TabIndex = 36;
             // 
-            // textBox7
+            // authField3
             // 
-            this.textBox7.Enabled = false;
-            this.textBox7.Location = new System.Drawing.Point(191, 37);
-            this.textBox7.Name = "textBox7";
-            this.textBox7.Size = new System.Drawing.Size(32, 20);
-            this.textBox7.TabIndex = 5;
+            this.authField3.Enabled = false;
+            this.authField3.Location = new System.Drawing.Point(191, 37);
+            this.authField3.Name = "authField3";
+            this.authField3.Size = new System.Drawing.Size(32, 20);
+            this.authField3.TabIndex = 34;
             // 
-            // textBox6
+            // authField4
             // 
-            this.textBox6.Enabled = false;
-            this.textBox6.Location = new System.Drawing.Point(245, 37);
-            this.textBox6.Name = "textBox6";
-            this.textBox6.Size = new System.Drawing.Size(32, 20);
-            this.textBox6.TabIndex = 6;
+            this.authField4.Enabled = false;
+            this.authField4.Location = new System.Drawing.Point(245, 37);
+            this.authField4.Name = "authField4";
+            this.authField4.Size = new System.Drawing.Size(32, 20);
+            this.authField4.TabIndex = 35;
             // 
-            // textBox5
+            // authField2
             // 
-            this.textBox5.Enabled = false;
-            this.textBox5.Location = new System.Drawing.Point(137, 37);
-            this.textBox5.Name = "textBox5";
-            this.textBox5.Size = new System.Drawing.Size(32, 20);
-            this.textBox5.TabIndex = 4;
+            this.authField2.Enabled = false;
+            this.authField2.Location = new System.Drawing.Point(137, 37);
+            this.authField2.Name = "authField2";
+            this.authField2.Size = new System.Drawing.Size(32, 20);
+            this.authField2.TabIndex = 33;
             // 
-            // textBox4
+            // authField1
             // 
-            this.textBox4.Enabled = false;
-            this.textBox4.Location = new System.Drawing.Point(89, 37);
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(23, 20);
-            this.textBox4.TabIndex = 3;
+            this.authField1.Enabled = false;
+            this.authField1.Location = new System.Drawing.Point(89, 37);
+            this.authField1.Name = "authField1";
+            this.authField1.Size = new System.Drawing.Size(23, 20);
+            this.authField1.TabIndex = 32;
             // 
             // label6
             // 
@@ -232,7 +232,7 @@
             this.checkBox1.Location = new System.Drawing.Point(9, 18);
             this.checkBox1.Name = "checkBox1";
             this.checkBox1.Size = new System.Drawing.Size(110, 17);
-            this.checkBox1.TabIndex = 3;
+            this.checkBox1.TabIndex = 30;
             this.checkBox1.Text = "Use authenticator";
             this.checkBox1.UseVisualStyleBackColor = true;
             this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged_1);
@@ -270,7 +270,7 @@
             this.region.Location = new System.Drawing.Point(89, 123);
             this.region.Name = "region";
             this.region.Size = new System.Drawing.Size(188, 21);
-            this.region.TabIndex = 10;
+            this.region.TabIndex = 5;
             // 
             // language
             // 
@@ -294,7 +294,7 @@
             this.language.Location = new System.Drawing.Point(89, 97);
             this.language.Name = "language";
             this.language.Size = new System.Drawing.Size(188, 21);
-            this.language.TabIndex = 9;
+            this.language.TabIndex = 4;
             // 
             // label10
             // 
@@ -415,7 +415,7 @@
             this.characterSet.Location = new System.Drawing.Point(89, 40);
             this.characterSet.Name = "characterSet";
             this.characterSet.Size = new System.Drawing.Size(188, 20);
-            this.characterSet.TabIndex = 2;
+            this.characterSet.TabIndex = 21;
             // 
             // displaySlot
             // 
@@ -423,7 +423,7 @@
             this.displaySlot.Location = new System.Drawing.Point(89, 66);
             this.displaySlot.Name = "displaySlot";
             this.displaySlot.Size = new System.Drawing.Size(188, 20);
-            this.displaySlot.TabIndex = 1;
+            this.displaySlot.TabIndex = 22;
             // 
             // useInnerSpace
             // 
@@ -454,7 +454,7 @@
             this.button4.Location = new System.Drawing.Point(202, 17);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(75, 23);
-            this.button4.TabIndex = 2;
+            this.button4.TabIndex = 41;
             this.button4.Text = "Affinity";
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
@@ -481,7 +481,7 @@
             this.processorAffinity.Location = new System.Drawing.Point(91, 19);
             this.processorAffinity.Name = "processorAffinity";
             this.processorAffinity.Size = new System.Drawing.Size(105, 21);
-            this.processorAffinity.TabIndex = 0;
+            this.processorAffinity.TabIndex = 40;
             // 
             // groupBox5
             // 
@@ -509,7 +509,7 @@
             this.removeWindowFrame.Location = new System.Drawing.Point(14, 81);
             this.removeWindowFrame.Name = "removeWindowFrame";
             this.removeWindowFrame.Size = new System.Drawing.Size(134, 17);
-            this.removeWindowFrame.TabIndex = 10;
+            this.removeWindowFrame.TabIndex = 55;
             this.removeWindowFrame.Text = "Remove window frame";
             this.removeWindowFrame.UseVisualStyleBackColor = true;
             // 
@@ -519,7 +519,7 @@
             this.manualPositionAndSize.Location = new System.Drawing.Point(14, 18);
             this.manualPositionAndSize.Name = "manualPositionAndSize";
             this.manualPositionAndSize.Size = new System.Drawing.Size(130, 17);
-            this.manualPositionAndSize.TabIndex = 9;
+            this.manualPositionAndSize.TabIndex = 50;
             this.manualPositionAndSize.Text = "Manual position && size";
             this.manualPositionAndSize.UseVisualStyleBackColor = true;
             this.manualPositionAndSize.CheckedChanged += new System.EventHandler(this.checkBox3_CheckedChanged);
@@ -530,7 +530,7 @@
             this.height.Location = new System.Drawing.Point(168, 60);
             this.height.Name = "height";
             this.height.Size = new System.Drawing.Size(55, 20);
-            this.height.TabIndex = 7;
+            this.height.TabIndex = 54;
             this.height.Text = "200";
             // 
             // width
@@ -539,7 +539,7 @@
             this.width.Location = new System.Drawing.Point(168, 36);
             this.width.Name = "width";
             this.width.Size = new System.Drawing.Size(55, 20);
-            this.width.TabIndex = 6;
+            this.width.TabIndex = 52;
             this.width.Text = "320";
             // 
             // positionY
@@ -548,7 +548,7 @@
             this.positionY.Location = new System.Drawing.Point(45, 60);
             this.positionY.Name = "positionY";
             this.positionY.Size = new System.Drawing.Size(55, 20);
-            this.positionY.TabIndex = 5;
+            this.positionY.TabIndex = 53;
             this.positionY.Text = "0";
             // 
             // positionX
@@ -557,7 +557,7 @@
             this.positionX.Location = new System.Drawing.Point(45, 36);
             this.positionX.Name = "positionX";
             this.positionX.Size = new System.Drawing.Size(55, 20);
-            this.positionX.TabIndex = 4;
+            this.positionX.TabIndex = 51;
             this.positionX.Text = "0";
             // 
             // label16
@@ -632,15 +632,15 @@
         #endregion
 
         public System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button authenticatorTestButton;
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label7;
         public System.Windows.Forms.TextBox textBox8;
-        public System.Windows.Forms.TextBox textBox7;
-        public System.Windows.Forms.TextBox textBox6;
-        public System.Windows.Forms.TextBox textBox5;
-        public System.Windows.Forms.TextBox textBox4;
+        public System.Windows.Forms.TextBox authField3;
+        public System.Windows.Forms.TextBox authField4;
+        public System.Windows.Forms.TextBox authField2;
+        public System.Windows.Forms.TextBox authField1;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         public System.Windows.Forms.CheckBox checkBox1;
@@ -652,7 +652,7 @@
         private System.Windows.Forms.Label label1;
         public System.Windows.Forms.TextBox diablo3Path;
         private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button authenticatorClearButton;
         public System.Windows.Forms.ComboBox region;
         public System.Windows.Forms.ComboBox language;
         private System.Windows.Forms.Label label10;

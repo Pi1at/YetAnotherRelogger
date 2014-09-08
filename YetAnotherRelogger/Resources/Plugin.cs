@@ -50,6 +50,7 @@
  * Initial realease
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -110,9 +111,15 @@ namespace YARPLUGIN
                 /* Failed to attach to D3*/
                 new Regex(@"Was not able to attach to any running Diablo III process, are you running the bot already\?", RegexOptions.Compiled), 
                 new Regex(@"Traceback (most recent call last):", RegexOptions.IgnoreCase | RegexOptions.Compiled),
+            };
+
+        private static readonly Regex[] CrashExceptionRegexes = 
+        {
+                new Regex(@"Exception during bot tick.System.Exception", RegexOptions.Compiled), 
                 new Regex(@"Exception during bot tick.*System.NullReferenceException: Object reference not set to an instance of an object.*at Zeta.Bot.Logic.OrderBot", 
                     RegexOptions.Compiled | RegexOptions.Singleline)
-            };
+        };
+        private static int crashExceptionCounter;
 
         private static readonly Regex waitingBeforeGame = new Regex(@"Waiting (.+) seconds before next game", RegexOptions.Compiled);
         private static readonly Regex pluginsCompiled = new Regex(@"There are \d+ plugins", RegexOptions.Compiled | RegexOptions.CultureInvariant | RegexOptions.IgnoreCase);
@@ -350,9 +357,12 @@ namespace YARPLUGIN
                 }
 
                 Queue<LoggingEvent> localQueue = new Queue<LoggingEvent>();
-                lock (YARAppender.Messages)
-                    while (YARAppender.Messages.Any())
-                        localQueue.Enqueue(YARAppender.Messages.Dequeue());
+                while (YARAppender.Messages.Any())
+                {
+                    LoggingEvent loggingEvent;
+                    if (YARAppender.Messages.TryDequeue(out loggingEvent))
+                        localQueue.Enqueue(loggingEvent);
+                }
 
 
                 if (_logBuffer == null)
@@ -417,15 +427,27 @@ namespace YARPLUGIN
                             {
                                 if (IsGameRunning())
                                 {
-                                    Send("D3Exit"); // Proces has exited
+                                    Send("D3Exit"); // Process has exited
                                     breakloop = true; // break out of loop
                                 }
                             }
                             // Crash Tender check
                             if (ReCrashTender.Any(re => re.IsMatch(msg)))
                             {
-                                Send("CrashTender " + ProfileManager.CurrentProfile.Path); // tell relogger to "crash tender" :)
+                                Log("Crash message detected");
+                                Send("D3Exit"); // Restart D3
                                 breakloop = true; // break out of loop
+                            }
+
+                            if (CrashExceptionRegexes.Any(re => re.IsMatch(msg)))
+                            {
+                                Log("Crash Exception detected");
+                                crashExceptionCounter++;
+                            }
+                            if (crashExceptionCounter > 50)
+                            {
+                                Log("Too many crash exceptions");
+                                Send("D3Exit"); // Restart D3
                             }
 
                             // YAR compatibility with other plugins
@@ -433,7 +455,7 @@ namespace YARPLUGIN
                                 Send("ThirdpartyStop");
                             if (breakloop) break; // Check if we need to break out of loop
                         }
-                        // if (count > 1) Log("Scanned {0} log items in {1}ms", count, DateTime.UtcNow.Subtract(duration).TotalMilliseconds);
+                        //if (count > 1) Log("Scanned {0} log items in {1}ms", count, DateTime.UtcNow.Subtract(duration).TotalMilliseconds);
                     }
                     catch (Exception ex)
                     {
@@ -1101,7 +1123,7 @@ namespace YARPLUGIN
 
     public class YARAppender : AppenderSkeleton
     {
-        public static Queue<LoggingEvent> Messages = new Queue<LoggingEvent>();
+        public static ConcurrentQueue<LoggingEvent> Messages = new ConcurrentQueue<LoggingEvent>();
 
         protected override void Append(LoggingEvent loggingEvent)
         {

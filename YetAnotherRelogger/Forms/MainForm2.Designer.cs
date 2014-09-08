@@ -29,33 +29,33 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.TreeNode treeNode21 = new System.Windows.Forms.TreeNode("General");
-            System.Windows.Forms.TreeNode treeNode22 = new System.Windows.Forms.TreeNode("Auto position");
-            System.Windows.Forms.TreeNode treeNode23 = new System.Windows.Forms.TreeNode("Ping Check");
-            System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Ip + Host Check");
-            System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Internet Check", new System.Windows.Forms.TreeNode[] {
-            treeNode23,
-            treeNode24});
-            System.Windows.Forms.TreeNode treeNode26 = new System.Windows.Forms.TreeNode("Relogger", new System.Windows.Forms.TreeNode[] {
-            treeNode21,
-            treeNode22,
-            treeNode25});
-            System.Windows.Forms.TreeNode treeNode27 = new System.Windows.Forms.TreeNode("Profile Kickstart");
-            System.Windows.Forms.TreeNode treeNode28 = new System.Windows.Forms.TreeNode("Anti Idle");
-            System.Windows.Forms.TreeNode treeNode29 = new System.Windows.Forms.TreeNode("Hotkeys");
-            System.Windows.Forms.TreeNode treeNode30 = new System.Windows.Forms.TreeNode("Stats");
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea9 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend9 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series9 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea10 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend10 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series10 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea11 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend11 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series11 = new System.Windows.Forms.DataVisualization.Charting.Series();
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea12 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend12 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series12 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("General");
+            System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Auto position");
+            System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Ping Check");
+            System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Ip + Host Check");
+            System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Internet Check", new System.Windows.Forms.TreeNode[] {
+            treeNode3,
+            treeNode4});
+            System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Relogger", new System.Windows.Forms.TreeNode[] {
+            treeNode1,
+            treeNode2,
+            treeNode5});
+            System.Windows.Forms.TreeNode treeNode7 = new System.Windows.Forms.TreeNode("Profile Kickstart");
+            System.Windows.Forms.TreeNode treeNode8 = new System.Windows.Forms.TreeNode("Anti Idle");
+            System.Windows.Forms.TreeNode treeNode9 = new System.Windows.Forms.TreeNode("Hotkeys");
+            System.Windows.Forms.TreeNode treeNode10 = new System.Windows.Forms.TreeNode("Stats");
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea1 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend1 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series1 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea3 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend3 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series3 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea4 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend4 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series4 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm2));
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
@@ -68,7 +68,7 @@
             this.btnNew = new System.Windows.Forms.Button();
             this.btnStopAll = new System.Windows.Forms.Button();
             this.btnStartAll = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.botGrid = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -93,9 +93,15 @@
             this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnClose = new System.Windows.Forms.Button();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.labelStats = new System.Windows.Forms.Label();
+            this.btnRestartAllDb = new System.Windows.Forms.Button();
+            this.btnOpenLog = new System.Windows.Forms.Button();
+            this.logDirectoryTT = new System.Windows.Forms.ToolTip(this.components);
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceStartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.killDemonbuddyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.killDiabloToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -103,13 +109,9 @@
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.labelStats = new System.Windows.Forms.Label();
-            this.btnRestartAllDb = new System.Windows.Forms.Button();
-            this.btnOpenLog = new System.Windows.Forms.Button();
-            this.logDirectoryTT = new System.Windows.Forms.ToolTip(this.components);
-            this.killDiabloToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.killDemonbuddyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.moveUpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveDownMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -117,7 +119,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.botGrid)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -195,7 +197,7 @@
             this.groupBox1.Controls.Add(this.btnNew);
             this.groupBox1.Controls.Add(this.btnStopAll);
             this.groupBox1.Controls.Add(this.btnStartAll);
-            this.groupBox1.Controls.Add(this.dataGridView1);
+            this.groupBox1.Controls.Add(this.botGrid);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(679, 242);
@@ -280,20 +282,21 @@
             this.btnStartAll.UseVisualStyleBackColor = true;
             this.btnStartAll.Click += new System.EventHandler(this.btnStartAll_click);
             // 
-            // dataGridView1
+            // botGrid
             // 
-            this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.botGrid.AllowUserToOrderColumns = true;
+            this.botGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(6, 15);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(667, 190);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.botGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.botGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.botGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.botGrid.Location = new System.Drawing.Point(6, 15);
+            this.botGrid.Name = "botGrid";
+            this.botGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.botGrid.Size = new System.Drawing.Size(667, 190);
+            this.botGrid.TabIndex = 0;
+            this.botGrid.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
             // groupBox2
             // 
@@ -345,33 +348,33 @@
             // 
             this.treeView1.Location = new System.Drawing.Point(6, 6);
             this.treeView1.Name = "treeView1";
-            treeNode21.Name = "General";
-            treeNode21.Text = "General";
-            treeNode22.Name = "AutoPos";
-            treeNode22.Text = "Auto position";
-            treeNode23.Name = "PingCheck";
-            treeNode23.Text = "Ping Check";
-            treeNode24.Name = "IpHostCheck";
-            treeNode24.Text = "Ip + Host Check";
-            treeNode25.Name = "ConnectionCheck";
-            treeNode25.Text = "Internet Check";
-            treeNode26.Checked = true;
-            treeNode26.Name = "Node0";
-            treeNode26.Text = "Relogger";
-            treeNode27.Name = "ProfileKickstart";
-            treeNode27.Text = "Profile Kickstart";
-            treeNode28.Name = "AntiIdle";
-            treeNode28.Text = "Anti Idle";
-            treeNode29.Name = "HotKeys";
-            treeNode29.Text = "Hotkeys";
-            treeNode30.Name = "Stats";
-            treeNode30.Text = "Stats";
+            treeNode1.Name = "General";
+            treeNode1.Text = "General";
+            treeNode2.Name = "AutoPos";
+            treeNode2.Text = "Auto position";
+            treeNode3.Name = "PingCheck";
+            treeNode3.Text = "Ping Check";
+            treeNode4.Name = "IpHostCheck";
+            treeNode4.Text = "Ip + Host Check";
+            treeNode5.Name = "ConnectionCheck";
+            treeNode5.Text = "Internet Check";
+            treeNode6.Checked = true;
+            treeNode6.Name = "Node0";
+            treeNode6.Text = "Relogger";
+            treeNode7.Name = "ProfileKickstart";
+            treeNode7.Text = "Profile Kickstart";
+            treeNode8.Name = "AntiIdle";
+            treeNode8.Text = "Anti Idle";
+            treeNode9.Name = "HotKeys";
+            treeNode9.Text = "Hotkeys";
+            treeNode10.Name = "Stats";
+            treeNode10.Text = "Stats";
             this.treeView1.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
-            treeNode26,
-            treeNode27,
-            treeNode28,
-            treeNode29,
-            treeNode30});
+            treeNode6,
+            treeNode7,
+            treeNode8,
+            treeNode9,
+            treeNode10});
             this.treeView1.Size = new System.Drawing.Size(173, 395);
             this.treeView1.TabIndex = 3;
             // 
@@ -416,17 +419,17 @@
             // 
             this.MemoryUsage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea9.Name = "ChartArea1";
-            this.MemoryUsage.ChartAreas.Add(chartArea9);
-            legend9.Name = "Legend1";
-            this.MemoryUsage.Legends.Add(legend9);
+            chartArea1.Name = "ChartArea1";
+            this.MemoryUsage.ChartAreas.Add(chartArea1);
+            legend1.Name = "Legend1";
+            this.MemoryUsage.Legends.Add(legend1);
             this.MemoryUsage.Location = new System.Drawing.Point(0, 179);
             this.MemoryUsage.MinimumSize = new System.Drawing.Size(650, 140);
             this.MemoryUsage.Name = "MemoryUsage";
-            series9.ChartArea = "ChartArea1";
-            series9.Legend = "Legend1";
-            series9.Name = "Series1";
-            this.MemoryUsage.Series.Add(series9);
+            series1.ChartArea = "ChartArea1";
+            series1.Legend = "Legend1";
+            series1.Name = "Series1";
+            this.MemoryUsage.Series.Add(series1);
             this.MemoryUsage.Size = new System.Drawing.Size(650, 140);
             this.MemoryUsage.TabIndex = 2;
             this.MemoryUsage.Text = "chart1";
@@ -435,17 +438,17 @@
             // 
             this.CpuUsage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            chartArea10.Name = "ChartArea1";
-            this.CpuUsage.ChartAreas.Add(chartArea10);
-            legend10.Name = "Legend1";
-            this.CpuUsage.Legends.Add(legend10);
+            chartArea2.Name = "ChartArea1";
+            this.CpuUsage.ChartAreas.Add(chartArea2);
+            legend2.Name = "Legend1";
+            this.CpuUsage.Legends.Add(legend2);
             this.CpuUsage.Location = new System.Drawing.Point(3, 19);
             this.CpuUsage.MinimumSize = new System.Drawing.Size(650, 140);
             this.CpuUsage.Name = "CpuUsage";
-            series10.ChartArea = "ChartArea1";
-            series10.Legend = "Legend1";
-            series10.Name = "Series1";
-            this.CpuUsage.Series.Add(series10);
+            series2.ChartArea = "ChartArea1";
+            series2.Legend = "Legend1";
+            series2.Name = "Series1";
+            this.CpuUsage.Series.Add(series2);
             this.CpuUsage.Size = new System.Drawing.Size(650, 140);
             this.CpuUsage.TabIndex = 1;
             this.CpuUsage.Text = "chart1";
@@ -523,16 +526,16 @@
             // 
             // GoldStats
             // 
-            chartArea11.Name = "ChartArea1";
-            this.GoldStats.ChartAreas.Add(chartArea11);
-            legend11.Name = "Legend1";
-            this.GoldStats.Legends.Add(legend11);
+            chartArea3.Name = "ChartArea1";
+            this.GoldStats.ChartAreas.Add(chartArea3);
+            legend3.Name = "Legend1";
+            this.GoldStats.Legends.Add(legend3);
             this.GoldStats.Location = new System.Drawing.Point(6, 6);
             this.GoldStats.Name = "GoldStats";
-            series11.ChartArea = "ChartArea1";
-            series11.Legend = "Legend1";
-            series11.Name = "Series1";
-            this.GoldStats.Series.Add(series11);
+            series3.ChartArea = "ChartArea1";
+            series3.Legend = "Legend1";
+            series3.Name = "Series1";
+            this.GoldStats.Series.Add(series3);
             this.GoldStats.Size = new System.Drawing.Size(643, 105);
             this.GoldStats.TabIndex = 5;
             this.GoldStats.Text = "GoldStats";
@@ -550,16 +553,16 @@
             // 
             // CommConnections
             // 
-            chartArea12.Name = "ChartArea1";
-            this.CommConnections.ChartAreas.Add(chartArea12);
-            legend12.Name = "Legend1";
-            this.CommConnections.Legends.Add(legend12);
+            chartArea4.Name = "ChartArea1";
+            this.CommConnections.ChartAreas.Add(chartArea4);
+            legend4.Name = "Legend1";
+            this.CommConnections.Legends.Add(legend4);
             this.CommConnections.Location = new System.Drawing.Point(6, 6);
             this.CommConnections.Name = "CommConnections";
-            series12.ChartArea = "ChartArea1";
-            series12.Legend = "Legend1";
-            series12.Name = "Series1";
-            this.CommConnections.Series.Add(series12);
+            series4.ChartArea = "ChartArea1";
+            series4.Legend = "Legend1";
+            series4.Name = "Series1";
+            this.CommConnections.Series.Add(series4);
             this.CommConnections.Size = new System.Drawing.Size(643, 105);
             this.CommConnections.TabIndex = 4;
             this.CommConnections.Text = "chart1";
@@ -608,22 +611,41 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // contextMenuStrip1
+            // TrayIcon
             // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startToolStripMenuItem,
-            this.forceStartToolStripMenuItem,
-            this.killDemonbuddyToolStripMenuItem,
-            this.killDiabloToolStripMenuItem,
-            this.stopToolStripMenuItem,
-            this.cloneToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.statsToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.editToolStripMenuItem,
-            this.deleteToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(167, 236);
+            this.TrayIcon.Text = "Yet Another Relogger";
+            this.TrayIcon.Visible = true;
+            // 
+            // labelStats
+            // 
+            this.labelStats.AutoSize = true;
+            this.labelStats.Location = new System.Drawing.Point(25, 448);
+            this.labelStats.Name = "labelStats";
+            this.labelStats.Size = new System.Drawing.Size(0, 13);
+            this.labelStats.TabIndex = 2;
+            // 
+            // btnRestartAllDb
+            // 
+            this.btnRestartAllDb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.btnRestartAllDb.Location = new System.Drawing.Point(25, 467);
+            this.btnRestartAllDb.Name = "btnRestartAllDb";
+            this.btnRestartAllDb.Size = new System.Drawing.Size(83, 23);
+            this.btnRestartAllDb.TabIndex = 8;
+            this.btnRestartAllDb.Text = "Restart All DB";
+            this.btnRestartAllDb.UseVisualStyleBackColor = true;
+            this.btnRestartAllDb.Click += new System.EventHandler(this.btnRestartAllDb_Click);
+            // 
+            // btnOpenLog
+            // 
+            this.btnOpenLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnOpenLog.Location = new System.Drawing.Point(527, 467);
+            this.btnOpenLog.Name = "btnOpenLog";
+            this.btnOpenLog.Size = new System.Drawing.Size(88, 23);
+            this.btnOpenLog.TabIndex = 9;
+            this.btnOpenLog.Text = "Open Log File";
+            this.logDirectoryTT.SetToolTip(this.btnOpenLog, "Shift-click to open log directory");
+            this.btnOpenLog.UseVisualStyleBackColor = true;
+            this.btnOpenLog.Click += new System.EventHandler(this.btnOpenLog_Click);
             // 
             // startToolStripMenuItem
             // 
@@ -638,6 +660,20 @@
             this.forceStartToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
             this.forceStartToolStripMenuItem.Text = "Force Start";
             this.forceStartToolStripMenuItem.Click += new System.EventHandler(this.forceStartToolStripMenuItem_Click);
+            // 
+            // killDemonbuddyToolStripMenuItem
+            // 
+            this.killDemonbuddyToolStripMenuItem.Name = "killDemonbuddyToolStripMenuItem";
+            this.killDemonbuddyToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.killDemonbuddyToolStripMenuItem.Text = "Kill Demonbuddy";
+            this.killDemonbuddyToolStripMenuItem.Click += new System.EventHandler(this.killDemonbuddyToolStripMenuItem_Click);
+            // 
+            // killDiabloToolStripMenuItem
+            // 
+            this.killDiabloToolStripMenuItem.Name = "killDiabloToolStripMenuItem";
+            this.killDiabloToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.killDiabloToolStripMenuItem.Text = "Kill Diablo";
+            this.killDiabloToolStripMenuItem.Click += new System.EventHandler(this.killDiabloToolStripMenuItem_Click);
             // 
             // stopToolStripMenuItem
             // 
@@ -685,55 +721,38 @@
             this.deleteToolStripMenuItem.Text = "Delete";
             this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
-            // TrayIcon
+            // contextMenuStrip1
             // 
-            this.TrayIcon.Text = "Yet Another Relogger";
-            this.TrayIcon.Visible = true;
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startToolStripMenuItem,
+            this.forceStartToolStripMenuItem,
+            this.killDemonbuddyToolStripMenuItem,
+            this.killDiabloToolStripMenuItem,
+            this.moveUpMenuItem,
+            this.moveDownMenuItem,
+            this.stopToolStripMenuItem,
+            this.cloneToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.statsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.editToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(167, 258);
             // 
-            // labelStats
+            // moveUpMenuItem
             // 
-            this.labelStats.AutoSize = true;
-            this.labelStats.Location = new System.Drawing.Point(25, 448);
-            this.labelStats.Name = "labelStats";
-            this.labelStats.Size = new System.Drawing.Size(0, 13);
-            this.labelStats.TabIndex = 2;
+            this.moveUpMenuItem.Name = "moveUpMenuItem";
+            this.moveUpMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.moveUpMenuItem.Text = "Move Up";
+            this.moveUpMenuItem.Click += new System.EventHandler(this.moveUpMenuItem_Click);
             // 
-            // btnRestartAllDb
+            // moveDownMenuItem
             // 
-            this.btnRestartAllDb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnRestartAllDb.Location = new System.Drawing.Point(25, 467);
-            this.btnRestartAllDb.Name = "btnRestartAllDb";
-            this.btnRestartAllDb.Size = new System.Drawing.Size(83, 23);
-            this.btnRestartAllDb.TabIndex = 8;
-            this.btnRestartAllDb.Text = "Restart All DB";
-            this.btnRestartAllDb.UseVisualStyleBackColor = true;
-            this.btnRestartAllDb.Click += new System.EventHandler(this.btnRestartAllDb_Click);
-            // 
-            // btnOpenLog
-            // 
-            this.btnOpenLog.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnOpenLog.Location = new System.Drawing.Point(527, 467);
-            this.btnOpenLog.Name = "btnOpenLog";
-            this.btnOpenLog.Size = new System.Drawing.Size(88, 23);
-            this.btnOpenLog.TabIndex = 9;
-            this.btnOpenLog.Text = "Open Log File";
-            this.logDirectoryTT.SetToolTip(this.btnOpenLog, "Shift-click to open log directory");
-            this.btnOpenLog.UseVisualStyleBackColor = true;
-            this.btnOpenLog.Click += new System.EventHandler(this.btnOpenLog_Click);
-            // 
-            // killDiabloToolStripMenuItem
-            // 
-            this.killDiabloToolStripMenuItem.Name = "killDiabloToolStripMenuItem";
-            this.killDiabloToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.killDiabloToolStripMenuItem.Text = "Kill Diablo";
-            this.killDiabloToolStripMenuItem.Click += new System.EventHandler(this.killDiabloToolStripMenuItem_Click);
-            // 
-            // killDemonbuddyToolStripMenuItem
-            // 
-            this.killDemonbuddyToolStripMenuItem.Name = "killDemonbuddyToolStripMenuItem";
-            this.killDemonbuddyToolStripMenuItem.Size = new System.Drawing.Size(166, 22);
-            this.killDemonbuddyToolStripMenuItem.Text = "Kill Demonbuddy";
-            this.killDemonbuddyToolStripMenuItem.Click += new System.EventHandler(this.killDemonbuddyToolStripMenuItem_Click);
+            this.moveDownMenuItem.Name = "moveDownMenuItem";
+            this.moveDownMenuItem.Size = new System.Drawing.Size(166, 22);
+            this.moveDownMenuItem.Text = "Move Down";
+            this.moveDownMenuItem.Click += new System.EventHandler(this.moveDownMenuItem_Click);
             // 
             // MainForm2
             // 
@@ -760,7 +779,7 @@
             this.splitContainer1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.botGrid)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
@@ -789,19 +808,10 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem statsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.NotifyIcon TrayIcon;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.ToolStripMenuItem forceStartToolStripMenuItem;
         private System.Windows.Forms.Panel SettingsPanel;
         private System.Windows.Forms.PictureBox pictureBoxDonate;
         public System.Windows.Forms.Label labelStats;
@@ -828,15 +838,26 @@
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnStopAll;
         private System.Windows.Forms.Button btnStartAll;
-        public System.Windows.Forms.DataGridView dataGridView1;
+        public System.Windows.Forms.DataGridView botGrid;
         public System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnClone;
-        private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
         private System.Windows.Forms.Button btnRestartAllDb;
         private System.Windows.Forms.Button btnOpenLog;
         private System.Windows.Forms.ToolTip logDirectoryTT;
+        private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem forceStartToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem killDemonbuddyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem killDiabloToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem statsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem moveUpMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveDownMenuItem;
     }
 }

@@ -61,6 +61,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         public BotClass Parent { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public Process Proc
         {
             get { return _proc; }
@@ -73,6 +74,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsRunning
         {
             get { return (Proc != null && !Proc.HasExited && !_isStopped); }
@@ -83,6 +85,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         public string BuddyAuthPassword { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public DateTime LoginTime { get; set; }
 
         [XmlIgnore]
@@ -126,6 +129,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
         const int maxInits = 15;
 
+        [NoCopy]
         public bool IsInitialized
         {
             get
@@ -161,6 +165,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             }
         }
 
+        [NoCopy]
         private bool GetLastLoginTime
         {
             get
@@ -325,10 +330,14 @@ namespace YetAnotherRelogger.Helpers.Bot
                 arguments += " -autostart";
                 arguments += string.Format(" -routine=\"{0}\"", CombatRoutine);
 
-                if (!Parent.Diablo.UseAuthenticator)
+                arguments += string.Format(" -bnetaccount=\"{0}\"", Parent.Diablo.Username);
+                arguments += string.Format(" -bnetpassword=\"{0}\"", Parent.Diablo.Password);
+
+                if (Parent.Diablo.UseAuthenticator)
                 {
-                    arguments += string.Format(" -bnetaccount=\"{0}\"", Parent.Diablo.Username);
-                    arguments += string.Format(" -bnetpassword=\"{0}\"", Parent.Diablo.Password);
+                    //-bnetaccount="blah@blah.com" -bnetpassword="LOL" -authenticatorrestorecode="..." -authenticatorserial="EU-..."
+                    arguments += string.Format(" -authenticatorrestorecode=\"{0}\"", Parent.Diablo.RestoreCode);
+                    arguments += string.Format(" -authenticatorserial=\"{0}\"", Parent.Diablo.Serial);
                 }
 
                 if (profilepath != null)
@@ -360,6 +369,8 @@ namespace YetAnotherRelogger.Helpers.Bot
                     arguments += " -autoupdate";
                 if (NoUpdate)
                     arguments += " -noupdate";
+
+
 
                 if (ForceEnableAllPlugins)
                     arguments += " -YarEnableAll";

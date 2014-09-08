@@ -172,10 +172,10 @@ namespace YetAnotherRelogger.Forms.Wizard
             string[] words;
             words = SerialCode.Split('-');
 
-            _ucDiablo.textBox4.Text = words[0];
-            _ucDiablo.textBox5.Text = words[1];
-            _ucDiablo.textBox7.Text = words[2];
-            _ucDiablo.textBox6.Text = words[3];
+            _ucDiablo.authField1.Text = words[0];
+            _ucDiablo.authField2.Text = words[1];
+            _ucDiablo.authField3.Text = words[2];
+            _ucDiablo.authField4.Text = words[3];
             _ucDiablo.textBox8.Text = bot.Diablo.RestoreCode;
 
 
@@ -258,10 +258,10 @@ namespace YetAnotherRelogger.Forms.Wizard
                 d.Language = _ucDiablo.language.SelectedItem.ToString();
                 d.Region = _ucDiablo.region.SelectedItem.ToString();
                 d.UseAuthenticator = _ucDiablo.checkBox1.Checked;
-                d.Serial = string.Format("{0}-{1}-{2}-{3}", _ucDiablo.textBox4.Text, _ucDiablo.textBox5.Text,
-                    _ucDiablo.textBox7.Text, _ucDiablo.textBox6.Text);
-                d.Serial2 = string.Format("{0}{1}{2}{3}", _ucDiablo.textBox4.Text, _ucDiablo.textBox5.Text,
-                    _ucDiablo.textBox7.Text, _ucDiablo.textBox6.Text);
+                d.Serial = string.Format("{0}-{1}-{2}-{3}", _ucDiablo.authField1.Text, _ucDiablo.authField2.Text,
+                    _ucDiablo.authField3.Text, _ucDiablo.authField4.Text);
+                d.Serial2 = string.Format("{0}{1}{2}{3}", _ucDiablo.authField1.Text, _ucDiablo.authField2.Text,
+                    _ucDiablo.authField3.Text, _ucDiablo.authField4.Text);
                 d.RestoreCode = _ucDiablo.textBox8.Text;
                 d.Priority = _ucDiablo.processorAffinity.SelectedIndex;
                 d.UseIsBoxer = _ucDiablo.useInnerSpace.Checked;

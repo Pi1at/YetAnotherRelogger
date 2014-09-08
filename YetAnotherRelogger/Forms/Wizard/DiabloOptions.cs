@@ -46,14 +46,14 @@ namespace YetAnotherRelogger.Forms.Wizard
             if (checkBox1.Checked)
             {
                 label5.Enabled = label6.Enabled = label7.Enabled = label8.Enabled = label9.Enabled = true;
-                textBox4.Enabled = textBox5.Enabled = textBox7.Enabled = textBox6.Enabled = textBox8.Enabled = true;
-                button1.Enabled = button3.Enabled = true;
+                authField1.Enabled = authField2.Enabled = authField3.Enabled = authField4.Enabled = textBox8.Enabled = true;
+                authenticatorTestButton.Enabled = authenticatorClearButton.Enabled = true;
             }
             else
             {
                 label5.Enabled = label6.Enabled = label7.Enabled = label8.Enabled = label9.Enabled = false;
-                textBox4.Enabled = textBox5.Enabled = textBox7.Enabled = textBox6.Enabled = textBox8.Enabled = false;
-                button1.Enabled = button3.Enabled = false;
+                authField1.Enabled = authField2.Enabled = authField3.Enabled = authField4.Enabled = textBox8.Enabled = false;
+                authenticatorTestButton.Enabled = authenticatorClearButton.Enabled = false;
             }
         }
 
@@ -120,14 +120,15 @@ namespace YetAnotherRelogger.Forms.Wizard
         {
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void authenticatorTestButton_Click(object sender, EventArgs e)
         {
+
             // restore the authenticator
             try
             {
                 BattleNetAuthenticator auth = new BattleNetAuthenticator();
-                auth.Restore(string.Format("{0}{1}{2}{3}", textBox4.Text, textBox5.Text,
-                    textBox7.Text, textBox6.Text), textBox8.Text);
+                auth.Restore(string.Format("{0}{1}{2}{3}", authField1.Text, authField2.Text,
+                    authField3.Text, authField4.Text), textBox8.Text);
                 //Authenticator = auth;
 
                 //MessageBox.Show( "Your authenticator has been restored.\n\nYou will now be prompted where to save your new authenticator and choose your encryption level.", "YAR", MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml.Serialization;
@@ -56,14 +57,21 @@ namespace YetAnotherRelogger.Helpers
 
         public void Load()
         {
-            var xml = new XmlSerializer(Bots.GetType());
-
-            if (!File.Exists(Path.Combine(SettingsDirectory, "Bots.xml")))
-                return;
-
-            using (var reader = new StreamReader(Path.Combine(SettingsDirectory, "Bots.xml")))
+            try
             {
-                Bots = xml.Deserialize(reader) as BindingList<BotClass>;
+                var xml = new XmlSerializer(Bots.GetType());
+
+                if (!File.Exists(Path.Combine(SettingsDirectory, "Bots.xml")))
+                    return;
+
+                using (var reader = new StreamReader(Path.Combine(SettingsDirectory, "Bots.xml")))
+                {
+                    Bots = xml.Deserialize(reader) as BindingList<BotClass>;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error Loading BotSettings");
             }
         }
 
@@ -74,10 +82,39 @@ namespace YetAnotherRelogger.Helpers
         /// <returns></returns>
         public int Clone(int index)
         {
-            var original = (BotClass) Bots[index].Clone();
+            var cloned = (BotClass)Bots[index].Clone();
             int nextIndex = index + 1;
-            Bots.Insert(nextIndex, original);
+            if (index == Bots.Count - 1)
+                Bots.Add(cloned);
+            else
+                Bots.Insert(nextIndex, cloned);
             return nextIndex;
+        }
+
+        public int MoveDown(int index)
+        {
+            if (index == Bots.Count - 1)
+                return index;
+            var bot = Bots[index];
+            Bots.Remove(bot);
+            int newIdx = index + 1;
+            if (newIdx == Bots.Count - 1)
+                Bots.Add(bot);
+            else
+                Bots.Insert(newIdx, bot);
+
+            return newIdx;
+        }
+        public int MoveUp(int index)
+        {
+            if (index == 0)
+                return index;
+            int newIdx = index - 1;
+            var bot = Bots[index];
+            Bots.Remove(bot);
+            Bots.Insert(newIdx, bot);
+            return newIdx;
+
         }
     }
 
