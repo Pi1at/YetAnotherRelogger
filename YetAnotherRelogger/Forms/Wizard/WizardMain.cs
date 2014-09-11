@@ -116,6 +116,7 @@ namespace YetAnotherRelogger.Forms.Wizard
             _ucDiablo.region.SelectedItem = bot.Diablo.Region;
             _ucDiablo.checkBox1.Checked = bot.Diablo.UseAuthenticator;
             _ucDiablo.useInnerSpace.Checked = bot.Diablo.UseIsBoxer;
+            _ucDiablo.isBoxerLaunchAll.Checked = bot.Diablo.ISBoxerLaunchCharacterSet;
             _ucDiablo.characterSet.Text = bot.Diablo.CharacterSet;
             _ucDiablo.displaySlot.Text = bot.Diablo.DisplaySlot;
             _ucDiablo.removeWindowFrame.Checked = bot.Diablo.NoFrame;
