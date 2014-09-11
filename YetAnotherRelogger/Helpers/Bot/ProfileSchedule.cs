@@ -11,7 +11,9 @@ namespace YetAnotherRelogger.Helpers.Bot
     public class ProfileScheduleClass
     {
         [XmlIgnore] public int Count;
-        [XmlIgnore] public Profile Current;
+        [XmlIgnore]
+        [NoCopy]
+        public Profile Current;
         [XmlIgnore] public DateTime StartTime;
         [XmlIgnore] private int _addRuns;
         [XmlIgnore] private int _addTime;

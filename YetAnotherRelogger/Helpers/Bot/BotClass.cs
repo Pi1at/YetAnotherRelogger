@@ -9,15 +9,28 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class BotClass : INotifyPropertyChanged, ICloneable
     {
-        [XmlIgnore] private AntiIdleClass _antiIdle;
-        [XmlIgnore] private DemonbuddyClass _demonbuddy;
-        [XmlIgnore] private string _demonbuddyPid;
-        [XmlIgnore] private DiabloClass _diablo;
-        [XmlIgnore] private bool _isStandby;
-        [XmlIgnore] private string _runningtime;
-        [XmlIgnore] private DateTime _standbyTime;
+        [XmlIgnore]
+        private AntiIdleClass _antiIdle;
+        [XmlIgnore]
+        private DemonbuddyClass _demonbuddy;
+        [XmlIgnore]
+        [NoCopy]
+        private string _demonbuddyPid;
+        [XmlIgnore]
+        private DiabloClass _diablo;
+        [XmlIgnore]
+        [NoCopy]
+        private bool _isStandby;
+        [XmlIgnore]
+        [NoCopy]
+        private string _runningtime;
+        [XmlIgnore]
+        [NoCopy]
+        private DateTime _standbyTime;
 
-        [XmlIgnore] private string _status;
+        [XmlIgnore]
+        [NoCopy]
+        private string _status;
 
         public BotClass()
         {
@@ -87,7 +100,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             {
                 // Increase retry count by 15 mins with a max of 1 hour
                 if (_isStandby &&
-                    General.DateSubtract(_standbyTime) > 900*(AntiIdle.InitAttempts > 4 ? 4 : AntiIdle.InitAttempts))
+                    General.DateSubtract(_standbyTime) > 900 * (AntiIdle.InitAttempts > 4 ? 4 : AntiIdle.InitAttempts))
                 {
                     _isStandby = false;
                     _diablo.Start();

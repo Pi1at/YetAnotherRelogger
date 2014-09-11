@@ -81,7 +81,7 @@ namespace YetAnotherRelogger.Forms.Wizard
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            label11.Enabled = label17.Enabled = displaySlot.Enabled = characterSet.Enabled = useInnerSpace.Checked;
+            labelISCharacterSetName.Enabled = labelISCharacterSetSlot.Enabled = displaySlot.Enabled = characterSet.Enabled = isBoxerLaunchAll.Enabled = useInnerSpace.Checked;
             if (useInnerSpace.Checked &&
                 (string.IsNullOrEmpty(Settings.Default.ISBoxerPath) || !File.Exists(Settings.Default.ISBoxerPath)))
             {

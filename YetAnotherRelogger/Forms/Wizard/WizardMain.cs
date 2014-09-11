@@ -265,6 +265,7 @@ namespace YetAnotherRelogger.Forms.Wizard
                 d.RestoreCode = _ucDiablo.textBox8.Text;
                 d.Priority = _ucDiablo.processorAffinity.SelectedIndex;
                 d.UseIsBoxer = _ucDiablo.useInnerSpace.Checked;
+                d.ISBoxerLaunchCharacterSet = _ucDiablo.isBoxerLaunchAll.Checked;
                 d.CharacterSet = _ucDiablo.characterSet.Text;
                 d.DisplaySlot = _ucDiablo.displaySlot.Text;
                 d.NoFrame = _ucDiablo.removeWindowFrame.Checked;

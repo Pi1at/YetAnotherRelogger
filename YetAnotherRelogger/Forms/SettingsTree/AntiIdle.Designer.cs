@@ -30,9 +30,6 @@
         {
             this.components = new System.ComponentModel.Container();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.goldTimerLabel2 = new System.Windows.Forms.Label();
-            this.goldTimerLabel1 = new System.Windows.Forms.Label();
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.labelAntiIdleStats2 = new System.Windows.Forms.Label();
             this.labelAntiIdleStats1 = new System.Windows.Forms.Label();
             this.antiIdleStats = new System.Windows.Forms.NumericUpDown();
@@ -42,7 +39,10 @@
             this.cbStartBotIfStopped = new System.Windows.Forms.CheckBox();
             this.cbLogGoldInactivityInfo = new System.Windows.Forms.CheckBox();
             this.checkboxGoldTimer = new System.Windows.Forms.CheckBox();
+            this.goldTimerLabel2 = new System.Windows.Forms.Label();
+            this.goldTimerLabel1 = new System.Windows.Forms.Label();
             this.goldTimerMaxDuration = new System.Windows.Forms.NumericUpDown();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.antiIdleStats)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.goldTimerMaxDuration)).BeginInit();
@@ -68,25 +68,6 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "AntiIdle";
-            // 
-            // goldTimerLabel2
-            // 
-            this.goldTimerLabel2.AutoSize = true;
-            this.goldTimerLabel2.Location = new System.Drawing.Point(132, 65);
-            this.goldTimerLabel2.Name = "goldTimerLabel2";
-            this.goldTimerLabel2.Size = new System.Drawing.Size(27, 13);
-            this.goldTimerLabel2.TabIndex = 2;
-            this.goldTimerLabel2.Text = "sec.";
-            // 
-            // goldTimerLabel1
-            // 
-            this.goldTimerLabel1.AutoSize = true;
-            this.goldTimerLabel1.Location = new System.Drawing.Point(6, 65);
-            this.goldTimerLabel1.Name = "goldTimerLabel1";
-            this.goldTimerLabel1.Size = new System.Drawing.Size(54, 13);
-            this.goldTimerLabel1.TabIndex = 1;
-            this.goldTimerLabel1.Text = "Gold timer";
-            this.toolTip1.SetToolTip(this.goldTimerLabel1, "If gold does not change in this time, AntiIdle actions will be taken.");
             // 
             // labelAntiIdleStats2
             // 
@@ -203,6 +184,25 @@
             this.checkboxGoldTimer.Text = "Use gold timer";
             this.toolTip1.SetToolTip(this.checkboxGoldTimer, "If gold does not change in this time, AntiIdle actions will be taken.");
             this.checkboxGoldTimer.UseVisualStyleBackColor = true;
+            // 
+            // goldTimerLabel2
+            // 
+            this.goldTimerLabel2.AutoSize = true;
+            this.goldTimerLabel2.Location = new System.Drawing.Point(132, 65);
+            this.goldTimerLabel2.Name = "goldTimerLabel2";
+            this.goldTimerLabel2.Size = new System.Drawing.Size(27, 13);
+            this.goldTimerLabel2.TabIndex = 2;
+            this.goldTimerLabel2.Text = "sec.";
+            // 
+            // goldTimerLabel1
+            // 
+            this.goldTimerLabel1.AutoSize = true;
+            this.goldTimerLabel1.Location = new System.Drawing.Point(6, 65);
+            this.goldTimerLabel1.Name = "goldTimerLabel1";
+            this.goldTimerLabel1.Size = new System.Drawing.Size(54, 13);
+            this.goldTimerLabel1.TabIndex = 1;
+            this.goldTimerLabel1.Text = "Gold timer";
+            this.toolTip1.SetToolTip(this.goldTimerLabel1, "If gold does not change in this time, AntiIdle actions will be taken.");
             // 
             // goldTimerMaxDuration
             // 

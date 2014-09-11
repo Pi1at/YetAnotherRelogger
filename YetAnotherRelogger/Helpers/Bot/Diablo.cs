@@ -36,7 +36,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         //!!!
-        
+
         IntPtr hControl;
 
         #region WINAPI
@@ -167,6 +167,11 @@ namespace YetAnotherRelogger.Helpers.Bot
         /// The character set.
         /// </value>
         public string CharacterSet { get; set; }
+
+        /// <summary>
+        /// Gets or sets if we launch the entire character set from ISBoxer
+        /// </summary>
+        public bool ISBoxerLaunchCharacterSet { get; set; }
 
         // Position
         /// <summary>
@@ -688,13 +693,23 @@ namespace YetAnotherRelogger.Helpers.Bot
             {
                 ReusedWindow = false;
 
+                string args = "";
+                if (ISBoxerLaunchCharacterSet)
+                {
+                    args=string.Format("run isboxer -launch \"{0}\"" , CharacterSet);
+                }
+                else
+                {
+                 args=string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot);
+                }
+
                 isboxer = new Process
                 {
                     StartInfo =
                     {
                         FileName = Settings.Default.ISBoxerPath,
                         WorkingDirectory = Path.GetDirectoryName(Settings.Default.ISBoxerPath),
-                        Arguments = string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot),
+                        Arguments = args,
                     }
                 };
                 Logger.Instance.Write(Parent, "Starting InnerSpace: {0}", Settings.Default.ISBoxerPath);

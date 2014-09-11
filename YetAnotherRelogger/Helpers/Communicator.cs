@@ -326,6 +326,7 @@ namespace YetAnotherRelogger.Helpers
                             break;
                         case "D3Exit":
                             Send("Shutdown");
+                            b.Diablo.Proc.CloseMainWindow();
                             break;
                         // Unknown command reply
                         default:

@@ -115,9 +115,7 @@ namespace YARPLUGIN
 
         private static readonly Regex[] CrashExceptionRegexes = 
         {
-                new Regex(@"Exception during bot tick.System.Exception", RegexOptions.Compiled), 
-                new Regex(@"Exception during bot tick.*System.NullReferenceException: Object reference not set to an instance of an object.*at Zeta.Bot.Logic.OrderBot", 
-                    RegexOptions.Compiled | RegexOptions.Singleline)
+                new Regex(@"Exception during bot tick.*", RegexOptions.Compiled)
         };
         private static int crashExceptionCounter;
 

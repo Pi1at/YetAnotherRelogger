@@ -56,8 +56,8 @@
             this.username = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label17 = new System.Windows.Forms.Label();
-            this.label11 = new System.Windows.Forms.Label();
+            this.labelISCharacterSetSlot = new System.Windows.Forms.Label();
+            this.labelISCharacterSetName = new System.Windows.Forms.Label();
             this.characterSet = new System.Windows.Forms.TextBox();
             this.displaySlot = new System.Windows.Forms.TextBox();
             this.useInnerSpace = new System.Windows.Forms.CheckBox();
@@ -76,6 +76,7 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
+            this.isBoxerLaunchAll = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -377,8 +378,9 @@
             // groupBox1
             // 
             this.groupBox1.BackColor = System.Drawing.Color.Transparent;
-            this.groupBox1.Controls.Add(this.label17);
-            this.groupBox1.Controls.Add(this.label11);
+            this.groupBox1.Controls.Add(this.isBoxerLaunchAll);
+            this.groupBox1.Controls.Add(this.labelISCharacterSetSlot);
+            this.groupBox1.Controls.Add(this.labelISCharacterSetName);
             this.groupBox1.Controls.Add(this.characterSet);
             this.groupBox1.Controls.Add(this.displaySlot);
             this.groupBox1.Controls.Add(this.useInnerSpace);
@@ -389,25 +391,25 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "isBoxer";
             // 
-            // label17
+            // labelISCharacterSetSlot
             // 
-            this.label17.AutoSize = true;
-            this.label17.Enabled = false;
-            this.label17.Location = new System.Drawing.Point(9, 71);
-            this.label17.Name = "label17";
-            this.label17.Size = new System.Drawing.Size(65, 13);
-            this.label17.TabIndex = 4;
-            this.label17.Text = "Display Slot:";
+            this.labelISCharacterSetSlot.AutoSize = true;
+            this.labelISCharacterSetSlot.Enabled = false;
+            this.labelISCharacterSetSlot.Location = new System.Drawing.Point(9, 71);
+            this.labelISCharacterSetSlot.Name = "labelISCharacterSetSlot";
+            this.labelISCharacterSetSlot.Size = new System.Drawing.Size(65, 13);
+            this.labelISCharacterSetSlot.TabIndex = 4;
+            this.labelISCharacterSetSlot.Text = "Display Slot:";
             // 
-            // label11
+            // labelISCharacterSetName
             // 
-            this.label11.AutoSize = true;
-            this.label11.Enabled = false;
-            this.label11.Location = new System.Drawing.Point(9, 44);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(73, 13);
-            this.label11.TabIndex = 3;
-            this.label11.Text = "Character set:";
+            this.labelISCharacterSetName.AutoSize = true;
+            this.labelISCharacterSetName.Enabled = false;
+            this.labelISCharacterSetName.Location = new System.Drawing.Point(9, 44);
+            this.labelISCharacterSetName.Name = "labelISCharacterSetName";
+            this.labelISCharacterSetName.Size = new System.Drawing.Size(73, 13);
+            this.labelISCharacterSetName.TabIndex = 3;
+            this.labelISCharacterSetName.Text = "Character set:";
             // 
             // characterSet
             // 
@@ -600,6 +602,16 @@
             this.label13.TabIndex = 0;
             this.label13.Text = "X:";
             // 
+            // isBoxerLaunchAll
+            // 
+            this.isBoxerLaunchAll.AutoSize = true;
+            this.isBoxerLaunchAll.Location = new System.Drawing.Point(118, 17);
+            this.isBoxerLaunchAll.Name = "isBoxerLaunchAll";
+            this.isBoxerLaunchAll.Size = new System.Drawing.Size(146, 17);
+            this.isBoxerLaunchAll.TabIndex = 23;
+            this.isBoxerLaunchAll.Text = "Launch full Character Set";
+            this.isBoxerLaunchAll.UseVisualStyleBackColor = true;
+            // 
             // DiabloOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -671,13 +683,14 @@
         public System.Windows.Forms.TextBox positionY;
         public System.Windows.Forms.TextBox positionX;
         public System.Windows.Forms.CheckBox manualPositionAndSize;
-        private System.Windows.Forms.Label label17;
-        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label labelISCharacterSetSlot;
+        private System.Windows.Forms.Label labelISCharacterSetName;
         public System.Windows.Forms.TextBox characterSet;
         public System.Windows.Forms.TextBox displaySlot;
         public System.Windows.Forms.CheckBox useInnerSpace;
         private System.Windows.Forms.Button button4;
         public System.Windows.Forms.CheckBox removeWindowFrame;
         public System.Windows.Forms.TextBox CodeField;
+        public System.Windows.Forms.CheckBox isBoxerLaunchAll;
     }
 }
