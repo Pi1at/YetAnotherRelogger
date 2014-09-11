@@ -188,7 +188,7 @@ namespace YetAnotherRelogger
                             }
                             else if (!bot.Demonbuddy.IsRunning)
                             {
-                                Logger.Instance.Write("Demonbuddy:{0}: Process is not running", bot.Demonbuddy.Proc.Id);
+                                Logger.Instance.Write("Demonbuddy: Process is not running");
                                 bot.Demonbuddy.Start();
                             }
                             else if (Settings.Default.AntiIdleStatsDuration > 0 && bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) >

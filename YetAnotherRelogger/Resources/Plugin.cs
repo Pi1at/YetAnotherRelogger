@@ -415,6 +415,7 @@ namespace YARPLUGIN
                             if (msg.Equals("Start/Stop Button Clicked!") && !BotMain.IsRunning)
                             {
                                 Send("UserStop");
+                                crashExceptionCounter = 0;
                             }
 
                             try
@@ -442,9 +443,9 @@ namespace YARPLUGIN
                                 Log("Crash Exception detected");
                                 crashExceptionCounter++;
                             }
-                            if (crashExceptionCounter > 50)
+                            if (crashExceptionCounter > 1000)
                             {
-                                Log("Too many crash exceptions");
+                                Log("Detected 1000 unhandled bot tick exceptions, restarting everything");
                                 Send("D3Exit"); // Restart D3
                             }
 
