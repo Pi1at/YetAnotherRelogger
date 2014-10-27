@@ -177,13 +177,18 @@ namespace YetAnotherRelogger.Helpers.Bot
                 Diablo = Diablo.Copy(),
                 DiabloCloneLocation = DiabloCloneLocation.Copy(),
                 Name = Name.Copy(),
-                ProfileSchedule = ProfileSchedule.Copy(),
+                ProfileSchedule = new ProfileScheduleClass(),
                 UseDiabloClone = UseDiabloClone.Copy(),
                 UseWindowsUser = UseWindowsUser.Copy(),
                 Week = Week.Copy(),
                 WindowsUserName = WindowsUserName.Copy(),
                 WindowsUserPassword = WindowsUserPassword.Copy()
             };
+
+            foreach (var profile in ProfileSchedule.Profiles)
+            {
+                clone.ProfileSchedule.Profiles.Add(profile);
+            }
             return clone;
         }
 

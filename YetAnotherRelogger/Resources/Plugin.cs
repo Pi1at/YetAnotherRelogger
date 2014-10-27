@@ -291,7 +291,7 @@ namespace YARPLUGIN
             _bs.IsInGame = ZetaDia.IsInGame;
             _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
 
-            if (!ZetaDia.IsInGame || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
+            if (!ZetaDia.IsInGame || ZetaDia.IsLoadingWorld || ZetaDia.Me == null || !ZetaDia.Me.IsValid)
                 return;
 
             _bs.LastPulse = DateTime.UtcNow.Ticks;
