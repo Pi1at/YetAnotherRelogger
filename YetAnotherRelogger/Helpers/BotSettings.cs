@@ -23,7 +23,7 @@ namespace YetAnotherRelogger.Helpers
         private BotSettings()
         {
             Bots = new BindingList<BotClass>();
-            settingsdirectory = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Settings");
+            settingsdirectory = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath), "Settings"); 
         }
 
         public static BotSettings Instance
@@ -41,6 +41,11 @@ namespace YetAnotherRelogger.Helpers
             get { return instance.settingsdirectory; }
         }
 
+        public string SettingsFileName
+        {
+            get { return Path.Combine(SettingsDirectory, "Bots.xml"); }
+        }
+
         public void Save()
         {
             var xml = new XmlSerializer(Bots.GetType());
@@ -49,7 +54,7 @@ namespace YetAnotherRelogger.Helpers
                 Directory.CreateDirectory(SettingsDirectory);
 
 
-            using (var writer = new StreamWriter(Path.Combine(SettingsDirectory, "Bots.xml")))
+            using (var writer = new StreamWriter(SettingsFileName))
             {
                 xml.Serialize(writer, Bots);
             }
@@ -61,10 +66,10 @@ namespace YetAnotherRelogger.Helpers
             {
                 var xml = new XmlSerializer(Bots.GetType());
 
-                if (!File.Exists(Path.Combine(SettingsDirectory, "Bots.xml")))
+                if (!File.Exists(SettingsFileName))
                     return;
 
-                using (var reader = new StreamReader(Path.Combine(SettingsDirectory, "Bots.xml")))
+                using (var reader = new StreamReader(SettingsFileName))
                 {
                     Bots = xml.Deserialize(reader) as BindingList<BotClass>;
                 }

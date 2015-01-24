@@ -17,7 +17,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         public bool IsInitialized;
 
         [NoCopy]
-        public int LastCoinage;
+        public long LastCoinage;
         public DateTime LastCoinageBugReported;
         public DateTime LastCoinageIncrease;
         public DateTime LastCoinageReset; // So we give it a minute to get in shape
@@ -135,7 +135,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             LastCoinageReset = DateTime.MinValue;
         }
 
-        public void UpdateCoinage(int NewCoinage)
+        public void UpdateCoinage(long NewCoinage)
         {
             if (NewCoinage < 0)
             {

@@ -4,7 +4,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class BotStats
     {
-        public int Coinage;
+        public long Coinage;
         public bool IsInGame;
         public bool IsLoadingWorld;
         public bool IsPaused;

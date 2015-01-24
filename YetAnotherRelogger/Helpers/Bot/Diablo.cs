@@ -35,10 +35,6 @@ namespace YetAnotherRelogger.Helpers.Bot
             ProcessorAffinity = AllProcessors;
         }
 
-        //!!!
-
-        IntPtr hControl;
-
         #region WINAPI
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr GetFocus();
@@ -521,62 +517,7 @@ namespace YetAnotherRelogger.Helpers.Bot
 
             Logger.Instance.Write("Diablo:{0}: Process is ready", Proc.Id);
 
-
-            //if (Parent.Diablo.UseAuthenticator)
-            //{
-
-            //    //!!! Try to authentificate
-
-            //    hControl = FindWindow.FindWindowClass("D3 Main Window Class", Proc.Id);
-
-            //    SetForegroundWindow(hControl);
-            //    Logger.Instance.Write("Diablo:{0}: Trying to login", Proc.Id);
-
-            //    try
-            //    {
-            //        SetForegroundWindow(hControl);
-            //        SendKeys.SendWait(Parent.Diablo.Username);
-
-            //        SetForegroundWindow(hControl);
-            //        SendKeys.SendWait("{TAB}");
-
-            //        SetForegroundWindow(hControl);
-            //        SendKeys.SendWait(Parent.Diablo.Password);
-
-            //        SetForegroundWindow(hControl);
-            //        SendKeys.SendWait("~");
-            //    }
-            //    catch (Exception exc)
-            //    {
-            //        MessageBox.Show(exc.Message);
-            //    }
-
-            //    if (Parent.Diablo.UseAuthenticator)
-            //    {
-
-            //        Thread.Sleep(10000);
-
-            //        Logger.Instance.Write("Diablo:{0}: Trying to authentificate", Proc.Id);
-            //        BattleNetAuthenticator auth = new BattleNetAuthenticator();
-            //        auth.Restore(Parent.Diablo.Serial2, Parent.Diablo.RestoreCode);
-            //        string authcode = Convert.ToString(auth.CurrentCode);
-
-            //        try
-            //        {
-            //            SetForegroundWindow(hControl);
-            //            SendKeys.SendWait(authcode);
-
-            //            SetForegroundWindow(hControl);
-            //            SendKeys.SendWait("~");
-            //        }
-            //        catch (Exception exc)
-            //        {
-            //            MessageBox.Show(exc.Message);
-            //        }
-            //    }
-            //    //!!!
-            //}
-
+            
 
             // Demonbuddy start delay
             if (Settings.Default.DemonbuddyStartDelay > 0)

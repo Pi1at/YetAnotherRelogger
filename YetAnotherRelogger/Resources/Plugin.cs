@@ -139,7 +139,7 @@ namespace YARPLUGIN
             public bool IsRunning;
             public bool IsInGame;
             public bool IsLoadingWorld;
-            public int Coinage;
+            public long Coinage;
 
             public override string ToString()
             {

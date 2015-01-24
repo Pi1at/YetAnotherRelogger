@@ -172,7 +172,7 @@ namespace YetAnotherRelogger.Forms
                         BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
                                (bool)botGrid[e.ColumnIndex, e.RowIndex].Value;
 
-                        BotSettings.Instance.Save();
+                        // BotSettings.Instance.Save();
                     }
                 }
                 catch (Exception ex)
