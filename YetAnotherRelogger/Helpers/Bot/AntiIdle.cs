@@ -21,6 +21,11 @@ namespace YetAnotherRelogger.Helpers.Bot
         public DateTime LastCoinageBugReported;
         public DateTime LastCoinageIncrease;
         public DateTime LastCoinageReset; // So we give it a minute to get in shape
+        [NoCopy]
+        public long LastExperience;
+        public DateTime LastExperienceBugReported;
+        public DateTime LastExperienceIncrease;
+        public DateTime LastExperienceReset; // So we give it a minute to get in shape
         public DateTime LastStats;
         [NoCopy] public BotClass Parent;
         public DateTime StartDelay;

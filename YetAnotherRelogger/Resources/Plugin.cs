@@ -1,5 +1,7 @@
-﻿// VERSION: 0.2.1.0
+﻿// VERSION: 0.3.0.0
 /* Changelog:
+ * VERSION 0.3.0.0:
+ * Added experience inactivity timer
  * VERSION 0.2.1.0:
  * Compatability with DB 300+ and D3 2.0
  * Tons of performance improvements
@@ -81,7 +83,7 @@ namespace YARPLUGIN
     public class YARPLUGIN : IPlugin
     {
         // Plugin version
-        public Version Version { get { return new Version(0, 2, 1, 0); } }
+        public Version Version { get { return new Version(0, 3, 0, 0); } }
 
         private const bool _debug = true;
         private static readonly log4net.ILog DBLog = Zeta.Common.Logger.GetLoggerInstanceForType();
@@ -140,11 +142,12 @@ namespace YARPLUGIN
             public bool IsInGame;
             public bool IsLoadingWorld;
             public long Coinage;
+            public long Experience;
 
             public override string ToString()
             {
-                return string.Format("Pid={0} LastRun={1} LastPulse={2} PluginPulse={3} LastGame={4} IsPaused={5} IsRunning={6} IsInGame={7} IsLoadingWorld={8} Coinage={9}",
-                    Pid, LastRun, LastPulse, PluginPulse, LastGame, IsPaused, IsRunning, IsInGame, IsLoadingWorld, Coinage);
+                return string.Format("Pid={0} LastRun={1} LastPulse={2} PluginPulse={3} LastGame={4} IsPaused={5} IsRunning={6} IsInGame={7} IsLoadingWorld={8} Coinage={9} Experience={10}",
+                    Pid, LastRun, LastPulse, PluginPulse, LastGame, IsPaused, IsRunning, IsInGame, IsLoadingWorld, Coinage, Experience);
             }
         }
         #region Plugin information
@@ -293,10 +296,6 @@ namespace YARPLUGIN
 
             if (!ZetaDia.IsInGame || ZetaDia.IsLoadingWorld || ZetaDia.Me == null || !ZetaDia.Me.IsValid)
                 return;
-
-            _bs.LastPulse = DateTime.UtcNow.Ticks;
-            _bs.PluginPulse = DateTime.UtcNow.Ticks;
-            _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
 
             Pulse();
         }
@@ -516,7 +515,7 @@ namespace YARPLUGIN
 
                 _bs.PluginPulse = DateTime.UtcNow.Ticks;
 
-                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected || !ZetaDia.Service.Hero.IsValid)
+                if (!ZetaDia.Service.IsValid || !ZetaDia.Service.Platform.IsConnected)
                 {
                     ErrorHandling();
 
@@ -534,15 +533,26 @@ namespace YARPLUGIN
                 // in-game / character data 
                 _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
                 _bs.Coinage = 0;
+                _bs.Experience = 0;
                 try
                 {
                     if (ZetaDia.Me != null && ZetaDia.Me.IsValid)
-                        _bs.Coinage = ZetaDia.Me.Inventory.Coinage;
+                    {
+                        _bs.Coinage = ZetaDia.CPlayer.Coinage;
+                        Int64 exp;
+                        if (ZetaDia.Me.Level < 60)
+                            exp = ZetaDia.Me.CurrentExperience;
+                        else
+                            exp = ZetaDia.Me.ParagonCurrentExperience;
+
+                        _bs.Experience = exp;
+                    }
                 }
                 catch
                 {
                     Log("Exception reading Coinage", 0);
                     _bs.Coinage = -1;
+                    _bs.Experience = -1;
                 }
 
                 if (ZetaDia.IsInGame)
