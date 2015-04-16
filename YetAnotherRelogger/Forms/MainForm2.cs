@@ -190,11 +190,11 @@ namespace YetAnotherRelogger.Forms
                 if (e.Button == MouseButtons.Right)
                 {
                     contextMenuStrip1.Show(botGrid, new Point(e.X, e.Y));
-                    selectRow(hitTestInfo.RowIndex);
+                    selectRowAndCell(hitTestInfo.RowIndex, hitTestInfo.ColumnIndex);
                 }
                 else if (e.Button == MouseButtons.Left)
                 {
-                    selectRow(hitTestInfo.RowIndex);
+                    selectRowAndCell(hitTestInfo.RowIndex, hitTestInfo.ColumnIndex);
                 }
             }
         }
@@ -204,7 +204,15 @@ namespace YetAnotherRelogger.Forms
             foreach (DataGridViewRow row in botGrid.Rows)
                 row.Selected = false;
             botGrid.Rows[index].Selected = true;
-            botGrid.CurrentCell = botGrid.Rows[index].Cells[0];
+            //botGrid.CurrentCell = botGrid.Rows[index].Cells[0];
+        }
+
+        private void selectRowAndCell(int index, int col)
+        {
+            foreach (DataGridViewRow row in botGrid.Rows)
+                row.Selected = false;
+            botGrid.Rows[index].Selected = true;
+            botGrid.CurrentCell = botGrid.Rows[index].Cells[col];
         }
 
         public void UpdateGridView()
@@ -234,11 +242,11 @@ namespace YetAnotherRelogger.Forms
             botGrid.Columns["isEnabled"].Width = 50;
 
             botGrid.Columns["Name"].DisplayIndex = 2;
-            botGrid.Columns["Name"].ReadOnly = true;
+            //botGrid.Columns["Name"].ReadOnly = true;
 
             botGrid.Columns["Description"].DisplayIndex = 3;
             botGrid.Columns["Description"].Width = 200;
-            botGrid.Columns["Description"].ReadOnly = true;
+            //botGrid.Columns["Description"].ReadOnly = true;
 
             botGrid.Columns["Status"].ReadOnly = true;
 
@@ -319,6 +327,17 @@ namespace YetAnotherRelogger.Forms
             Relogger.Instance.Start();
         }
 
+        private void btnStopAllDB_Click(object sender, EventArgs e)
+        {
+            Relogger.Instance.Stop();
+            // Stop All
+            foreach (BotClass bot in BotSettings.Instance.Bots)
+            {
+                bot.StopDB();
+            }
+            Relogger.Instance.Start();
+        }
+
         private void btnRestartAllDb_Click(object sender, EventArgs e)
         {
             DisableMainFormButtons();
@@ -379,6 +398,13 @@ namespace YetAnotherRelogger.Forms
                 BotSettings.Instance.Bots[botGrid.CurrentRow.Index].Stop();
         }
 
+        private void stopDBToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Stop
+            if (BotSettings.Instance.Bots[botGrid.CurrentRow.Index].IsStarted)
+                BotSettings.Instance.Bots[botGrid.CurrentRow.Index].StopDB();
+        }
+
         private void statsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Bot Stats
@@ -417,10 +443,6 @@ namespace YetAnotherRelogger.Forms
                 // Force Start single bot
                 BotSettings.Instance.Bots[botGrid.CurrentRow.Index].Start(true);
             }
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
         }
 
         private void btnPause_Click(object sender, EventArgs e)
@@ -735,6 +757,5 @@ namespace YetAnotherRelogger.Forms
             if (BotSettings.Instance.Bots[botGrid.CurrentRow.Index].IsStarted)
                 BotSettings.Instance.Bots[botGrid.CurrentRow.Index].KillDiablo();
         }
-
     }
 }

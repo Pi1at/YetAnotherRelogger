@@ -614,13 +614,11 @@ namespace YetAnotherRelogger.Helpers.Bot
                 return;
             }
 
-            Process isboxer = null;
             // Find running ISBoxer
             foreach (var proc in Process.GetProcesses())
             {
-                string windowTitle = string.Format("is{0} {1} - {2}", DisplaySlot, DisplaySlot, CharacterSet);
 
-                if (proc.MainWindowTitle == windowTitle)
+                if (proc.MainWindowTitle.StartsWith("is"+DisplaySlot) && proc.MainWindowTitle.EndsWith(CharacterSet))
                 {
                     Proc = proc;
                     ReusedWindow = true;
@@ -644,7 +642,7 @@ namespace YetAnotherRelogger.Helpers.Bot
                  args=string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot);
                 }
 
-                isboxer = new Process
+                Process isboxer = new Process
                 {
                     StartInfo =
                     {

@@ -147,6 +147,58 @@ namespace YetAnotherRelogger.Helpers.Bot
             set { SetField(ref _demonbuddyPid, value, "DemonbuddyPid"); }
         }
 
+        public int DemonbuddyX
+        {
+            get { return Demonbuddy.X; }
+            set
+            {
+                if (Demonbuddy.X != value)
+                {
+                    Demonbuddy.X = value;
+                    OnPropertyChanged("DemonbuddyX");
+                }
+            }
+        }
+
+        public int DemonbuddyY
+        {
+            get { return Demonbuddy.Y; }
+            set
+            {
+                if (Demonbuddy.Y != value)
+                {
+                    Demonbuddy.Y = value;
+                    OnPropertyChanged("DemonbuddyX");
+                }
+            }
+        }
+
+        public int DemonbuddyW
+        {
+            get { return Demonbuddy.W; }
+            set
+            {
+                if (Demonbuddy.W != value)
+                {
+                    Demonbuddy.W = value;
+                    OnPropertyChanged("DemonbuddyX");
+                }
+            }
+        }
+
+        public int DemonbuddyH
+        {
+            get { return Demonbuddy.H; }
+            set
+            {
+                if (Demonbuddy.H != value)
+                {
+                    Demonbuddy.H = value;
+                    OnPropertyChanged("DemonbuddyX");
+                }
+            }
+        }
+
         #region Advanced Options Variables
 
         // Windows User
@@ -238,6 +290,16 @@ namespace YetAnotherRelogger.Helpers.Bot
             Status = (force ? "Forced start" : "Started");
             if (force)
                 Logger.Instance.Write(this, "Forced to start! ");
+        }
+
+        public void StopDB()
+        {
+            Logger.Instance.Write(this, "Stopping Demonbuddy Only");
+            Status = "Stopped";
+            IsStarted = false;
+            IsRunning = false;
+            IsStandby = false;
+            _demonbuddy.Stop();
         }
 
         public void Stop()
