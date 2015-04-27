@@ -673,7 +673,7 @@ namespace YetAnotherRelogger.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("600")]
+        [global::System.Configuration.DefaultSettingValueAttribute("900")]
         public decimal GoldTimer {
             get {
                 return ((decimal)(this["GoldTimer"]));

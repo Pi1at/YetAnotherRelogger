@@ -1,4 +1,4 @@
-﻿namespace YetAnotherRelogger.Helpers.Bot
+namespace YetAnotherRelogger.Helpers.Bot
 {
     using System;
     using System.Diagnostics;
@@ -15,23 +15,23 @@
 
     public class DemonbuddyClass
     {
-        [XmlIgnore] public Rectangle AutoPos;
-        [XmlIgnore] public IntPtr MainWindowHandle;
-        [XmlIgnore] private bool _crashTenderRestart;
-        [XmlIgnore] private bool _isStopped;
+        [XmlIgnore]
+        public Rectangle AutoPos;
+        [XmlIgnore]
+        public IntPtr MainWindowHandle;
+        [XmlIgnore]
+        private bool _crashTenderRestart;
+        [XmlIgnore]
+        private bool _isStopped;
         private DateTime _lastRepsonse;
-        [XmlIgnore] private Process _proc;
+        [XmlIgnore]
+        private Process _proc;
 
         public DemonbuddyClass()
         {
             CpuCount = Environment.ProcessorCount;
             ProcessorAffinity = AllProcessors;
         }
-
-
-        //!!!
-
-        IntPtr hControl;
 
         #region WINAPI
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
@@ -55,7 +55,6 @@
         [DllImport("kernel32.dll", SetLastError = true)]
         static extern uint GetCurrentThreadId();
         #endregion
-        //!!!
 
 
         [XmlIgnore]
@@ -63,6 +62,7 @@
         public BotClass Parent { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public Process Proc
         {
             get { return _proc; }
@@ -75,6 +75,7 @@
         }
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsRunning
         {
             get { return (Proc != null && !Proc.HasExited && !_isStopped); }
@@ -85,6 +86,7 @@
         public string BuddyAuthPassword { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public DateTime LoginTime { get; set; }
 
         [XmlIgnore]
@@ -128,6 +130,7 @@
 
         const int maxInits = 15;
 
+        [NoCopy]
         public bool IsInitialized
         {
             get
@@ -163,6 +166,7 @@
             }
         }
 
+        [NoCopy]
         private bool GetLastLoginTime
         {
             get
@@ -265,7 +269,7 @@
             if (Proc.Responding)
                 _lastRepsonse = DateTime.UtcNow;
 
-            if (DateTime.UtcNow.Subtract(Proc.StartTime).TotalMilliseconds < (90*1000))
+            if (DateTime.UtcNow.Subtract(Proc.StartTime).TotalMilliseconds < (90 * 1000))
                 return;
 
             if (Settings.Default.AllowKillDemonbuddy && DateTime.UtcNow.Subtract(_lastRepsonse).TotalSeconds > 90)
@@ -327,12 +331,16 @@
                 arguments += " -autostart";
                 arguments += string.Format(" -routine=\"{0}\"", CombatRoutine);
 
-                if (!Parent.Diablo.UseAuthenticator)
-                {
                 arguments += string.Format(" -bnetaccount=\"{0}\"", Parent.Diablo.Username);
                 arguments += string.Format(" -bnetpassword=\"{0}\"", Parent.Diablo.Password);
+
+                if (Parent.Diablo.UseAuthenticator)
+                {
+                    //-bnetaccount="blah@blah.com" -bnetpassword="LOL" -authenticatorrestorecode="..." -authenticatorserial="EU-..."
+                    arguments += string.Format(" -authenticatorrestorecode=\"{0}\"", Parent.Diablo.RestoreCode);
+                    arguments += string.Format(" -authenticatorserial=\"{0}\"", Parent.Diablo.Serial);
                 }
-                
+
                 if (profilepath != null)
                 {
                     // Check if current profile path is Kickstart
@@ -340,7 +348,7 @@
                     if (file == null || (file.Equals("YAR_Kickstart.xml") || file.Equals("YAR_TMP_Kickstart.xml")))
                         profilepath = Parent.ProfileSchedule.Current.Location;
 
-                    var profile = new Profile {Location = profilepath};
+                    var profile = new Profile { Location = profilepath };
                     string path = ProfileKickstart.GenerateKickstart(profile);
                     Logger.Instance.Write("Using Profile {0}", path);
                     arguments += string.Format(" -profile=\"{0}\"", path);
@@ -363,12 +371,14 @@
                 if (NoUpdate)
                     arguments += " -noupdate";
 
+
+
                 if (ForceEnableAllPlugins)
                     arguments += " -YarEnableAll";
 
-                Debug.WriteLine("DB Arguments: {0}", arguments);
+                Debug.WriteLine(string.Format("DB Arguments: {0}", arguments));
 
-                var p = new ProcessStartInfo(Location, arguments) {WorkingDirectory = Path.GetDirectoryName(Location)};
+                var p = new ProcessStartInfo(Location, arguments) { WorkingDirectory = Path.GetDirectoryName(Location) };
                 p = UserAccount.ImpersonateStartInfo(p, Parent);
 
                 // Check/Install latest Communicator plugin
@@ -394,7 +404,7 @@
                         ProcessorAffinity = AllProcessors; // set it to all ones
                         CpuCount = Environment.ProcessorCount;
                     }
-                    Proc.ProcessorAffinity = (IntPtr) ProcessorAffinity;
+                    Proc.ProcessorAffinity = (IntPtr)ProcessorAffinity;
 
 
                     Logger.Instance.Write(Parent, "Demonbuddy:{0}: Waiting for process to become ready", Proc.Id);
@@ -527,8 +537,8 @@
             // Force close
             if (force)
             {
-                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Process is not responding, Closing main Window!", Proc.Id);
-                Proc.CloseMainWindow();
+                Logger.Instance.Write(Parent, "Demonbuddy:{0}: Process is not responding, killing!", Proc.Id);
+                Proc.Kill();
                 return;
             }
 
@@ -552,6 +562,7 @@
 
             if (Proc.HasExited)
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Closed.", Proc.Id);
+
             else if (!Proc.Responding)
             {
                 Logger.Instance.Write(Parent, "Demonbuddy:{0}: Failed to close! kill process", Proc.Id);

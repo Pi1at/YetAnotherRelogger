@@ -61,6 +61,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnStopAllDB = new System.Windows.Forms.Button();
             this.btnClone = new System.Windows.Forms.Button();
             this.btnPause = new System.Windows.Forms.Button();
             this.checkBoxForce = new System.Windows.Forms.CheckBox();
@@ -68,7 +69,7 @@
             this.btnNew = new System.Windows.Forms.Button();
             this.btnStopAll = new System.Windows.Forms.Button();
             this.btnStartAll = new System.Windows.Forms.Button();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.botGrid = new System.Windows.Forms.DataGridView();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
@@ -93,21 +94,26 @@
             this.pictureBoxDonate = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.btnClose = new System.Windows.Forms.Button();
-            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
+            this.labelStats = new System.Windows.Forms.Label();
+            this.btnRestartAllDb = new System.Windows.Forms.Button();
+            this.btnOpenLog = new System.Windows.Forms.Button();
+            this.logDirectoryTT = new System.Windows.Forms.ToolTip(this.components);
             this.startToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.forceStartToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.killDemonbuddyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.killDiabloToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopDBToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.cloneToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.statsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.editToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.deleteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.TrayIcon = new System.Windows.Forms.NotifyIcon(this.components);
-            this.labelStats = new System.Windows.Forms.Label();
-            this.btnRestartAllDb = new System.Windows.Forms.Button();
-            this.btnOpenLog = new System.Windows.Forms.Button();
-            this.logDirectoryTT = new System.Windows.Forms.ToolTip(this.components);
+            this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.moveUpMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveDownMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.stopToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -115,7 +121,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.botGrid)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage4.SuspendLayout();
@@ -186,6 +192,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.btnStopAllDB);
             this.groupBox1.Controls.Add(this.btnClone);
             this.groupBox1.Controls.Add(this.btnPause);
             this.groupBox1.Controls.Add(this.checkBoxForce);
@@ -193,13 +200,24 @@
             this.groupBox1.Controls.Add(this.btnNew);
             this.groupBox1.Controls.Add(this.btnStopAll);
             this.groupBox1.Controls.Add(this.btnStartAll);
-            this.groupBox1.Controls.Add(this.dataGridView1);
+            this.groupBox1.Controls.Add(this.botGrid);
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(679, 242);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Bots";
+            // 
+            // btnStopAllDB
+            // 
+            this.btnStopAllDB.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
+            this.btnStopAllDB.Location = new System.Drawing.Point(227, 211);
+            this.btnStopAllDB.Name = "btnStopAllDB";
+            this.btnStopAllDB.Size = new System.Drawing.Size(75, 23);
+            this.btnStopAllDB.TabIndex = 8;
+            this.btnStopAllDB.Text = "Stop All DB";
+            this.btnStopAllDB.UseVisualStyleBackColor = true;
+            this.btnStopAllDB.Click += new System.EventHandler(this.btnStopAllDB_Click);
             // 
             // btnClone
             // 
@@ -215,7 +233,7 @@
             // btnPause
             // 
             this.btnPause.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.btnPause.Location = new System.Drawing.Point(227, 211);
+            this.btnPause.Location = new System.Drawing.Point(308, 211);
             this.btnPause.Name = "btnPause";
             this.btnPause.Size = new System.Drawing.Size(74, 23);
             this.btnPause.TabIndex = 6;
@@ -278,20 +296,21 @@
             this.btnStartAll.UseVisualStyleBackColor = true;
             this.btnStartAll.Click += new System.EventHandler(this.btnStartAll_click);
             // 
-            // dataGridView1
+            // botGrid
             // 
-            this.dataGridView1.AllowUserToOrderColumns = true;
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.botGrid.AllowUserToOrderColumns = true;
+            this.botGrid.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
-            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(6, 15);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.Size = new System.Drawing.Size(667, 190);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.botGrid.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.botGrid.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.botGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.botGrid.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
+            this.botGrid.Location = new System.Drawing.Point(6, 15);
+            this.botGrid.Name = "botGrid";
+            this.botGrid.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.botGrid.Size = new System.Drawing.Size(667, 190);
+            this.botGrid.TabIndex = 0;
             // 
             // groupBox2
             // 
@@ -606,81 +625,6 @@
             this.btnClose.UseVisualStyleBackColor = true;
             this.btnClose.Click += new System.EventHandler(this.btnClose_Click);
             // 
-            // contextMenuStrip1
-            // 
-            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.startToolStripMenuItem,
-            this.forceStartToolStripMenuItem,
-            this.stopToolStripMenuItem,
-            this.cloneToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.statsToolStripMenuItem,
-            this.toolStripSeparator2,
-            this.editToolStripMenuItem,
-            this.deleteToolStripMenuItem});
-            this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(131, 170);
-            // 
-            // startToolStripMenuItem
-            // 
-            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
-            this.startToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.startToolStripMenuItem.Text = "Start";
-            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
-            // 
-            // forceStartToolStripMenuItem
-            // 
-            this.forceStartToolStripMenuItem.Name = "forceStartToolStripMenuItem";
-            this.forceStartToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.forceStartToolStripMenuItem.Text = "Force Start";
-            this.forceStartToolStripMenuItem.Click += new System.EventHandler(this.forceStartToolStripMenuItem_Click);
-            // 
-            // stopToolStripMenuItem
-            // 
-            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
-            this.stopToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.stopToolStripMenuItem.Text = "Stop";
-            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
-            // 
-            // cloneToolStripMenuItem
-            // 
-            this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
-            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.cloneToolStripMenuItem.Text = "Clone";
-            this.cloneToolStripMenuItem.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(127, 6);
-            // 
-            // statsToolStripMenuItem
-            // 
-            this.statsToolStripMenuItem.Enabled = false;
-            this.statsToolStripMenuItem.Name = "statsToolStripMenuItem";
-            this.statsToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.statsToolStripMenuItem.Text = "Stats";
-            this.statsToolStripMenuItem.Click += new System.EventHandler(this.statsToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator2
-            // 
-            this.toolStripSeparator2.Name = "toolStripSeparator2";
-            this.toolStripSeparator2.Size = new System.Drawing.Size(127, 6);
-            // 
-            // editToolStripMenuItem
-            // 
-            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
-            this.editToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.editToolStripMenuItem.Text = "Edit";
-            this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
-            // 
-            // deleteToolStripMenuItem
-            // 
-            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
-            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(130, 22);
-            this.deleteToolStripMenuItem.Text = "Delete";
-            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
-            // 
             // TrayIcon
             // 
             this.TrayIcon.Text = "Yet Another Relogger";
@@ -717,6 +661,121 @@
             this.btnOpenLog.UseVisualStyleBackColor = true;
             this.btnOpenLog.Click += new System.EventHandler(this.btnOpenLog_Click);
             // 
+            // startToolStripMenuItem
+            // 
+            this.startToolStripMenuItem.Name = "startToolStripMenuItem";
+            this.startToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.startToolStripMenuItem.Text = "Start";
+            this.startToolStripMenuItem.Click += new System.EventHandler(this.startToolStripMenuItem_Click);
+            // 
+            // forceStartToolStripMenuItem
+            // 
+            this.forceStartToolStripMenuItem.Name = "forceStartToolStripMenuItem";
+            this.forceStartToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.forceStartToolStripMenuItem.Text = "Force Start";
+            this.forceStartToolStripMenuItem.Click += new System.EventHandler(this.forceStartToolStripMenuItem_Click);
+            // 
+            // killDemonbuddyToolStripMenuItem
+            // 
+            this.killDemonbuddyToolStripMenuItem.Name = "killDemonbuddyToolStripMenuItem";
+            this.killDemonbuddyToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.killDemonbuddyToolStripMenuItem.Text = "Kill Demonbuddy";
+            this.killDemonbuddyToolStripMenuItem.Click += new System.EventHandler(this.killDemonbuddyToolStripMenuItem_Click);
+            // 
+            // killDiabloToolStripMenuItem
+            // 
+            this.killDiabloToolStripMenuItem.Name = "killDiabloToolStripMenuItem";
+            this.killDiabloToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.killDiabloToolStripMenuItem.Text = "Kill Diablo";
+            this.killDiabloToolStripMenuItem.Click += new System.EventHandler(this.killDiabloToolStripMenuItem_Click);
+            // 
+            // stopDBToolStripMenuItem
+            // 
+            this.stopDBToolStripMenuItem.Name = "stopDBToolStripMenuItem";
+            this.stopDBToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.stopDBToolStripMenuItem.Text = "Stop Demonbuddy Only";
+            this.stopDBToolStripMenuItem.Click += new System.EventHandler(this.stopDBToolStripMenuItem_Click);
+            // 
+            // cloneToolStripMenuItem
+            // 
+            this.cloneToolStripMenuItem.Name = "cloneToolStripMenuItem";
+            this.cloneToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.cloneToolStripMenuItem.Text = "Clone";
+            this.cloneToolStripMenuItem.Click += new System.EventHandler(this.cloneToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(199, 6);
+            // 
+            // statsToolStripMenuItem
+            // 
+            this.statsToolStripMenuItem.Enabled = false;
+            this.statsToolStripMenuItem.Name = "statsToolStripMenuItem";
+            this.statsToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.statsToolStripMenuItem.Text = "Stats";
+            this.statsToolStripMenuItem.Click += new System.EventHandler(this.statsToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator2
+            // 
+            this.toolStripSeparator2.Name = "toolStripSeparator2";
+            this.toolStripSeparator2.Size = new System.Drawing.Size(199, 6);
+            // 
+            // editToolStripMenuItem
+            // 
+            this.editToolStripMenuItem.Name = "editToolStripMenuItem";
+            this.editToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.editToolStripMenuItem.Text = "Edit";
+            this.editToolStripMenuItem.Click += new System.EventHandler(this.editToolStripMenuItem_Click);
+            // 
+            // deleteToolStripMenuItem
+            // 
+            this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
+            this.deleteToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
+            // 
+            // contextMenuStrip1
+            // 
+            this.contextMenuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.startToolStripMenuItem,
+            this.forceStartToolStripMenuItem,
+            this.killDemonbuddyToolStripMenuItem,
+            this.killDiabloToolStripMenuItem,
+            this.moveUpMenuItem,
+            this.moveDownMenuItem,
+            this.stopToolStripMenuItem,
+            this.stopDBToolStripMenuItem,
+            this.cloneToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.statsToolStripMenuItem,
+            this.toolStripSeparator2,
+            this.editToolStripMenuItem,
+            this.deleteToolStripMenuItem});
+            this.contextMenuStrip1.Name = "contextMenuStrip1";
+            this.contextMenuStrip1.Size = new System.Drawing.Size(203, 280);
+            // 
+            // moveUpMenuItem
+            // 
+            this.moveUpMenuItem.Name = "moveUpMenuItem";
+            this.moveUpMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.moveUpMenuItem.Text = "Move Up";
+            this.moveUpMenuItem.Click += new System.EventHandler(this.moveUpMenuItem_Click);
+            // 
+            // moveDownMenuItem
+            // 
+            this.moveDownMenuItem.Name = "moveDownMenuItem";
+            this.moveDownMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.moveDownMenuItem.Text = "Move Down";
+            this.moveDownMenuItem.Click += new System.EventHandler(this.moveDownMenuItem_Click);
+            // 
+            // stopToolStripMenuItem
+            // 
+            this.stopToolStripMenuItem.Name = "stopToolStripMenuItem";
+            this.stopToolStripMenuItem.Size = new System.Drawing.Size(202, 22);
+            this.stopToolStripMenuItem.Text = "Stop";
+            this.stopToolStripMenuItem.Click += new System.EventHandler(this.stopToolStripMenuItem_Click);
+            // 
             // MainForm2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -742,7 +801,7 @@
             this.splitContainer1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.botGrid)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage4.ResumeLayout(false);
@@ -771,19 +830,10 @@
         private System.Windows.Forms.TabPage tabPage1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button btnClose;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
-        private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripMenuItem statsToolStripMenuItem;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
         private System.Windows.Forms.NotifyIcon TrayIcon;
         private System.Windows.Forms.TabPage tabPage3;
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TreeView treeView1;
-        private System.Windows.Forms.ToolStripMenuItem forceStartToolStripMenuItem;
         private System.Windows.Forms.Panel SettingsPanel;
         private System.Windows.Forms.PictureBox pictureBoxDonate;
         public System.Windows.Forms.Label labelStats;
@@ -810,13 +860,28 @@
         private System.Windows.Forms.Button btnNew;
         private System.Windows.Forms.Button btnStopAll;
         private System.Windows.Forms.Button btnStartAll;
-        public System.Windows.Forms.DataGridView dataGridView1;
+        public System.Windows.Forms.DataGridView botGrid;
         public System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.GroupBox groupBox2;
         private System.Windows.Forms.Button btnClone;
-        private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
         private System.Windows.Forms.Button btnRestartAllDb;
         private System.Windows.Forms.Button btnOpenLog;
         private System.Windows.Forms.ToolTip logDirectoryTT;
+        private System.Windows.Forms.ToolStripMenuItem startToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem forceStartToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem killDemonbuddyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem killDiabloToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopDBToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem cloneToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripMenuItem statsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
+        private System.Windows.Forms.ToolStripMenuItem editToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem deleteToolStripMenuItem;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem moveUpMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveDownMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem stopToolStripMenuItem;
+        private System.Windows.Forms.Button btnStopAllDB;
     }
 }

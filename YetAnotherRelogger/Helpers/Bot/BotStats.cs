@@ -4,7 +4,8 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class BotStats
     {
-        public int Coinage;
+        public long Coinage;
+        public long Experience;
         public bool IsInGame;
         public bool IsLoadingWorld;
         public bool IsPaused;
@@ -19,7 +20,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         {
             LastGame = PluginPulse = LastPulse = LastRun = DateTime.UtcNow.Ticks;
             IsPaused = IsRunning = IsInGame = false;
-            Coinage = 0;
+            Coinage = Experience = 0;
         }
     }
 }

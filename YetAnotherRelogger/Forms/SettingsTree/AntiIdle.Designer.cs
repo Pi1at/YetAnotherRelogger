@@ -1,4 +1,4 @@
-﻿namespace YetAnotherRelogger.Forms.SettingsTree
+namespace YetAnotherRelogger.Forms.SettingsTree
 {
     partial class AntiIdle
     {
@@ -188,18 +188,18 @@
             // goldTimerLabel2
             // 
             this.goldTimerLabel2.AutoSize = true;
-            this.goldTimerLabel2.Location = new System.Drawing.Point(142, 60);
+            this.goldTimerLabel2.Location = new System.Drawing.Point(132, 65);
             this.goldTimerLabel2.Name = "goldTimerLabel2";
-            this.goldTimerLabel2.Size = new System.Drawing.Size(29, 12);
+            this.goldTimerLabel2.Size = new System.Drawing.Size(27, 13);
             this.goldTimerLabel2.TabIndex = 2;
             this.goldTimerLabel2.Text = "sec.";
             // 
             // goldTimerLabel1
             // 
             this.goldTimerLabel1.AutoSize = true;
-            this.goldTimerLabel1.Location = new System.Drawing.Point(6, 60);
+            this.goldTimerLabel1.Location = new System.Drawing.Point(6, 65);
             this.goldTimerLabel1.Name = "goldTimerLabel1";
-            this.goldTimerLabel1.Size = new System.Drawing.Size(65, 12);
+            this.goldTimerLabel1.Size = new System.Drawing.Size(54, 13);
             this.goldTimerLabel1.TabIndex = 1;
             this.goldTimerLabel1.Text = "Gold timer";
             this.toolTip1.SetToolTip(this.goldTimerLabel1, "If gold does not change in this time, AntiIdle actions will be taken.");

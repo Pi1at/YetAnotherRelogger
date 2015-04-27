@@ -50,7 +50,7 @@ namespace YetAnotherRelogger.Helpers
 
         public void Start()
         {
-            _threadWorker = new Thread(Worker) {IsBackground = true};
+            _threadWorker = new Thread(Worker) { IsBackground = true, Name = "CommunicatorWorker" };
             _threadWorker.Start();
         }
 
@@ -63,7 +63,7 @@ namespace YetAnotherRelogger.Helpers
                     var serverStream = new NamedPipeServerStream("YetAnotherRelogger", PipeDirection.InOut, 254);
                     serverStream.WaitForConnection();
                     var handleClient = new HandleClient(serverStream);
-                    new Thread(handleClient.Start).Start();
+                    new Thread(handleClient.Start) { Name = "CommunicatorHandleClient" }.Start();
                 }
                 catch (Exception ex)
                 {
@@ -83,7 +83,7 @@ namespace YetAnotherRelogger.Helpers
             {
                 _stream = stream;
                 _reader = new StreamReader(stream);
-                _writer = new StreamWriter(stream) {AutoFlush = true};
+                _writer = new StreamWriter(stream) { AutoFlush = true };
             }
 
             public void Dispose()
@@ -95,9 +95,8 @@ namespace YetAnotherRelogger.Helpers
                     {
                         _stream.Close();
                     }
-                    catch
-                    {
-                    }
+                    catch (ObjectDisposedException) { }
+                    catch { }
                     _stream = null;
                 }
                 if (_reader != null)
@@ -106,22 +105,20 @@ namespace YetAnotherRelogger.Helpers
                     {
                         _reader.Close();
                     }
-                    catch
-                    {
-                    }
+                    catch (ObjectDisposedException) { }
+                    catch { }
                     _reader = null;
                 }
-                if (_writer != null)
-                {
-                    try
-                    {
-                        _writer.Close();
-                    }
-                    catch
-                    {
-                    }
-                    _writer = null;
-                }
+                //if (_writer != null)
+                //{
+                //    try
+                //    {
+                //        _writer.Close();
+                //    }
+                //    catch (ObjectDisposedException) { }
+                //    catch { }
+                //    _writer = null;
+                //}
             }
 
             public void Start()
@@ -180,7 +177,7 @@ namespace YetAnotherRelogger.Helpers
             private void HandleXml(string data)
             {
                 BotStats stats;
-                var xml = new XmlSerializer(typeof (BotStats));
+                var xml = new XmlSerializer(typeof(BotStats));
                 using (var stringReader = new StringReader(data))
                 {
                     stats = xml.Deserialize(stringReader) as BotStats;
@@ -277,6 +274,7 @@ namespace YetAnotherRelogger.Helpers
                                 string newprofile = b.ProfileSchedule.GetProfile;
                                 Logger.Instance.Write(b, "Next profile: {0}", newprofile);
                                 Send("LoadProfile " + newprofile);
+                                b.AntiIdle.ResetCoinage();
                             }
                             else
                                 Send("Roger!");
@@ -298,7 +296,7 @@ namespace YetAnotherRelogger.Helpers
                             b.AntiIdle.State = IdleState.StartDelay;
                             Send("Roger!");
                             break;
-                            // Giles Compatibility
+                        // Giles Compatibility
                         case "ThirdpartyStop":
                             b.Status = string.Format("Thirdparty Stop: {0:d-m H:M:s}", DateTime.UtcNow);
                             b.AntiIdle.State = IdleState.UserStop;
@@ -329,8 +327,9 @@ namespace YetAnotherRelogger.Helpers
                             break;
                         case "D3Exit":
                             Send("Shutdown");
+                            b.Diablo.Proc.CloseMainWindow();
                             break;
-                            // Unknown command reply
+                        // Unknown command reply
                         default:
                             Send("Unknown command!");
                             Logger.Instance.WriteGlobal("Unknown command recieved: " + msg);

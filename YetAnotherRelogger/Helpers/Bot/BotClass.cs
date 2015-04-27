@@ -9,15 +9,28 @@ namespace YetAnotherRelogger.Helpers.Bot
 {
     public class BotClass : INotifyPropertyChanged, ICloneable
     {
-        [XmlIgnore] private AntiIdleClass _antiIdle;
-        [XmlIgnore] private DemonbuddyClass _demonbuddy;
-        [XmlIgnore] private string _demonbuddyPid;
-        [XmlIgnore] private DiabloClass _diablo;
-        [XmlIgnore] private bool _isStandby;
-        [XmlIgnore] private string _runningtime;
-        [XmlIgnore] private DateTime _standbyTime;
+        [XmlIgnore]
+        private AntiIdleClass _antiIdle;
+        [XmlIgnore]
+        private DemonbuddyClass _demonbuddy;
+        [XmlIgnore]
+        [NoCopy]
+        private string _demonbuddyPid;
+        [XmlIgnore]
+        private DiabloClass _diablo;
+        [XmlIgnore]
+        [NoCopy]
+        private bool _isStandby;
+        [XmlIgnore]
+        [NoCopy]
+        private string _runningtime;
+        [XmlIgnore]
+        [NoCopy]
+        private DateTime _standbyTime;
 
-        [XmlIgnore] private string _status;
+        [XmlIgnore]
+        [NoCopy]
+        private string _status;
 
         public BotClass()
         {
@@ -70,21 +83,24 @@ namespace YetAnotherRelogger.Helpers.Bot
         public ProfileScheduleClass ProfileSchedule { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsStarted { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsRunning { get; set; }
 
         // Standby to try again at a later moment
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsStandby
         {
             get
             {
                 // Increase retry count by 15 mins with a max of 1 hour
                 if (_isStandby &&
-                    General.DateSubtract(_standbyTime) > 900*(AntiIdle.InitAttempts > 4 ? 4 : AntiIdle.InitAttempts))
+                    General.DateSubtract(_standbyTime) > 900 * (AntiIdle.InitAttempts > 4 ? 4 : AntiIdle.InitAttempts))
                 {
                     _isStandby = false;
                     _diablo.Start();
@@ -100,6 +116,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public string Status
         {
             get { return _status; }
@@ -107,9 +124,11 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public DateTime StartTime { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public string RunningTime
         {
             get { return _runningtime; }
@@ -117,13 +136,67 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public ChartStats ChartStats { get; set; }
 
         [XmlIgnore]
+        [NoCopy]
         public string DemonbuddyPid
         {
             get { return _demonbuddyPid; }
             set { SetField(ref _demonbuddyPid, value, "DemonbuddyPid"); }
+        }
+
+        public int DemonbuddyX
+        {
+            get { return Demonbuddy.X; }
+            set
+            {
+                if (Demonbuddy.X != value)
+                {
+                    Demonbuddy.X = value;
+                    OnPropertyChanged("DemonbuddyX");
+                }
+            }
+        }
+
+        public int DemonbuddyY
+        {
+            get { return Demonbuddy.Y; }
+            set
+            {
+                if (Demonbuddy.Y != value)
+                {
+                    Demonbuddy.Y = value;
+                    OnPropertyChanged("DemonbuddyX");
+                }
+            }
+        }
+
+        public int DemonbuddyW
+        {
+            get { return Demonbuddy.W; }
+            set
+            {
+                if (Demonbuddy.W != value)
+                {
+                    Demonbuddy.W = value;
+                    OnPropertyChanged("DemonbuddyX");
+                }
+            }
+        }
+
+        public int DemonbuddyH
+        {
+            get { return Demonbuddy.H; }
+            set
+            {
+                if (Demonbuddy.H != value)
+                {
+                    Demonbuddy.H = value;
+                    OnPropertyChanged("DemonbuddyX");
+                }
+            }
         }
 
         #region Advanced Options Variables
@@ -156,13 +229,18 @@ namespace YetAnotherRelogger.Helpers.Bot
                 Diablo = Diablo.Copy(),
                 DiabloCloneLocation = DiabloCloneLocation.Copy(),
                 Name = Name.Copy(),
-                ProfileSchedule = ProfileSchedule.Copy(),
+                ProfileSchedule = new ProfileScheduleClass(),
                 UseDiabloClone = UseDiabloClone.Copy(),
                 UseWindowsUser = UseWindowsUser.Copy(),
                 Week = Week.Copy(),
                 WindowsUserName = WindowsUserName.Copy(),
                 WindowsUserPassword = WindowsUserPassword.Copy()
             };
+
+            foreach (var profile in ProfileSchedule.Profiles)
+            {
+                clone.ProfileSchedule.Profiles.Add(profile);
+            }
             return clone;
         }
 
@@ -214,6 +292,16 @@ namespace YetAnotherRelogger.Helpers.Bot
                 Logger.Instance.Write(this, "Forced to start! ");
         }
 
+        public void StopDB()
+        {
+            Logger.Instance.Write(this, "Stopping Demonbuddy Only");
+            Status = "Stopped";
+            IsStarted = false;
+            IsRunning = false;
+            IsStandby = false;
+            _demonbuddy.Stop();
+        }
+
         public void Stop()
         {
             Logger.Instance.Write(this, "Stopping");
@@ -241,6 +329,19 @@ namespace YetAnotherRelogger.Helpers.Bot
             AntiIdle.FixAttempts = 0;
             _demonbuddy.Stop();
             _diablo.Stop();
+        }
+
+        public void KillDB()
+        {
+            Logger.Instance.Write(this, "Killing Demonbuddy");
+            _demonbuddy.Stop(true);
+        }
+
+        public void KillDiablo()
+        {
+            Logger.Instance.Write(this, "Killing Diablo");
+            _diablo.Stop();
+
         }
     }
 }

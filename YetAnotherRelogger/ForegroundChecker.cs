@@ -37,7 +37,7 @@ namespace YetAnotherRelogger
             if (_fcThread != null)
                 _fcThread.Abort();
 
-            _fcThread = new Thread(ForegroundCheckerWorker) {IsBackground = true};
+            _fcThread = new Thread(ForegroundCheckerWorker) { IsBackground = true, Name = "ForegroundCheckerWorker" };
             _fcThread.Start();
         }
 
@@ -111,7 +111,7 @@ namespace YetAnotherRelogger
                             }
 
                             // calculate sleeptime
-                            var sleep = (int) (Program.Sleeptime - DateTime.UtcNow.Subtract(time).TotalMilliseconds);
+                            var sleep = (int)(Program.Sleeptime - DateTime.UtcNow.Subtract(time).TotalMilliseconds);
                             if (sleep > 0)
                                 Thread.Sleep(sleep);
                         }
