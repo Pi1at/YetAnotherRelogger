@@ -11,7 +11,9 @@ namespace YetAnotherRelogger.Helpers.Bot
     public class ProfileScheduleClass
     {
         [XmlIgnore] public int Count;
-        [XmlIgnore] public Profile Current;
+        [XmlIgnore]
+        [NoCopy]
+        public Profile Current;
         [XmlIgnore] public DateTime StartTime;
         [XmlIgnore] private int _addRuns;
         [XmlIgnore] private int _addTime;
@@ -30,18 +32,21 @@ namespace YetAnotherRelogger.Helpers.Bot
 
 
         [XmlIgnore]
+        [NoCopy]
         public int MaxRuns
         {
             get { return Current.Runs + _addRuns; }
         }
 
         [XmlIgnore]
+        [NoCopy]
         public int MaxTime
         {
             get { return Current.Minutes + _addTime; }
         }
 
         [XmlIgnore]
+        [NoCopy]
         public string GetProfile
         {
             get
@@ -82,6 +87,7 @@ namespace YetAnotherRelogger.Helpers.Bot
         }
 
         [XmlIgnore]
+        [NoCopy]
         public bool IsDone
         {
             get

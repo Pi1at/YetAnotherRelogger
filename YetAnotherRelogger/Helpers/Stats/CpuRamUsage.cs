@@ -20,6 +20,12 @@ namespace YetAnotherRelogger.Helpers.Stats
         private HashSet<ProcUsage> _procUsageList = new HashSet<ProcUsage>();
         private bool glitchRecover;
 
+        private static readonly List<string> IgnoreSystemProcesses = new List<string>
+        {
+            "audiodg",
+            "System"
+        };
+
         public CpuRamUsage()
         {
             TotalCpuUsage = 0;
@@ -89,9 +95,24 @@ namespace YetAnotherRelogger.Helpers.Stats
                         if (proc.Id == 0)
                             continue;
 
+                        if (IgnoreSystemProcesses.Contains(proc.ProcessName))
+                            continue;
+
+                        try
+                        {
+                            if (proc.HasExited)
+                                continue;
+                        }
+                        catch { 
+                            continue; 
+                        }
+
                         Int64 procTotal;
                         double oldCpuUsage = 0d;
                         ProcUsage p = GetById(proc.Id);
+                        if (proc.HasExited)
+                            continue;
+
                         if (p != null)
                         {
                             procTotal = proc.TotalProcessorTime.Ticks - p.LastProcTime.Ticks;

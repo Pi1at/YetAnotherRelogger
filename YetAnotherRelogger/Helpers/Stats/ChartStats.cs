@@ -42,7 +42,7 @@ namespace YetAnotherRelogger.Helpers.Stats
 
             public void Update(BotClass bot)
             {
-                int coinage = bot.AntiIdle.Stats.Coinage;
+                long coinage = bot.AntiIdle.Stats.Coinage;
                 if (coinage > 0)
                 {
                     LastGain = coinage - LastCoinage;

@@ -38,8 +38,11 @@ namespace YetAnotherRelogger
 
         public void Start()
         {
+            if (_threadRelogger != null && (_threadRelogger == null || _threadRelogger.IsAlive))
+                return;
+
             _isStopped = false;
-            _threadRelogger = new Thread(ReloggerWorker) { IsBackground = true };
+            _threadRelogger = new Thread(ReloggerWorker) { IsBackground = true, Name = "ReloggerWorker" };
             _threadRelogger.Start();
         }
 
@@ -48,7 +51,10 @@ namespace YetAnotherRelogger
         {
             _isStopped = true;
             _threadRelogger.Abort();
+            _threadRelogger = null;
         }
+
+        private DateTime _lastSaveSettings = DateTime.MinValue;
 
         private void ReloggerWorker()
         {
@@ -92,30 +98,32 @@ namespace YetAnotherRelogger
                         continue;
                     }
 
-                    new Thread(() =>
+                    List<Process> blizzardErrorProcs =
+                         (from p in Process.GetProcessesByName("BlizzardError.exe")
+                          select p).ToList();
+                    if (blizzardErrorProcs.Any())
                     {
                         try
                         {
-                            List<Process> BlizzardErrorProcs =
-                                (from p in Process.GetProcessesByName("BlizzardError.exe")
-                                 select p).ToList();
-                            if (BlizzardErrorProcs.Any())
+                            foreach (var p in blizzardErrorProcs)
                             {
-                                foreach (var p in BlizzardErrorProcs)
-                                {
-                                    Logger.Instance.Write("Killing BlizzardError.exe with PID {0}", p.Id);
-                                    p.Kill();
-                                }
+                                Logger.Instance.Write("Killing BlizzardError.exe with PID {0}", p.Id);
+                                p.Kill();
                             }
+
                         }
                         catch (Exception ex)
                         {
-                            Logger.Instance.Write("Exception killing BlizzardError.exe: " + ex.ToString());
+                            Logger.Instance.Write("Exception killing BlizzardError.exe: " + ex);
                         }
-                    })
+                    }
+
+                    if (DateTime.UtcNow.Subtract(_lastSaveSettings).TotalSeconds > 10)
                     {
-                        IsBackground = true
-                    }.Start();
+                        _lastSaveSettings = DateTime.UtcNow;
+                        Settings.Default.Save();
+                        BotSettings.Instance.Save();
+                    }
 
                     // Check / validate internet connection
                     if (!ConnectionCheck.IsConnected || !ConnectionCheck.ValidConnection)
@@ -125,7 +133,7 @@ namespace YetAnotherRelogger
                         continue;
                     }
 
-                    foreach (BotClass bot in BotSettings.Instance.Bots.Where(bot => bot != null))
+                    foreach (BotClass bot in BotSettings.Instance.Bots.Where(bot => bot != null).ToList())
                     {
                         if (Program.Pause)
                             break;
@@ -180,7 +188,7 @@ namespace YetAnotherRelogger
                             }
                             else if (!bot.Demonbuddy.IsRunning)
                             {
-                                Logger.Instance.Write("Demonbuddy:{0}: Process is not running", bot.Demonbuddy.Proc.Id);
+                                Logger.Instance.Write("Demonbuddy: Process is not running");
                                 bot.Demonbuddy.Start();
                             }
                             else if (Settings.Default.AntiIdleStatsDuration > 0 && bot.AntiIdle.State != IdleState.Initialize && General.DateSubtract(bot.AntiIdle.LastStats) >

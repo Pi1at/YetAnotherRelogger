@@ -30,7 +30,8 @@ namespace YetAnotherRelogger.Forms.Wizard
         private void Schedule_Load(object sender, EventArgs e)
         {
             VisibleChanged += WeekSchedule_VisibleChanged;
-            var Generator = new Thread(GenerateSchedule);
+            var Generator = new Thread(GenerateSchedule) { Name = "WeekScheduleGenerator" };
+
             textBox1.KeyPress += NumericCheck;
             textBox2.KeyPress += NumericCheck;
             Generator.Start();
@@ -86,7 +87,7 @@ namespace YetAnotherRelogger.Forms.Wizard
 
         public void LoadSchedule(BotClass bot)
         {
-            var loadScheduleThread = new Thread(ScheduleLoader);
+            var loadScheduleThread = new Thread(ScheduleLoader) { Name = "ScheduleLoader" };
             loadScheduleThread.Start(bot);
         }
 

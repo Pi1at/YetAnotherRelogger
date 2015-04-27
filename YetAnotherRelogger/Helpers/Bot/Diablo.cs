@@ -1,4 +1,5 @@
-﻿namespace YetAnotherRelogger.Helpers.Bot
+
+namespace YetAnotherRelogger.Helpers.Bot
 {
     using System;
     using System.Diagnostics;
@@ -36,10 +37,6 @@
             ProcessorAffinity = AllProcessors;
         }
 
-        //!!!
-        
-        IntPtr hControl;
-
         #region WINAPI
         [DllImport("user32.dll", CharSet = CharSet.Auto, ExactSpelling = true)]
         public static extern IntPtr GetFocus();
@@ -67,17 +64,65 @@
 
 
 
+        /// <summary>
+        /// Gets or sets the parent.
+        /// </summary>
+        /// <value>
+        /// The parent.
+        /// </value>
         [XmlIgnore]
         [NoCopy]
         public BotClass Parent { get; set; }
 
+        /// <summary>
+        /// Gets or sets the username.
+        /// </summary>
+        /// <value>
+        /// The username.
+        /// </value>
         public string Username { get; set; }
+        /// <summary>
+        /// Gets or sets the password.
+        /// </summary>
+        /// <value>
+        /// The password.
+        /// </value>
         public string Password { get; set; }
+        /// <summary>
+        /// Gets or sets the location.
+        /// </summary>
+        /// <value>
+        /// The location.
+        /// </value>
         public string Location { get; set; }
+        /// <summary>
+        /// Gets or sets the language.
+        /// </summary>
+        /// <value>
+        /// The language.
+        /// </value>
         public string Language { get; set; }
+        /// <summary>
+        /// Gets or sets the region.
+        /// </summary>
+        /// <value>
+        /// The region.
+        /// </value>
         public string Region { get; set; }
+        /// <summary>
+        /// Gets or sets the priority.
+        /// </summary>
+        /// <value>
+        /// The priority.
+        /// </value>
         public int Priority { get; set; }
 
+        /// <summary>
+        /// Gets the location2.
+        /// </summary>
+        /// <value>
+        /// The location2.
+        /// </value>
         public string Location2
         {
             get
@@ -92,12 +137,46 @@
         }
 
         // Isboxer
+        /// <summary>
+        /// Gets or sets a value indicating whether [use is boxer].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [use is boxer]; otherwise, <c>false</c>.
+        /// </value>
         public bool UseIsBoxer { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether [reused window].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [reused window]; otherwise, <c>false</c>.
+        /// </value>
         public bool ReusedWindow { get; set; }
+        /// <summary>
+        /// Gets or sets the display slot.
+        /// </summary>
+        /// <value>
+        /// The display slot.
+        /// </value>
         public string DisplaySlot { get; set; }
+        /// <summary>
+        /// Gets or sets the character set.
+        /// </summary>
+        /// <value>
+        /// The character set.
+        /// </value>
         public string CharacterSet { get; set; }
+        /// <summary>
+        /// Gets or sets if we launch the entire character set from ISBoxer
+        /// </summary>
+        public bool ISBoxerLaunchCharacterSet { get; set; }
 
         // Position
+        /// <summary>
+        /// Gets or sets a value indicating whether [manual position size].
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if [manual position size]; otherwise, <c>false</c>.
+        /// </value>
         public bool ManualPosSize { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
@@ -109,16 +188,53 @@
 
         // Authenticator
         public bool UseAuthenticator { get; set; }
+        /// <summary>
+        /// Gets or sets the serial. (US-1234-4567-8901)
+        /// </summary>
+        /// <value>
+        /// The serial.
+        /// </value>
         public string Serial { get; set; }
+
+        /// <summary>
+        /// Gets or sets the serial2. (US123445678901)
+        /// </summary>
+        /// <value>
+        /// The serial2.
+        /// </value>
         public string Serial2 { get; set; }
+        /// <summary>
+        /// Gets or sets the restore code.
+        /// </summary>
+        /// <value>
+        /// The restore code.
+        /// </value>
         public string RestoreCode { get; set; }
 
         // Affinity
         // If CpuCount does not match current machines CpuCount,
         // the affinity is set to all processor
+        /// <summary>
+        /// Gets or sets the cpu count.
+        /// </summary>
+        /// <value>
+        /// The cpu count.
+        /// </value>
         public int CpuCount { get; set; }
+        /// <summary>
+        /// Gets or sets the processor affinity.
+        /// </summary>
+        /// <value>
+        /// The processor affinity.
+        /// </value>
         public int ProcessorAffinity { get; set; }
 
+        /// <summary>
+        /// Gets all processors.
+        /// </summary>
+        /// <value>
+        /// All processors.
+        /// </value>
         [XmlIgnore]
         public int AllProcessors
         {
@@ -131,11 +247,20 @@
             }
         }
 
+        /// <summary>
+        /// Gets a value indicating whether this instance is running.
+        /// </summary>
+        /// <value>
+        /// <c>true</c> if this instance is running; otherwise, <c>false</c>.
+        /// </value>
         public bool IsRunning
         {
             get { return (Proc != null && !Proc.HasExited && !_isStopped); }
         }
 
+        /// <summary>
+        /// Crashes the check.
+        /// </summary>
         public void CrashCheck()
         {
             if (Proc == null)
@@ -169,6 +294,9 @@
             }
         }
 
+        /// <summary>
+        /// Starts this instance.
+        /// </summary>
         public void Start()
         {
             if (!Parent.IsStarted)
@@ -243,7 +371,13 @@
             {
                 try
                 {
-                    const string arguments = "-launch";
+                    string arguments = "-launch";
+
+                    if (Region == "Beta")
+                    {
+                        arguments += " OnlineService.PTR=true";
+                    }
+
                     var pi = new ProcessStartInfo(Location2, arguments)
                     {
                         WorkingDirectory = Path.GetDirectoryName(Location2)
@@ -384,62 +518,7 @@
 
             Logger.Instance.Write("Diablo:{0}: Process is ready", Proc.Id);
 
-
-            if (Parent.Diablo.UseAuthenticator)
-            {
-
-                //!!! Try to authentificate
-
-                hControl = FindWindow.FindWindowClass("D3 Main Window Class", Proc.Id);
-
-                SetForegroundWindow(hControl);
-                Logger.Instance.Write("Diablo:{0}: Trying to login", Proc.Id);
-
-                try
-                {
-                    SetForegroundWindow(hControl);
-                    SendKeys.SendWait(Parent.Diablo.Username);
-
-                    SetForegroundWindow(hControl);
-                    SendKeys.SendWait("{TAB}");
-
-                    SetForegroundWindow(hControl);
-                    SendKeys.SendWait(Parent.Diablo.Password);
-
-                    SetForegroundWindow(hControl);
-                    SendKeys.SendWait("~");
-                }
-                catch (Exception exc)
-                {
-                    MessageBox.Show(exc.Message);
-                }
-
-                if (Parent.Diablo.UseAuthenticator)
-                {
-
-                    Thread.Sleep(10000);
-
-                    Logger.Instance.Write("Diablo:{0}: Trying to authentificate", Proc.Id);
-                    BattleNetAuthenticator auth = new BattleNetAuthenticator();
-                    auth.Restore(Parent.Diablo.Serial2, Parent.Diablo.RestoreCode);
-                    string authcode = Convert.ToString(auth.CurrentCode);
-
-                    try
-                    {
-                        SetForegroundWindow(hControl);
-                        SendKeys.SendWait(authcode);
-
-                        SetForegroundWindow(hControl);
-                        SendKeys.SendWait("~");
-                    }
-                    catch (Exception exc)
-                    {
-                        MessageBox.Show(exc.Message);
-                    }
-                }
-                //!!!
-            }
-
+            
 
             // Demonbuddy start delay
             if (Settings.Default.DemonbuddyStartDelay > 0)
@@ -536,13 +615,11 @@
                 return;
             }
 
-            Process isboxer = null;
             // Find running ISBoxer
             foreach (var proc in Process.GetProcesses())
             {
-                string windowTitle = string.Format("is{0} {1} - {2}", DisplaySlot, DisplaySlot, CharacterSet);
 
-                if (proc.MainWindowTitle == windowTitle)
+                if (proc.MainWindowTitle.StartsWith("is"+DisplaySlot) && proc.MainWindowTitle.EndsWith(CharacterSet))
                 {
                     Proc = proc;
                     ReusedWindow = true;
@@ -556,13 +633,23 @@
             {
                 ReusedWindow = false;
 
-                isboxer = new Process
+                string args = "";
+                if (ISBoxerLaunchCharacterSet)
+                {
+                    args=string.Format("run isboxer -launch \"{0}\"" , CharacterSet);
+                }
+                else
+                {
+                 args=string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot);
+                }
+
+                Process isboxer = new Process
                 {
                     StartInfo =
                     {
                         FileName = Settings.Default.ISBoxerPath,
                         WorkingDirectory = Path.GetDirectoryName(Settings.Default.ISBoxerPath),
-                        Arguments = string.Format("run isboxer -launchslot \"{0}\" {1}", CharacterSet, DisplaySlot),
+                        Arguments = args,
                     }
                 };
                 Logger.Instance.Write(Parent, "Starting InnerSpace: {0}", Settings.Default.ISBoxerPath);
