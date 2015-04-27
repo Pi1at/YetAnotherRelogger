@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -87,6 +87,9 @@
     <OutputPath>bin\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="InputSimulator">
+      <HintPath>..\ThirdParty\InputSimulator.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.DirectoryServices" />
@@ -94,9 +97,6 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsInput">
-      <HintPath>..\packages\InputSimulator.1.0.4.0\lib\net20\WindowsInput.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Forms\SettingsTree\ConnectionCheck.cs">
@@ -278,7 +278,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <None Include="app.config" />
-    <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <Resource Include="Resources\Plugin.cs" />
     <Compile Include="Settings.cs" />
@@ -411,9 +410,14 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>"$(ProjectDir)..\ThirdParty\mt\mt.exe" -manifest "$(ProjectDir)Properties\app.manifest"  -outputresource:"$(TargetDir)$(TargetFileName)"
-if "$(ConfigurationName)"=="Release" "$(ProjectDir)..\ThirdParty\PETool\PETool.exe" "$(TargetDir)$(TargetFileName)" /DeStamp /VerChange "OriginalFilename" "" /VerChange "InternalName" "" /VerChange "FileVersion" "" /VerChange "ProductVersion" "" /VerChange "Assembly Version" ""
-if "$(ConfigurationName)"=="Release" copy "$(TargetDir)$(TargetFileName)" "$(ProjectDir)..\LatestBuild\$(TargetFileName)" /Y</PostBuildEvent>
+    <PostBuildEvent>"$(SolutionDir)ThirdParty\mt\mt.exe" -manifest "$(ProjectDir)Properties\app.manifest"  -outputresource:"$(TargetDir)$(TargetFileName)"
+"$(SolutionDir)ThirdParty\ILMerge.exe" /v4 /target:winexe /wildcards /out:"$(TargetDir)$(TargetName).merged.exe" "$(TargetDir)$(TargetFileName)" "$(TargetDir)*.dll"
+del "$(TargetPath)"
+ren "$(TargetDir)$(TargetName).merged.exe" "$(TargetFileName)"
+
+if "$(ConfigurationName)"=="Release" "$(SolutionDir)ThirdParty\PETool\PETool.exe" "$(TargetPath)" /DeStamp /VerChange "OriginalFilename" "" /VerChange "InternalName" "" /VerChange "FileVersion" "" /VerChange "ProductVersion" "" /VerChange "Assembly Version" ""
+
+if "$(ConfigurationName)"=="Release" copy "$(TargetPath)" "$(SolutionDir)LatestBuild\$(TargetFileName)" /Y</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>if exist {$(SolutionDir)..\Plugins\YAR\Plugin.cs} (
