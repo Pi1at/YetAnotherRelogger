@@ -277,6 +277,7 @@ namespace YetAnotherRelogger.Helpers
                                 string newprofile = b.ProfileSchedule.GetProfile;
                                 Logger.Instance.Write(b, "Next profile: {0}", newprofile);
                                 Send("LoadProfile " + newprofile);
+                                b.AntiIdle.ResetCoinage();
                             }
                             else
                                 Send("Roger!");

@@ -1,4 +1,4 @@
-﻿namespace YetAnotherRelogger.Helpers.Bot
+namespace YetAnotherRelogger.Helpers.Bot
 {
     using System;
     using System.Diagnostics;

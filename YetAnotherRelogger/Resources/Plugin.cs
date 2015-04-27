@@ -94,9 +94,9 @@ namespace YARPLUGIN
                 /* Atom 2.0.15+ "Take a break" */
                 new Regex(@".*Atom.*Will Stop the bot for .+ minutes\.$", RegexOptions.Compiled), // Take a break
                 /* RadsAtom "Take a break" */
-                new Regex(@"\[RadsAtom\].+ minutes to next break, the break will last for .+ minutes.", RegexOptions.Compiled), 
+                new Regex(@"\[RadsAtom\].+ minutes to next break, the break will last for .+ minutes.", RegexOptions.Compiled),
                 /* Take A Break by Ghaleon */
-                new Regex(@"\[TakeABreak.*\] It's time to take a break.*", RegexOptions.Compiled), 
+                new Regex(@"\[TakeABreak.*\] It's time to take a break.*", RegexOptions.Compiled),
             };
 
         // CrashTender
@@ -107,7 +107,7 @@ namespace YARPLUGIN
                 /* Session expired */
                 new Regex(@"Session is expired", RegexOptions.IgnoreCase | RegexOptions.Compiled),
                 /* Failed to attach to D3*/
-                new Regex(@"Was not able to attach to any running Diablo III process, are you running the bot already\?", RegexOptions.Compiled), 
+                new Regex(@"Was not able to attach to any running Diablo III process, are you running the bot already\?", RegexOptions.Compiled),
                 new Regex(@"Traceback (most recent call last):", RegexOptions.IgnoreCase | RegexOptions.Compiled),
             };
 
@@ -251,7 +251,7 @@ namespace YARPLUGIN
 
 
         public void OnDisabled()
-        {    
+        {
             Pulsator.OnPulse -= Pulsator_OnPulse;
 
             Hierarchy loggingHierarchy = (Hierarchy)LogManager.GetRepository();
@@ -483,7 +483,7 @@ namespace YARPLUGIN
                     _bs.LastPulse = DateTime.UtcNow.Ticks;
                     return;
                 }
-                
+
                 if (!ZetaDia.IsInGame || ZetaDia.Me == null || !ZetaDia.Me.IsValid || ZetaDia.IsLoadingWorld)
                 {
                     Log("YAR Plugin Pulse from invalid state");
@@ -494,7 +494,7 @@ namespace YARPLUGIN
 
                 ReplaceBotBehavior();
 
-                // in-game / character data 
+                // in-game / character data
                 _bs.IsLoadingWorld = ZetaDia.IsLoadingWorld;
                 _bs.Coinage = 0;
                 try
@@ -773,13 +773,13 @@ namespace YARPLUGIN
                     LoadProfile(data);
                     break;
                 case "DifficultyLevel":
-                    var difficulty_level = Convert.ToInt32(data.Trim());                            
+                    var difficulty_level = Convert.ToInt32(data.Trim());
                     if (difficulty_level >= 0)
                     {
                         var difficulty = (GameDifficulty)System.Enum.Parse(typeof(GameDifficulty), data.Trim(), true);
                         Log("Recieved DifficultyLevel: {0}", difficulty);
                         CharacterSettings.Instance.GameDifficulty = difficulty;
-                    }      
+                    }
                     break;
                 case "ForceEnableAll":
                     ForceEnableAllPlugins();
