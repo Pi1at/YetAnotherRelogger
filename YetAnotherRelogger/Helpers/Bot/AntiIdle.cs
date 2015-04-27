@@ -16,14 +16,21 @@ namespace YetAnotherRelogger.Helpers.Bot
         public DateTime InitTime;
         public bool IsInitialized;
 
-        public int LastCoinage;
+        [NoCopy]
+        public long LastCoinage;
         public DateTime LastCoinageBugReported;
         public DateTime LastCoinageIncrease;
         public DateTime LastCoinageReset; // So we give it a minute to get in shape
+        [NoCopy]
+        public long LastExperience;
+        public DateTime LastExperienceBugReported;
+        public DateTime LastExperienceIncrease;
+        public DateTime LastExperienceReset; // So we give it a minute to get in shape
         public DateTime LastStats;
         [NoCopy] public BotClass Parent;
         public DateTime StartDelay;
         public IdleState State;
+        [NoCopy]
         public BotStats Stats;
         public DateTime TimeFailedStartDelay;
         private DateTime _fixAttemptTime;
@@ -138,7 +145,7 @@ namespace YetAnotherRelogger.Helpers.Bot
             LastCoinageReset = DateTime.MinValue;
         }
 
-        public void UpdateCoinage(int NewCoinage)
+        public void UpdateCoinage(long NewCoinage)
         {
             if (NewCoinage < 0)
             {

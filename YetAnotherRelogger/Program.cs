@@ -59,9 +59,6 @@ namespace YetAnotherRelogger
                 if (Settings.Default.AutoPosScreens == null ||
                     (Settings.Default.AutoPosScreens != null && Settings.Default.AutoPosScreens.Count == 0))
                     AutoPosition.UpdateScreens();
-                //if (Settings.Default.D3StarterPath.Equals(string.Empty) || Settings.Default.D3StarterPath.Equals(""))
-                //    Settings.Default.D3StarterPath = Path.Combine(Path.GetDirectoryName(Application.ExecutablePath),
-                //        "ThirdParty\\D3Starter.exe");
 
                 // Start background threads
                 Relogger.Instance.Start();

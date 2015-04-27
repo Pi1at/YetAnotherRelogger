@@ -13,9 +13,9 @@ namespace YetAnotherRelogger.Helpers
     {
         #region singleton
 
-        private static Object bufferLock = 0;
+        private static readonly Object BufferLock = 0;
 
-        private static readonly Logger instance = new Logger();
+        private static readonly Logger _instance = new Logger();
 
         static Logger()
         {
@@ -23,21 +23,21 @@ namespace YetAnotherRelogger.Helpers
 
         private Logger()
         {
-            lock (bufferLock)
+            lock (BufferLock)
             {
-                Buffer = new List<LogMessage>();
+                _buffer = new List<LogMessage>();
                 Initialize();
             }
         }
 
         public static Logger Instance
         {
-            get { return instance; }
+            get { return _instance; }
         }
 
         #endregion
 
-        private readonly List<LogMessage> Buffer;
+        private readonly List<LogMessage> _buffer;
         private bool _canLog;
         private string _logfile;
 
@@ -84,8 +84,8 @@ namespace YetAnotherRelogger.Helpers
                     string.Format(format, args));
             else
                 message.Message = string.Format("[{0}] {1}", DateTime.Now, string.Format(format, args));
-            instance.AddBuffer(message);
-            addToRTB(message);
+            _instance.AddBuffer(message);
+            AddToRtb(message);
         }
 
         /// <summary>
@@ -102,8 +102,8 @@ namespace YetAnotherRelogger.Helpers
                 return;
             }
             var message = new LogMessage { Message = string.Format("<{0}> {1}", bot.Name, string.Format(format, args)) };
-            instance.AddBuffer(message);
-            addToRTB(message);
+            _instance.AddBuffer(message);
+            AddToRtb(message);
         }
 
         /// <summary>
@@ -114,8 +114,8 @@ namespace YetAnotherRelogger.Helpers
         public void WriteGlobal(string format, params object[] args)
         {
             var message = new LogMessage { Message = string.Format("{0}", string.Format(format, args)) };
-            instance.AddBuffer(message);
-            addToRTB(message);
+            _instance.AddBuffer(message);
+            AddToRtb(message);
         }
 
         /// <summary>
@@ -124,14 +124,16 @@ namespace YetAnotherRelogger.Helpers
         /// <param name="message">Logmessage</param>
         public void AddLogmessage(LogMessage message)
         {
-            instance.AddBuffer(message);
-            addToRTB(message);
+            _instance.AddBuffer(message);
+            AddToRtb(message);
         }
 
-        private void addToRTB(LogMessage message)
+        private void AddToRtb(LogMessage message)
         {
             if (Program.Mainform == null || Program.Mainform.richTextBox1 == null)
                 return;
+
+            Debug.Write(message.Message + Environment.NewLine);
 
             try
             {
@@ -151,24 +153,24 @@ namespace YetAnotherRelogger.Helpers
             }
             catch (Exception ex)
             {
-                Logger.Instance.Write("Exception in addToRTB: {0}", ex);
+                Instance.Write("Exception in addToRTB: {0}", ex);
                 // Failed! do nothing
             }
         }
 
         private void AddBuffer(LogMessage logmessage)
         {
-            lock (bufferLock)
+            lock (BufferLock)
             {
-                Buffer.Add(logmessage);
-                if (Buffer.Count > 3)
+                _buffer.Add(logmessage);
+                if (_buffer.Count > 3)
                     ClearBuffer();
             }
         }
 
         public void ClearBuffer()
         {
-            lock (bufferLock)
+            lock (BufferLock)
             {
                 if (!_canLog)
                     return;
@@ -177,12 +179,12 @@ namespace YetAnotherRelogger.Helpers
                 // Write buffer to file
                 using (var writer = new StreamWriter(_logfile, true))
                 {
-                    foreach (LogMessage message in Buffer)
+                    foreach (LogMessage message in _buffer)
                     {
                         writer.WriteLine("{0} [{1}] {2}", LoglevelChar(message.Loglevel), message.TimeStamp, message.Message);
                     }
                 }
-                Buffer.Clear();
+                _buffer.Clear();
                 _canLog = true;
             }
         }

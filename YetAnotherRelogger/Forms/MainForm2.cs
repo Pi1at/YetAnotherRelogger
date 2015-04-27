@@ -24,7 +24,7 @@ namespace YetAnotherRelogger.Forms
     public partial class MainForm2 : Form
     {
         private bool bClose;
-        private Thread m_RestartBotsThread;
+        private Thread _restartBotsThread;
         private ContextMenu m_menu;
 
         public MainForm2()
@@ -40,27 +40,27 @@ namespace YetAnotherRelogger.Forms
             if (!CommandLineArgs.SafeMode)
             {
                 // Set window location
-                if (Settings.Default.WindowLocation != null && Settings.Default.WindowLocation != Point.Empty)
+                if (Settings.Default.WindowLocation != Point.Empty)
                 {
-
-                    if (Settings.Default.WindowLocation.X < screenMaxSize.X && Settings.Default.WindowLocation.Y < screenMaxSize.Y &&
-                        Settings.Default.WindowLocation.Y > 0 && Settings.Default.WindowLocation.Y > 0)
+                    if (Settings.Default.WindowLocation.X <= screenMaxSize.X && Settings.Default.WindowLocation.Y <= screenMaxSize.Y &&
+                        Settings.Default.WindowLocation.Y >= 0 && Settings.Default.WindowLocation.Y >= 0)
                     {
-                        this.Location = Settings.Default.WindowLocation;
+                        Location = Settings.Default.WindowLocation;
                     }
                 }
 
                 // Set window size
-                if (Settings.Default.WindowSize != null &&
-                    Settings.Default.WindowSize.Width > 0 &&
-                    Settings.Default.WindowSize.Height > 0 &&
-                    Settings.Default.WindowSize.Width < screenMaxSize.X &&
-                    Settings.Default.WindowSize.Height < screenMaxSize.Y)
+                if (Settings.Default.WindowSize.Width >= 0 &&
+                    Settings.Default.WindowSize.Height >= 0 &&
+                    Settings.Default.WindowSize.Width <= screenMaxSize.X &&
+                    Settings.Default.WindowSize.Height <= screenMaxSize.Y)
                 {
-                    this.Size = Settings.Default.WindowSize;
+                    Size = Settings.Default.WindowSize;
                 }
                 splitContainer1.SplitterDistance = Settings.Default.SplitterDistance;
             }
+
+            Resize += MainForm2_Resize;
 
             Text = string.Format("R-YAR [{0}] BETA", Assembly.GetExecutingAssembly().GetName().Version.ToString());
 
@@ -87,14 +87,12 @@ namespace YetAnotherRelogger.Forms
                 RegistryClass.WindowsAutoStartAdd();
             }
 
-            Resize += MainForm2_Resize;
-
             // Set stuff for list of bots
-            dataGridView1.DoubleBuffered(true);
-            dataGridView1.AllowUserToAddRows = false;
-            dataGridView1.MultiSelect = false;
-            dataGridView1.MouseUp += dataGridView1_MouseUp;
-            dataGridView1.CellValueChanged += dataGridView1_CellValueChanged;
+            botGrid.DoubleBuffered(true);
+            botGrid.AllowUserToAddRows = false;
+            botGrid.MultiSelect = false;
+            botGrid.MouseUp += dataGridView1_MouseUp;
+            botGrid.CellValueChanged += dataGridView1_CellValueChanged;
             UpdateGridView();
 
             // OnClose
@@ -153,18 +151,11 @@ namespace YetAnotherRelogger.Forms
         private void SaveWindowState()
         {
             // Copy window location to app settings
-            Settings.Default.WindowLocation = this.Location;
+            Settings.Default.WindowLocation = Location;
             Settings.Default.SplitterDistance = splitContainer1.SplitterDistance;
 
             // Copy window size to app settings
-            if (this.WindowState == FormWindowState.Normal)
-            {
-                Settings.Default.WindowSize = this.Size;
-            }
-            else
-            {
-                Settings.Default.WindowSize = this.RestoreBounds.Size;
-            }
+            Settings.Default.WindowSize = WindowState == FormWindowState.Normal ? Size : RestoreBounds.Size;
 
             // Save settings
             Settings.Default.Save();
@@ -172,16 +163,16 @@ namespace YetAnotherRelogger.Forms
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == dataGridView1.Columns["isEnabled"].Index)
+            if (e.ColumnIndex == botGrid.Columns["isEnabled"].Index)
             {
                 try
                 {
                     if (e.RowIndex > 0 && e.RowIndex <= BotSettings.Instance.Bots.Count)
                     {
                         BotSettings.Instance.Bots[e.RowIndex].IsEnabled =
-                               (bool)dataGridView1[e.ColumnIndex, e.RowIndex].Value;
+                               (bool)botGrid[e.ColumnIndex, e.RowIndex].Value;
 
-                        BotSettings.Instance.Save();
+                        // BotSettings.Instance.Save();
                     }
                 }
                 catch (Exception ex)
@@ -193,71 +184,79 @@ namespace YetAnotherRelogger.Forms
 
         private void dataGridView1_MouseUp(object sender, MouseEventArgs e)
         {
-            DataGridView.HitTestInfo hitTestInfo = dataGridView1.HitTest(e.X, e.Y);
+            DataGridView.HitTestInfo hitTestInfo = botGrid.HitTest(e.X, e.Y);
             if (hitTestInfo.Type == DataGridViewHitTestType.Cell)
             {
                 if (e.Button == MouseButtons.Right)
                 {
-                    contextMenuStrip1.Show(dataGridView1, new Point(e.X, e.Y));
-                    selectRow(hitTestInfo.RowIndex);
+                    contextMenuStrip1.Show(botGrid, new Point(e.X, e.Y));
+                    selectRowAndCell(hitTestInfo.RowIndex, hitTestInfo.ColumnIndex);
                 }
                 else if (e.Button == MouseButtons.Left)
                 {
-                    selectRow(hitTestInfo.RowIndex);
+                    selectRowAndCell(hitTestInfo.RowIndex, hitTestInfo.ColumnIndex);
                 }
             }
         }
 
         private void selectRow(int index)
         {
-            foreach (DataGridViewRow row in dataGridView1.Rows)
+            foreach (DataGridViewRow row in botGrid.Rows)
                 row.Selected = false;
-            dataGridView1.Rows[index].Selected = true;
-            dataGridView1.CurrentCell = dataGridView1.Rows[index].Cells[0];
+            botGrid.Rows[index].Selected = true;
+            //botGrid.CurrentCell = botGrid.Rows[index].Cells[0];
+        }
+
+        private void selectRowAndCell(int index, int col)
+        {
+            foreach (DataGridViewRow row in botGrid.Rows)
+                row.Selected = false;
+            botGrid.Rows[index].Selected = true;
+            botGrid.CurrentCell = botGrid.Rows[index].Cells[col];
         }
 
         public void UpdateGridView()
         {
-            dataGridView1.DataSource = BotSettings.Instance.Bots;
-            dataGridView1.Refresh();
-            dataGridView1.Columns["week"].Visible = false;
-            dataGridView1.Columns["demonbuddy"].Visible = false;
-            dataGridView1.Columns["diablo"].Visible = false;
-            dataGridView1.Columns["isRunning"].Visible = false;
-            dataGridView1.Columns["isStarted"].Visible = false;
-            dataGridView1.Columns["profileSchedule"].Visible = false;
-            dataGridView1.Columns["AntiIdle"].Visible = false;
-            dataGridView1.Columns["StartTime"].Visible = false;
-            dataGridView1.Columns["UseWindowsUser"].Visible = false;
-            dataGridView1.Columns["CreateWindowsUser"].Visible = false;
-            dataGridView1.Columns["WindowsUserName"].Visible = false;
-            dataGridView1.Columns["WindowsUserPassword"].Visible = false;
-            dataGridView1.Columns["D3PrefsLocation"].Visible = false;
-            dataGridView1.Columns["IsStandby"].Visible = false;
-            dataGridView1.Columns["UseDiabloClone"].Visible = false;
-            dataGridView1.Columns["DiabloCloneLocation"].Visible = false;
-            dataGridView1.Columns["ChartStats"].Visible = false;
+            botGrid.DataSource = BotSettings.Instance.Bots;
+            botGrid.Refresh();
+            botGrid.Columns["week"].Visible = false;
+            botGrid.Columns["demonbuddy"].Visible = false;
+            botGrid.Columns["diablo"].Visible = false;
+            botGrid.Columns["isRunning"].Visible = false;
+            botGrid.Columns["isStarted"].Visible = false;
+            botGrid.Columns["profileSchedule"].Visible = false;
+            botGrid.Columns["AntiIdle"].Visible = false;
+            botGrid.Columns["StartTime"].Visible = false;
+            botGrid.Columns["UseWindowsUser"].Visible = false;
+            botGrid.Columns["CreateWindowsUser"].Visible = false;
+            botGrid.Columns["WindowsUserName"].Visible = false;
+            botGrid.Columns["WindowsUserPassword"].Visible = false;
+            botGrid.Columns["D3PrefsLocation"].Visible = false;
+            botGrid.Columns["IsStandby"].Visible = false;
+            botGrid.Columns["UseDiabloClone"].Visible = false;
+            botGrid.Columns["DiabloCloneLocation"].Visible = false;
+            botGrid.Columns["ChartStats"].Visible = false;
 
-            dataGridView1.Columns["isEnabled"].DisplayIndex = 1;
-            dataGridView1.Columns["isEnabled"].HeaderText = "Enabled";
-            dataGridView1.Columns["isEnabled"].Width = 50;
+            botGrid.Columns["isEnabled"].DisplayIndex = 1;
+            botGrid.Columns["isEnabled"].HeaderText = "Enabled";
+            botGrid.Columns["isEnabled"].Width = 50;
 
-            dataGridView1.Columns["Name"].DisplayIndex = 2;
-            dataGridView1.Columns["Name"].ReadOnly = true;
+            botGrid.Columns["Name"].DisplayIndex = 2;
+            //botGrid.Columns["Name"].ReadOnly = true;
 
-            dataGridView1.Columns["Description"].DisplayIndex = 3;
-            dataGridView1.Columns["Description"].Width = 200;
-            dataGridView1.Columns["Description"].ReadOnly = true;
+            botGrid.Columns["Description"].DisplayIndex = 3;
+            botGrid.Columns["Description"].Width = 200;
+            //botGrid.Columns["Description"].ReadOnly = true;
 
-            dataGridView1.Columns["Status"].ReadOnly = true;
+            botGrid.Columns["Status"].ReadOnly = true;
 
 
-            foreach (DataGridViewRow row in dataGridView1.Rows)
+            foreach (DataGridViewRow row in botGrid.Rows)
             {
                 row.HeaderCell.Value = string.Format("{0:00}", (row.Index + 1));
             }
 
-            dataGridView1.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
+            botGrid.AutoResizeRowHeadersWidth(DataGridViewRowHeadersWidthSizeMode.AutoSizeToAllHeaders);
         }
 
         private void btnStartAll_click(object sender, EventArgs e)
@@ -268,7 +267,7 @@ namespace YetAnotherRelogger.Forms
             // Start All
             foreach (
                 DataGridViewRow row in
-                    dataGridView1.Rows.Cast<DataGridViewRow>().Where(row => (bool)row.Cells["isEnabled"].Value))
+                    botGrid.Rows.Cast<DataGridViewRow>().Where(row => (bool)row.Cells["isEnabled"].Value))
             {
                 BotSettings.Instance.Bots[row.Index].Start(checkBoxForce.Checked);
             }
@@ -290,9 +289,9 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Edit bot
-                if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                if (botGrid.CurrentRow == null || botGrid.CurrentRow.Index < 0)
                     return;
-                var wm = new WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
+                var wm = new WizardMain(botGrid.CurrentRow.Index) { TopMost = true };
 
                 wm.ShowDialog();
             }
@@ -328,11 +327,22 @@ namespace YetAnotherRelogger.Forms
             Relogger.Instance.Start();
         }
 
+        private void btnStopAllDB_Click(object sender, EventArgs e)
+        {
+            Relogger.Instance.Stop();
+            // Stop All
+            foreach (BotClass bot in BotSettings.Instance.Bots)
+            {
+                bot.StopDB();
+            }
+            Relogger.Instance.Start();
+        }
+
         private void btnRestartAllDb_Click(object sender, EventArgs e)
         {
-            m_RestartBotsThread = new Thread(RestartAllBots);
-            m_RestartBotsThread.IsBackground = true;
-            m_RestartBotsThread.Start();
+            DisableMainFormButtons();
+            _restartBotsThread = new Thread(RestartAllBots) { IsBackground = true, Name = "RestartBotsThread" };
+            _restartBotsThread.Start();
             btnRestartAllDb.Enabled = false;
         }
 
@@ -340,11 +350,9 @@ namespace YetAnotherRelogger.Forms
         {
             lock (BotSettings.Instance)
             {
-                var runningBots = new List<BotClass>();
-                foreach (BotClass bot in BotSettings.Instance.Bots.Where(b => b.IsRunning))
-                {
-                    runningBots.Add(bot);
-                }
+
+                var runningBots = BotSettings.Instance.Bots.Where(b => b.IsRunning).ToList();
+
                 if (runningBots.Any())
                 {
                     Relogger.Instance.Stop();
@@ -354,17 +362,22 @@ namespace YetAnotherRelogger.Forms
                         swKill.Start();
                         bot.Demonbuddy.Stop();
                         int pid = Convert.ToInt32(bot.DemonbuddyPid);
-                        if (Process.GetProcesses().Any(p => p.Id == pid))
+                        if (Process.GetProcesses().All(p => p.Id != pid))
+                            continue;
+                        try
                         {
                             Process p = Process.GetProcessById(pid);
-                            while (p != null && !p.HasExited && swKill.ElapsedMilliseconds < 10000)
+                            while (!p.HasExited && swKill.ElapsedMilliseconds < 10000)
                             {
                                 Thread.Sleep(10);
                             }
                         }
+                        catch (Win32Exception) { Thread.Sleep(250); }
+                        catch { Thread.Sleep(250); }
                     }
                     Relogger.Instance.Start();
                 }
+                EnableMainFormButtons();
             }
 
             btnRestartAllDb.BeginInvoke(new System.Action(() => btnRestartAllDb.Enabled = true));
@@ -375,14 +388,21 @@ namespace YetAnotherRelogger.Forms
         private void startToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Start
-            BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Start();
+            BotSettings.Instance.Bots[botGrid.CurrentRow.Index].Start();
         }
 
         private void stopToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Stop
-            if (BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].IsStarted)
-                BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Stop();
+            if (BotSettings.Instance.Bots[botGrid.CurrentRow.Index].IsStarted)
+                BotSettings.Instance.Bots[botGrid.CurrentRow.Index].Stop();
+        }
+
+        private void stopDBToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            // Stop
+            if (BotSettings.Instance.Bots[botGrid.CurrentRow.Index].IsStarted)
+                BotSettings.Instance.Bots[botGrid.CurrentRow.Index].StopDB();
         }
 
         private void statsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -399,7 +419,7 @@ namespace YetAnotherRelogger.Forms
                     MessageBox.Show("Are you sure you want to delete this bot?", "Delete bot", MessageBoxButtons.YesNo,
                         MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    BotSettings.Instance.Bots.RemoveAt(dataGridView1.CurrentRow.Index);
+                    BotSettings.Instance.Bots.RemoveAt(botGrid.CurrentRow.Index);
                     BotSettings.Instance.Save();
                     UpdateGridView();
                 }
@@ -411,7 +431,7 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Edit bot
-                var wm = new WizardMain(dataGridView1.CurrentRow.Index) { TopMost = true };
+                var wm = new WizardMain(botGrid.CurrentRow.Index) { TopMost = true };
                 wm.ShowDialog();
             }
         }
@@ -421,12 +441,8 @@ namespace YetAnotherRelogger.Forms
             lock (BotSettings.Instance)
             {
                 // Force Start single bot
-                BotSettings.Instance.Bots[dataGridView1.CurrentRow.Index].Start(true);
+                BotSettings.Instance.Bots[botGrid.CurrentRow.Index].Start(true);
             }
-        }
-
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
         }
 
         private void btnPause_Click(object sender, EventArgs e)
@@ -477,23 +493,18 @@ namespace YetAnotherRelogger.Forms
                 try
                 {
                     // Clone bot
-                    if (dataGridView1.CurrentRow == null || dataGridView1.CurrentRow.Index < 0)
+                    if (botGrid.CurrentRow == null || botGrid.CurrentRow.Index < 0)
                         return;
 
-                    int idx = dataGridView1.CurrentRow.Index;
+                    int idx = botGrid.SelectedRows[0].Index;
 
-                    int nextIdx = BotSettings.Instance.Clone(idx);
+                    int newIdx = BotSettings.Instance.Clone(idx);
                     BotSettings.Instance.Save();
 
-                    //dataGridView1.Rows.Insert(nextIdx, BotSettings.Instance.Bots[idx + 1]);
-
-                    // Load settings
-                    //BotSettings.Instance.Load();
-                    //Settings.Default.Reload();
-
                     UpdateGridView();
-                    dataGridView1.Rows[nextIdx].Selected = false;
-                    dataGridView1.Rows[nextIdx].Selected = true;
+                    botGrid.ClearSelection();
+
+                    botGrid.CurrentCell = botGrid.Rows[newIdx].Cells[0];
                 }
                 catch (Exception ex)
                 {
@@ -501,7 +512,66 @@ namespace YetAnotherRelogger.Forms
                 }
             }
         }
+        private void moveUpMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                lock (BotSettings.Instance)
+                {
+                    if (botGrid.CurrentRow == null || botGrid.CurrentRow.Index < 0)
+                        return;
 
+                    int idx = botGrid.SelectedRows[0].Index;
+
+                    if (idx == 0)
+                        return;
+
+                    int newIdx = BotSettings.Instance.MoveUp(idx);
+                    UpdateGridView();
+                    botGrid.ClearSelection();
+                    botGrid.CurrentCell = botGrid.Rows[newIdx].Cells[0];
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Write("Error moving bot up: " + ex);
+            }
+            finally
+            {
+                BotSettings.Instance.Save();
+            }
+        }
+
+        private void moveDownMenuItem_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                lock (BotSettings.Instance)
+                {
+                    if (botGrid.CurrentRow == null || botGrid.CurrentRow.Index < 0)
+                        return;
+
+                    int idx = botGrid.SelectedRows[0].Index;
+
+                    if (idx == botGrid.Rows.Count - 1)
+                        return;
+
+                    int newIdx = BotSettings.Instance.MoveDown(idx);
+                    UpdateGridView();
+                    botGrid.ClearSelection();
+                    botGrid.CurrentCell = botGrid.Rows[newIdx].Cells[0];
+
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Instance.Write("Error moving bot down: " + ex);
+            }
+            finally
+            {
+                BotSettings.Instance.Save();
+            }
+        }
 
         private void btnOpenLog_Click(object sender, EventArgs e)
         {
@@ -531,6 +601,36 @@ namespace YetAnotherRelogger.Forms
                     Logger.Instance.Write("Unable to open log file {0}: {1}", Logger.Instance.Logfile, ex);
                 }
             }
+        }
+
+        public void DisableMainFormButtons()
+        {
+            btnClone.Enabled = false;
+            btnClose.Enabled = false;
+            btnEdit.Enabled = false;
+            btnNew.Enabled = false;
+            btnOpenLog.Enabled = false;
+            btnPause.Enabled = false;
+            btnStartAll.Enabled = false;
+            btnStopAll.Enabled = false;
+
+            botGrid.Enabled = false;
+            contextMenuStrip1.Enabled = false;
+        }
+
+        public void EnableMainFormButtons()
+        {
+            btnClone.Enabled = true;
+            btnClose.Enabled = true;
+            btnEdit.Enabled = true;
+            btnNew.Enabled = true;
+            btnOpenLog.Enabled = true;
+            btnPause.Enabled = true;
+            btnStartAll.Enabled = true;
+            btnStopAll.Enabled = true;
+
+            botGrid.Enabled = true;
+            contextMenuStrip1.Enabled = true;
         }
 
         #region Settings Tree
@@ -645,5 +745,17 @@ namespace YetAnotherRelogger.Forms
         }
 
         #endregion
+
+        private void killDemonbuddyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (BotSettings.Instance.Bots[botGrid.CurrentRow.Index].IsStarted)
+                BotSettings.Instance.Bots[botGrid.CurrentRow.Index].KillDB();
+        }
+
+        private void killDiabloToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (BotSettings.Instance.Bots[botGrid.CurrentRow.Index].IsStarted)
+                BotSettings.Instance.Bots[botGrid.CurrentRow.Index].KillDiablo();
+        }
     }
 }
